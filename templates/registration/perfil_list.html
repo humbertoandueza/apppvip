@@ -1,0 +1,66 @@
+{% extends "panel_admin/base.html" %}
+{% load static %}
+{% block content %}
+<section id="content">
+<div class="container">
+    <div class="section" >
+    	<div class="row">
+        <h1>Lista de Usuarios Registrados</h1>
+        <div class="divider"></div>
+        {% for user in user_list %}
+        {% if not user == request.user %}
+          <div class="card-panel grey lighten-5 z-depth-1" >
+            <div class="row valign-wrapper">
+              <div class="col s4 m2">
+                {% if user.perfil.avatar %}
+                <img src="{{ user.perfil.avatar.url }}" style="max-height: 100px; height: 100px;" alt="" class="circle responsive-img valign">
+                {% else %}
+                <img src="{% static 'images/no-avatar.jpg' %}" style="max-height: 100px; height: 100px;" alt="" class="circle responsive-img valign">
+                {% endif %}
+                
+              </div>
+              <div class="col s8 m10">
+                <span class="black-text"><strong>{{user.username}}</strong> <br>{{user.email}}</span>
+                <div class="right">
+                  <a href="{% url 'messenger:iniciar' user.pk  %}" class="btn waves-effect waves-light">Iniciar Chat</a>
+              </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        {% endfor %}
+    </div>
+</div>
+</section>
+
+<script type="text/javascript" src="{% static 'js/plugins/jquery-1.11.2.min.js'%}"></script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    var btn = document.getElementById('enviar');
+    btn.addEventListener('click',function (e) {
+      e.preventDefault()
+      var telefono = document.querySelector('#id_telefono').value;
+      var bio = document.querySelector('#id_bio').value;
+      var token = document.querySelector('input').value;
+      $.ajax({
+        type:"POST",
+        dataType:"json",
+        url: '{% url 'perfil' %}',
+        data:{"telefono":telefono,'bio':bio,'csrfmiddlewaretoken':token}
+      })
+      .done(function(result){
+        console.log(result);
+      }).fail(function(result){
+        if (result.status === 200) { 
+            Materialize.toast('Info actualizada', 3000, 'rounded')
+        }
+        else{
+            Materialize.toast('Error Info no actualizada', 3000, 'rounded')
+        }
+      });
+    });
+  });
+</script>
+{% endblock%}
+

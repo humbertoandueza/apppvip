@@ -1,0 +1,38 @@
+<form action="{% url 'diezmo:concepto_actualizar' form.instance.pk %}" id="form" method="post" class="col s12 js-book-update-form" autocomplete="off">
+    {% csrf_token %}
+    <style>
+        select{
+            display: block;
+        }
+    </style>
+    <div class="row">
+        <div class="col s12">
+            <h2>Actualizar Concepto</h2>
+     
+    <div row>
+        <div class="col s10 offset-s1">
+            <div class="row">
+                <div class="input-field col s12 m12">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input  type="text"  name="concepto" id="id_concepto" required="" maxlength="50" value="{{form.concepto.value}}">
+                    <label for="id_concepto" class="">Concepto</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="error" class="col s10 offset-s1 center"></div>
+        </div>
+        <div class="row">
+            <div class="col m6 offset-m5 s12">
+                <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                <button class="btn waves-effect waves-light blue" >Actualizar</button></p>
+            </div>
+        </div>
+    </div>
+
+    
+</form>
+<script>
+    $('label').addClass('active');
+</script>
+

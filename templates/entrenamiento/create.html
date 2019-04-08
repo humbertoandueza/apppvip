@@ -1,0 +1,42 @@
+<form  action="{% url 'actividades:post_entrenamiento' %}" id="form" method="post" class="col s12 js-book-create-form" autocomplete="off">
+    {% csrf_token %}
+    <style>
+        select{
+            display: block;
+        }
+    </style>
+    <div class="row">
+        <div class="col s12">
+            <h2>Asignar Material Alpha</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m10 offset-m1">
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    {{form.iglesia}}
+                    <label for="id_iglesia" class="active">Iglesia</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <label class="active">Material</label>
+                    {{form.material}}
+                    <p style="color:red;font-size:10px; text-align: center;">* Para multiple selecciones use CTRL+CLICK</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="error" class="col s10 offset-s1 center"></div>
+        </div>
+        <div class="row">
+            <div class="col m6 offset-m5 s10 offset-s1">
+                <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Registrar</button></p>
+            </div>
+        </div>
+    </div>
+
+    
+</form>
+
+
+

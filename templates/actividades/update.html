@@ -1,0 +1,123 @@
+{% if not actividad.suspended %}
+{% if actividad.status.status == "Por Realizar" %}
+
+<style>
+    select{
+        display: block;
+    }
+</style>
+<form action="{% url 'actividades:actualizar_status' form.instance.pk %}" id="form" method="post" class="js-book-update-form">
+    {% csrf_token %}
+
+    <div class="row">
+        <div class="col s12">
+            <h2>Actualizar Actividad</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m10 offset-m1">
+            <div class="row">
+                <div class="input-field col s12 m12">
+                    {{form.status}}
+                    <label for="id_status" class="active">Cambiar Estatus</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="error" class="col s10 offset-s1 center"></div>
+        </div>
+        <div class="row">
+            <div class="col m6 offset-m5 s10 offset-s1">
+                <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Registrar</button></p>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+            /*$('#id_fecha').pickadate({
+        monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        weekdaysFull: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+        selectMonths: true,
+        selectYears: 100, // Puedes cambiarlo para mostrar más o menos años
+        today: 'Hoy',
+        clear: 'Limpiar',
+        close: 'Ok',
+        labelMonthNext: 'Siguiente mes',
+        labelMonthPrev: 'Mes anterior',
+        labelMonthSelect: 'Selecciona un mes',
+        labelYearSelect: 'Selecciona un año',
+        });*/
+$('#id_fecha').attr("type","date");
+$('#id_hora').attr("type","time");
+</script>
+{% endif %}
+{% if actividad.status.status == "Suspendida" %}
+<form action="{% url 'actividades:actualizar_status' form.instance.pk %}" id="form" method="post" class="js-book-update-form">
+    {% csrf_token %}
+    <div class="row">
+            <div class="col s12">
+                <h2>Mover Actividad</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+                <div class="row">
+                    <div class="input-field col s12 m12">
+                        <input type="date" name="fecha" id="id_fecha">
+                        <label for="id_fecha" class="active">Fecha de la nueva de la actividad</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m12">
+                        <input type="datetime" name="hora" id="id_hora" required>
+                        <label for="id_hora" class="active">Hora</label>
+                    </div>
+                </div>
+            <div class="row">
+                <div id="error" class="col s10 offset-s1 center"></div>
+            </div>
+            <div class="row">
+                <div class="col m6 offset-m5 s10 offset-s1">
+                    <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                    <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Registrar</button></p>
+                </div>
+            </div>
+        </div>
+</form>
+<script>
+$('#id_hora').attr("type","time");
+var d = new Date();
+
+var month = d.getMonth()+1;
+var day = d.getDate();
+$('#id_fecha').attr("type","date");
+
+var output = d.getFullYear() + '/' +
+    (month<10 ? '0' : '') + month + '/' +
+    (day<10 ? '0' : '') + day;
+$('#id_fecha').pickadate({
+    min: new Date(output),
+    formatSubmit: 'yyyy-mm-dd',
+    today: 'Hoy',
+    clear: 'Limpiar',
+    close: 'Ok',
+    labelMonthNext: 'Siguiente mes',
+    labelMonthPrev: 'Mes anterior',
+    labelMonthSelect: 'Selecciona un mes',
+    labelYearSelect: 'Selecciona un año',
+});
+</script>
+{% endif %}
+{% if actividad.status.status == 'Realizada' %}
+<h1>Esta actividad a sido completada</h1>
+<a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
+{% endif %}
+{% else %}
+
+<h1>Esta actividad a sido reasignada a otra fecha</h1>
+<a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
+
+{% endif%}

@@ -1,0 +1,79 @@
+<form  action="{% url 'persona:crear_persona' %}" id="form" method="post" class="col s12 js-book-create-form" autocomplete="off">
+    {% csrf_token %}
+    <style>
+        select{
+            display: block;
+        }
+    </style>
+    <div class="row">
+        <div class="col s12">
+            <h2>Registro de Miembro</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m10 offset-m1">
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input  type="text" class="validate" name="cedula" id="id_cedula" required="" maxlength="8">
+                    <label for="id_cedula" class="">Cedula</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input  type="text" class="validate" name="nombre" id="id_nombre" required="">
+                    <label for="id_nombre">Nombre</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input type="text" class="validate" name="apellido" id="id_apellido" required="">
+                    <label for="id_apellido" class="">Apellido</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input type="text" class="validate" name="telefono" id="id_telefono" required="">
+                    <label for="id_telefono">Telefono</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m12">
+                    <i class="mdi-editor-mode-edit prefix"></i>
+                    <textarea class="materialize-textarea" name="direccion" id="id_direccion" cols="40" required="" rows="10" ></textarea>
+                    <label for="id_direccion" class="">Dirección</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input type="email" class="validate" name="correo" id="id_correo" required="" maxlength="254">
+                    <label for="id_correo" class="">Correo</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <select name="roles" id="id_roles" required="">
+                            <option value="" selected="">Roles</option>
+                            
+                            <option value="Miembro">Miembro</option>
+                            
+                            <option value="Lider">Lider</option>
+                            
+                            <option value="Asistente">Asistente</option>
+                            
+                        </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="error" class="col s10 offset-s1 center"></div>
+        </div>
+        <div class="row">
+            <div class="col m6 offset-m5 s10 offset-s1">
+                <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                <button class="btn waves-effect waves-light blue" >Registrar</button></p>
+            </div>
+        </div>
+    </div>
+
+    
+</form>
+

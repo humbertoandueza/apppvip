@@ -1,0 +1,43 @@
+<form  action="{% url 'actividades:post_grupo' %}" id="form" method="post" class="col s12 js-book-create-form" autocomplete="off">
+    {% csrf_token %}
+    <style>
+        select{
+            display: block;
+        }
+    </style>
+    <div class="row">
+        <div class="col s12">
+            <h2>Registro de Grupo Alpha</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m10 offset-m1">
+            <div class="row">
+                <div class="input-field col s12 m12">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input  type="text" class="validate" name="nombre" id="id_nombre" required="" maxlength="8">
+                    <label for="id_nombre" class="active">Nombre</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m12">
+                        <textarea class="materialize-textarea" name="descripcion" id="id_descripcion" cols="40" required="" rows="10" ></textarea>
+                        <label for="id_descripcion" class="active">Descripcion</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="error" class="col s10 offset-s1 center"></div>
+        </div>
+        <div class="row">
+            <div class="col m6 offset-m5 s10 offset-s1">
+                <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Registrar</button></p>
+            </div>
+        </div>
+    </div>
+
+    
+</form>
+
+

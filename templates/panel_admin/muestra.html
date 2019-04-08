@@ -1,0 +1,53 @@
+{% extends "panel_admin/base.html" %}
+
+{% block content %}
+<section id="content">
+<div class="container">
+    <div class="section" >
+        <div class="row">
+            <div class="section"  style="margin-top: 13vh;">
+              <h3 class="header center">Registro de Diezmos</h3>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col s10 offset-s1 m6 offset-m3 ">
+              <input class="datepicker picker__input" readonly="" placeholder="Fecha" id="P475155353" tabindex="-1" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="P475155353_root" type="text">
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col m3 s10 offset-m3  offset-s1">
+              <input id="icon_prefix3" class="validate" type="text">
+              <label for="icon_prefix3" class="">Nombre del miembro</label>
+            </div>
+            <div class="input-field col m3 s10 offset-s1 ">
+                <input id="icon_prefix3" class="validate" type="text">
+                <label for="icon_prefix3" class="">Apellido del miembro</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col m3 s10 offset-m3  offset-s1">
+                <input id="icon_telephone" class="validate" type="tel">
+                <label for="icon_telephone" class="active">Cantidad de Diezmos</label>
+            </div>
+            <div class="input-field col m3 s10 offset-s1 ">            
+                <select class="initialized">
+                    <option value="" disabled="" selected="">Metodo de Pago</option>
+                    <option value="1">Efectivo</option>
+                    <option value="2">Transferencia</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 15vh;">
+            <div class="col s12 center">
+                <p><a class="btn waves-effect waves-light blue">Guardar Registro</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+
+
+{% endblock%}
+

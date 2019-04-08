@@ -1,0 +1,107 @@
+<style>
+    select{
+        display: block;
+    }
+</style>
+<form action="{% url 'actividades:post_actividad' %}" id="form" method="post" class="js-book-create-form">
+    {% csrf_token %}
+    <style>
+        select{
+            display: block;
+        }
+    </style>
+    <div class="row">
+        <div class="col s12">
+            <h2>Registrar Actividad</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m10 offset-m1">
+            <div class="row">
+                <div class="input-field col s12 m12">
+                    <input type="text" name="nombre" class="validate" id="id_nombre" maxlength="200" required="">
+                    <label for="id_nombre" class="active">Nombre de la actividad</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <textarea class="materialize-textarea" name="descripcion" id="id_descripcion" rows="10" required="" cols="40"></textarea>
+                    <label for="id_descripcion" class="active">Descripcion</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <textarea class="materialize-textarea" name="lugar" id="id_lugar" rows="10" required="" cols="40"></textarea>
+                    <label for="id_lugar" class="active">Lugar</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    {{form.persona}}
+                    <label for="id_persona" class="active">Lider</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    {{form.tipo}}
+                    <label for="id_tipo" class="active">Tipo de Actividad</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    {{form.fecha}}
+                    <label for="id_fecha" class="active">Fecha</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    {{form.hora}}
+                    <label for="id_hora" class="active">Hora</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="error" class="col s10 offset-s1 center"></div>
+        </div>
+        <div class="row">
+            <div class="col m6 offset-m5 s10 offset-s1">
+                <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Registrar</button></p>
+            </div>
+        </div>
+    </div>
+
+</form>
+<script type="text/javascript">
+            /*$('#id_fecha').pickadate({
+        monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        weekdaysFull: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+        selectMonths: true,
+        selectYears: 100, // Puedes cambiarlo para mostrar más o menos años
+        today: 'Hoy',
+        clear: 'Limpiar',
+        close: 'Ok',
+        labelMonthNext: 'Siguiente mes',
+        labelMonthPrev: 'Mes anterior',
+        labelMonthSelect: 'Selecciona un mes',
+        labelYearSelect: 'Selecciona un año',
+        });*/
+$('#id_hora').attr("type","time");
+var d = new Date();
+
+var month = d.getMonth()+1;
+var day = d.getDate();
+$('#id_fecha').attr("type","date");
+
+var output = d.getFullYear() + '/' +
+    (month<10 ? '0' : '') + month + '/' +
+    (day<10 ? '0' : '') + day;
+$('#id_fecha').pickadate({
+    min: new Date(output),
+    formatSubmit: 'yyyy-mm-dd',
+    today: 'Hoy',
+    clear: 'Limpiar',
+    close: 'Ok',
+    labelMonthNext: 'Siguiente mes',
+    labelMonthPrev: 'Mes anterior',
+    labelMonthSelect: 'Selecciona un mes',
+    labelYearSelect: 'Selecciona un año',
+});
+
+</script> 

@@ -1,0 +1,28 @@
+{% extends "panel_admin/base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    @keyframes spin-horizontal {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+}
+.image-rotate-horizontal{
+    -moz-animation: spin-horizontal 14s infinite linear;
+    -o-animation: spin-horizontal 14s infinite linear;
+    -webkit-animation: spin-horizontal 14s infinite linear;
+    animation: spin-horizontal 14s infinite linear;
+}
+</style>
+<section id="content" class="bg">
+	<div class="container">
+		<div class="row ">
+			<div class="col col s12 m12 l12 center" style="margin-top: 15vh;margin-bottom: 19vh;">
+			<img class="image-rotate-horizontal" style="max-width: 40%;height: auto" src="{% static 'images/logo.png' %}"> <!-- notice the "circle" class -->
+			<h4 style="font-weight: bold;">Bienvenid@ {{request.user.first_name}} al panel Admin de la <br> Aplicación Web de la Iglesia Vida Plena</h4>
+		    </div>
+		</div>
+	</div>
+</section>
+<a class="toast hide" onclick="Materialize.toast('Bienvenido {{request.user.first_name}}', 3000, 'rounded')">Round Toast!</a>
+{% endblock%}
+

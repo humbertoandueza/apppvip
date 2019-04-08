@@ -1,0 +1,104 @@
+{% extends "panel_admin/base.html" %}
+{% load static %}
+{% block content %}
+<section id="content">
+<div class="container">
+    <div class="section" >
+    	<div class="row">
+        {% if 'ok' in request.GET %}
+        <div id="card-alert" class="card green">
+          <div class="card-content white-text">
+            <p><i class="mdi-navigation-check"></i> Felicidades : Tu perfil ha sido actualizado.</p>
+          </div>
+          <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        {% endif %}
+    		<div class="col m12">
+    			<h5 style="text-transform: uppercase">Nombre:{{request.user.username}} {{request.user.last_name}}</h5>
+    		</div>
+    	</div>
+    	<div class="divider"></div>
+        <form method="post" action="" enctype="multipart/form-data">
+        	{% csrf_token %}
+    		<div class="row  center" style="max-height: 35vh; height: 35vh;">
+    			{% if request.user.perfil.avatar %}
+              <div class="col s12 m4">
+                <img src="{{request.user.perfil.avatar.url}}" alt="" class="circle z-depth-1 valign profile-image responsive-img" width="220" style="margin-top: 10px;" onclick="miclick()">
+              	<input type="checkbox" name="avatar-clear" id="avatar-clear">
+              	<label for="avatar-clear">Eliminar</label>
+              	</div>
+              {% else %}
+              <div class="col s12 m4">
+                <img src="{% static 'images/no-avatar.jpg'%}" alt="" class="z-depth-1  valign profile-image" style="margin-top: 10px" width="220"  onclick="miclick()">
+              </div>
+              {% endif %}
+        		<div class="col s12 m8">
+                  <p>Seleccione la imagen que desea actualizar: 2MB.</p>
+                  <input type="file" id="id_avatar" name="avatar" class="dropify id_avatar" data-max-file-size="2M" />
+                  
+              	</div>
+            </div>
+    	<div class="divider"></div>
+    	<h5>Información del Perfil</h5>
+    	<div class="row">
+	      	<div class="input-field col s12">
+	          <textarea id="id_bio" name="bio" class="materialize-textarea">{{request.user.perfil.bio}}</textarea>
+	          <label for="id_bio" class="">Biografia</label>
+	        </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+              <input type="text" name="telefono"  value="{{request.user.perfil.telefono}}" id="id_telefono" required="">
+              <label for="id_telefono" class="">Telefono</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+              <input type="email" id="email" disabled="true" value="{{request.user.email}}">
+              <label for="email" class="">Email</label>
+          </div>
+        </div>
+        <div class="row center">
+        	<div class="col s12">
+        	<input id="enviar" type="submit" class="btn waves-effect waves-light btn-block" value="Actualizar" name="Enviar">
+        	</div>
+        </div>
+        </form>
+        
+    </div>
+</div>
+</section>
+
+<script type="text/javascript" src="{% static 'js/plugins/jquery-1.11.2.min.js'%}"></script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    var btn = document.getElementById('enviar');
+    btn.addEventListener('click',function (e) {
+      e.preventDefault()
+      var telefono = document.querySelector('#id_telefono').value;
+      var bio = document.querySelector('#id_bio').value;
+      var token = document.querySelector('input').value;
+      $.ajax({
+        type:"POST",
+        dataType:"json",
+        url: '{% url 'perfil' %}',
+        data:{"telefono":telefono,'bio':bio,'csrfmiddlewaretoken':token}
+      })
+      .done(function(result){
+        console.log(result);
+      }).fail(function(result){
+        if (result.status === 200) { 
+            Materialize.toast('Info actualizada', 3000, 'rounded')
+        }
+        else{
+            Materialize.toast('Error Info no actualizada', 3000, 'rounded')
+        }
+      });
+    });
+  });
+</script>
+{% endblock%}
+

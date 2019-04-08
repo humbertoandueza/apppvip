@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="materialize is a material design based mutipurpose responsive template">
+        <meta name="keywords" content="material design, card style, material template, portfolio, corporate, business, creative, agency">
+        <meta name="author" content="trendytheme.net">
+
+        <title>Iglesia Vida Plena</title>
+
+        <!--  favicon -->
+        <link rel="shortcut icon" href="{% static 'assets/img/ico/favicon.png'%}">
+        <!--  apple-touch-icon -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/img/ico/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/img/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/img/ico/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="assets/img/ico/apple-touch-icon-57-precomposed.png">
+
+        <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,500,700,900' rel='stylesheet' type='text/css'>
+        <!-- FontAwesome CSS -->
+        <link href="{% static 'assets/fonts/font-awesome/css/font-awesome.min.css'%}" rel="stylesheet">
+        <!-- Material Icons CSS -->
+        <link href="{% static 'assets/fonts/iconfont/material-icons.css'%}" rel="stylesheet">
+        <!-- magnific-popup -->
+        <link href="{% static 'assets/magnific-popup/magnific-popup.css'%}" rel="stylesheet">
+        <!-- owl.carousel -->
+        <link href="{% static 'assets/owl.carousel/assets/owl.carousel.css'%}" rel="stylesheet">
+        <link href="{% static 'assets/owl.carousel/assets/owl.theme.default.min.css'%}" rel="stylesheet">
+        <!-- flexslider -->
+        <link href="{% static 'assets/flexSlider/flexslider.css'%}" rel="stylesheet">
+        <!-- materialize -->
+        <link href="{% static 'assets/materialize/css/materialize.min.css'%}" rel="stylesheet">
+        <!-- Bootstrap -->
+        <link href="{% static 'assets/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+        <!-- shortcodes -->
+        <link href="{% static 'assets/css/shortcodes/shortcodes.css'%}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'vanillabox/theme/bitter/vanillabox.css'%}">
+        <!-- Style CSS -->
+        <link href="{% static 'style.css'%}" rel="stylesheet">
+
+        <!-- RS5.0 Main Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/revolution/css/settings.css'%}">
+        <!-- RS5.0 Layers and Navigation Styles -->
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/revolution/css/layers.css'%}">
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/revolution/css/navigation.css'%}">
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body id="top" class="has-header-search">
+
+        <!--header start-->
+        <header id="header" class="tt-nav transparent-header">
+
+            <div class="header-sticky light-header">
+
+                <div class="container">
+
+                    <div id="materialize-menu" class="menuzord">
+
+                        <!--logo start-->
+                        <a href="{% url 'core:home' %}" class="logo-brand">
+                            <img src="{% static 'assets/img/logo.png'%}" alt=""/>
+                        </a>
+                        <!--logo end-->
+
+                        <!--mega menu start-->
+                        <ul class="menuzord-menu pull-right">
+                            <li><a href="/">Inicio</a></li>
+                            
+                        </ul>
+                        <!--mega menu end-->
+
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!--header end-->
+
+
+        
+      <style type="text/css">
+        .img-container{
+        height:280px;
+        overflow:hidden;
+      }
+      </style>
+
+
+        <section class="section-padding">
+            <div class="container">
+
+              <div class="text-center mb-50">
+                  <h2 class="section-title text-uppercase">ÁLbumes</h2>
+                  <p class="section-sub">Lista de álbumes de las actividades realizadas</p>
+              </div>
+
+              <div class="portfolio-container text-center">
+                  
+
+                  <div class="portfolio portfolio-with-title col-3 gutter mt-50">
+
+
+                  </div><!-- /.portfolio -->
+
+              </div><!-- portfolio-container -->
+
+            </div><!-- /.container -->
+        </section>
+
+
+
+        <footer class="footer footer-four">
+            <div class="primary-footer brand-bg text-center">
+                <div class="container">
+
+                  <a href="#top" class="page-scroll btn-floating btn-large pink back-top waves-effect waves-light" data-section="#top">
+                    <i class="material-icons">&#xE316;</i>
+                  </a>
+
+                  <ul class="social-link tt-animate ltr mt-20">
+                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                  </ul>
+
+                  <hr class="mt-15">
+
+                  <div class="row">
+                    <div class="col-md-12">
+                          <div class="footer-logo">
+                            <img src="{% static 'assets/img/logo.png'%}" alt="" width="200">
+                          </div>
+                    </div><!-- /.col-md-12 -->
+                  </div><!-- /.row -->
+                </div><!-- /.container -->
+            </div><!-- /.primary-footer -->
+
+            <div class="secondary-footer brand-bg darken-2 text-center">
+                <div class="container">
+                    <span class="copy-text"><strong>{{titulo}}</strong> <br> Derechos Reservados &copy; 2018, Andueza y Hidalgo Desarrolladores </span>
+                </div><!-- /.container -->
+            </div><!-- /.secondary-footer -->
+        </footer>
+
+        <div id="preloader">
+          <div class="preloader-position">
+            <img src="{% static 'assets/img/logo.png'%}" alt="logo" width="300" >
+            <div class="progress">
+              <div class="indeterminate"></div>
+            </div>
+          </div>
+        </div>
+        <!-- End Preloader -->
+
+
+
+        <!-- jQuery -->
+        <script src="{% static 'assets/js/jquery-2.1.3.min.js'%}"></script>
+        <script type="text/javascript" src="{% static 'vanillabox/jquery.vanillabox.js'%}"></script>
+
+        <script type="text/javascript">
+          $(function () {
+            $.ajax({
+              url: "{% url 'actividades:album' %}",
+              type: "GET",
+              dataType: 'json',
+              success: function (data) {
+                console.log(data);
+                if(data.length > 0){
+                  data.forEach(function(e){
+                    var url = "{% url 'actividades:photos' pk=5 %}";
+                    var url1 =url.slice(0,-2)+e.album.id+'/';
+                    $(".portfolio").append(`<div class="portfolio-item" >
+                            <div class="portfolio-wrapper">
+
+                              <div class="thumb">
+                                  <!--<div class="bg-overlay brand-overlay"></div>-->
+                                  <div class="img-container">
+                                    <img src="/media/${e.album.ult_imagen}" alt="" style="background-size: cover;height:100% !important; width:100%;">
+                                  </div>
+
+                                  <!--<div class="portfolio-intro">
+                                    <div class="action-btn">
+                                      <a href="/media/${e.album.ult_imagen}" class="tt-lightbox"> <i class="fa fa-search"></i></a>
+                                    </div>
+                                  </div>-->
+                                  <div class="portfolio-title">
+                                      <h2><a href="${url1}">${e.album.nombre}</a></h2>
+                                  </div>
+                              </div><!-- thumb -->
+
+                            </div><!-- /.portfolio-wrapper -->
+                        </div><!-- /.portfolio-item -->
+                      `);
+                    
+                  });
+                  //$('.action-btn a').vanillabox();
+                  //$('.thumb img').vanillabox();
+                }else{
+                  $(".portfolio").append('<h2>No hay álbumes Disponibles</h2>');
+                }
+              }
+              });
+          });
+
+        </script>
+
+        <script src="{% static 'assets/bootstrap/js/bootstrap.min.js'%}"></script>
+        <script src="{% static 'assets/materialize/js/materialize.min.js'%}"></script>
+        <script src="{% static 'assets/js/jquery.easing.min.js'%}"></script>
+        <script src="{% static 'assets/js/jquery.sticky.min.js'%}"></script>
+        <script src="{% static 'assets/js/smoothscroll.min.js'%}"></script>
+        <script src="{% static 'assets/js/imagesloaded.js'%}"></script>
+        <script src="{% static 'assets/js/jquery.stellar.min.js'%}"></script>
+        <script src="{% static 'assets/js/jquery.inview.min.js'%}"></script>
+        <script src="{% static 'assets/js/jquery.shuffle.min.js'%}"></script>
+        <script src="{% static 'assets/js/menuzord.js'%}"></script>
+        <script src="{% static 'assets/js/bootstrap-tabcollapse.min.js'%}"></script>
+        <script src="{% static 'assets/owl.carousel/owl.carousel.min.js'%}"></script>
+        <script src="{% static 'assets/flexSlider/jquery.flexslider-min.js'%}"></script>
+        <script src="{% static 'assets/magnific-popup/jquery.magnific-popup.min.js'%}"></script>
+        <script src="{% static 'assets/js/scripts.js'%}"></script>
+
+
+    </body>
+
+</html>

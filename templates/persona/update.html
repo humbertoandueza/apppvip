@@ -1,0 +1,72 @@
+<form action="{% url 'persona:actualizar_persona' form.instance.pk %}" id="form" method="post" class="col s12 js-book-update-form" autocomplete="off">
+    {% csrf_token %}
+    <style>
+        select{
+            display: block;
+        }
+    </style>
+    <div class="row">
+        <div class="col s12">
+            <h2>Actualizar Miembro</h2>
+     
+    <div row>
+        <div class="col s10 offset-s1">
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input  type="text" readonly="readonly" name="cedula" id="id_cedula" required="" maxlength="8" value="{{form.cedula.value}}">
+                    <label for="id_cedula" class="">Cedula</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input  type="text" class="validate" name="nombre" id="id_nombre" required="" value="{{form.nombre.value}}">
+                    <label for="id_nombre">Nombre</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input type="text" class="validate" name="apellido" id="id_apellido" required="" value="{{form.apellido.value}}">
+                    <label for="id_apellido" class="">Apellido</label>
+                </div>
+                <div class="input-field col s6">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input type="text" class="validate" name="telefono" id="id_telefono" required="" value="{{form.telefono.value}}">
+                    <label for="id_telefono">Telefono</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m12">
+                    <i class="mdi-editor-mode-edit prefix"></i>
+                    <textarea class="materialize-textarea" name="direccion" id="id_direccion" cols="40" required="" rows="10" >{{form.direccion.value}}</textarea>
+                    <label for="id_direccion" class="">Dirección</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <i class="mdi-action-account-circle prefix"></i>
+                    <input type="email" class="validate" name="correo" id="id_correo" required="" maxlength="254" value="{{form.correo.value}}">
+                    <label for="id_correo" class="">Correo</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    {{form.roles}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="error" class="col s10 offset-s1 center"></div>
+        </div>
+        <div class="row">
+            <div class="col m6 offset-m5 s12">
+                <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                <button class="btn waves-effect waves-light blue" >Actualizar</button></p>
+            </div>
+        </div>
+    </div>
+
+    
+</form>
+<script>
+    $('label').addClass('active');
+</script>
+
