@@ -46,7 +46,7 @@ class PersonasCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView)
                     nombre = len(request.POST['nombre'])
                     ofrenda = request.POST['nombre']
                     
-                    if nombre <= 3:
+                    if nombre < 3:
                         data['error'] = "El nombre debe contener como minimo 3 caracteres"
                         data['form_is_valid'] = False
 

@@ -15,6 +15,10 @@ $(document).ready(function(){
         },
         success: function (data) {
         $("#modal1 .modal-content").html(data.html_form);
+        $('#id_cedula').addClass('number')
+        $('#id_telefono').addClass('number')
+        $('#id_nombre').addClass('text')
+        $('#id_apellido').addClass('text')
         }
     });
     });
@@ -27,12 +31,32 @@ $("#modal1").on("submit", ".js-book-create-form", function (e) {
     var form = $(this);
     var data = $("#form :input").serializeArray();
     for (var i = 0; i < data.length; i+=1) {
-        if(data[i].name == "cedula"){
-            //console.log('cedula: ', data[i].value.length);
-            if(data[i].value.length <=6 || data[i].value.length >8 ){
+        dato = data[i]
+        if(dato.name == "cedula"){
+            if(dato.value.length <=6 || dato.value.length >8 ){
                 $( "#id_cedula" ).addClass( "invalid" );
                 $('#error').html('<p style="color:red; margin-left:40px;">La cedula no es correcta</p>');
-                //alert('La cedula no cumple con lo requerido');
+                return false;                
+            }
+        }
+        if(dato.name == "nombre"){
+            if(dato.value.length <3){
+                $( "#id_nombre" ).addClass( "invalid" );
+                $('#error').html('<p style="color:red; margin-left:40px;">Introduzca un nombre</p>');
+                return false;                
+            }
+        }
+        if(dato.name == "apellido"){
+            if(dato.value.length <3){
+                $( "#id_apellido" ).addClass( "invalid" );
+                $('#error').html('<p style="color:red; margin-left:40px;">Introduzca un apellido</p>');
+                return false;                
+            }
+        }
+        if(dato.name == "telefono"){
+            if(dato.value.length <11 || dato.value.length >11){
+                $( "#id_telefono" ).addClass( "invalid" );
+                $('#error').html('<p style="color:red; margin-left:40px;">Introduzca un numero de telefono valido</p>');
                 return false;                
             }
         } 
