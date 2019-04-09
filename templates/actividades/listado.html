@@ -355,32 +355,19 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                     </ul>
 
                     <!-- notifications-dropdown -->
-                    <ul id="notifications-dropdown" class="dropdown-content">
+                    <!-- notifications-dropdown -->
+                    <ul id="notifications-dropdown" class="dropdown-content" style="min-width:25vw;">
                       <li>
-                        <h5>NOTIFICATIONS <span class="new badge">5</span></h5>
+                      <center>
+                            </h5>
+                            NOTIFICACIONES
+                            <h5>
+                        </center>
+                        <span  class="notis blue" style="padding: 5px; color: white;font-weight: bold; width: 100%;"></span>   
+                        <br>
+                            <a href="#" class="right" style="color: blue;margin-left: 52px;">Ver todas</a>
                       </li>
                       <li class="divider"></li>
-                      <li>
-                        <a href="#!"><i class="mdi-action-add-shopping-cart"></i> A new order has been placed!</a>
-                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">2 hours ago</time>
-                      </li>
-                      <li>
-                        <a href="#!"><i class="mdi-action-stars"></i> Completed the task</a>
-                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">3 days ago</time>
-                      </li>
-                      <li>
-                        <a href="#!"><i class="mdi-action-settings"></i> Settings updated</a>
-                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">4 days ago</time>
-                      </li>
-                      <li>
-                        <a href="#!"><i class="mdi-editor-insert-invitation"></i> Director meeting started</a>
-                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">6 days ago</time>
-                      </li>
-                      <li>
-                        <a href="#!"><i class="mdi-action-trending-up"></i> Generate monthly report</a>
-                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">1 week ago</time>
-                      </li>
-                    </ul>
                     <div class="right">
                     
                     </div>
@@ -416,30 +403,33 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                         <ul id="profile-dropdown" class="dropdown-content">
                             <li><a href="#"><i class="mdi-action-face-unlock"></i> Perfil</a>
                             </li>
-                            <li><a href="#"><i class="mdi-action-settings"></i> Settings</a>
-                            </li>
-                            <li><a href="#"><i class="mdi-communication-live-help"></i> Help</a>
-                            </li>
                             <li class="divider"></li>
-                            <li><a href="#"><i class="mdi-action-lock-outline"></i> Lock</a>
-                            </li>
                             <li><a href="{% url 'logout' %}"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
                             </li>
                         </ul>
                         <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">{{user.first_name}}<i class="mdi-navigation-arrow-drop-down right"></i></a>
-                        {% if request.user.is_superuser%}
-                        <p class="user-roal">Administrador</p>
-                        {% else %}
-                        <p class="user-roal">Staff</p>
+                        {% if request.user.is_superuser %}
+                        <p class="user-roal">SuperUsuario</p>
                         {% endif %}
+                        {% if request.user.is_administrador and not request.user.is_superuser %}
+                        <p class="user-roal">Administrador</p>
+                        {% endif %}
+                        {% if request.user.is_iglesia and not  request.user.is_superuser%}
+                        <p class="user-roal">Iglesia</p>
+                        {% endif %}
+                        {% if request.user.is_programador and not request.user.is_superuser%}
+                        <p class="user-roal">Programador</p>
+                        {% endif %}
+
                     </div>
                 </div>
                 </li>
                 <li class="bold {% if request.path == '/panel' %}active{%endif%}"><a href="{% url 'core:panel' %}" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Inicio</a>
                 </li>
+                {% if request.user.is_administrador %}
                 <li class="no-padding">
                     <ul class="collapsible collapsible-accordion">
-                        <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Miembros</a>
+                        <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Módulo de Miembros</a>
                             <div class="collapsible-body">
                                 <ul>
                                     <li class="bold {% if request.path == '/panel/persona/' %}active{%endif%}"><a href="{% url 'persona:personas' %}">Listado</a>
@@ -451,26 +441,44 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                 </li>
                 <li class="no-padding">
                     <ul class="collapsible collapsible-accordion">
-                        <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Diezmos</a>
+                        <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Control de Contabilidad</a>
                             <div class="collapsible-body">
                                 <ul>
-                                    <li class="bold {% if request.path == '/panel/diezmos/ingresos' %}active{%endif%}"><a href="{% url 'diezmo:ingresos' %}">Listado Ingresos</a>
+                                    <li class="bold {% if request.path == '/panel/diezmos/ingresos' %}active{%endif%}"><a href="{% url 'diezmo:ingresos' %}">Ingresos</a>
                                     </li>
                                 </ul>
                                 <ul>
-                                    <li class="bold {% if request.path == '/panel/diezmos/egresos' %}active{%endif%}"><a href="{% url 'diezmo:egresos' %}">Listado Egresos</a>
+                                    <li class="bold {% if request.path == '/panel/diezmos/egresos' %}active{%endif%}"><a href="{% url 'diezmo:egresos' %}">Egresos</a>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li class="bold {% if request.path == '/panel/diezmos/concepto' %}active{%endif%}"><a href="{% url 'diezmo:concepto' %}">Concepto</a>
                                     </li>
                                 </ul>
                             </div>
                         </li>
                     </ul>
                 </li>
+                {% endif %}
+                {% if request.user.is_programador %}
                 <li class="no-padding">
                     <ul class="collapsible collapsible-accordion">
-                        <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Control de Actividades</a>
+                        <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Gestión de Actividades</a>
                             <div class="collapsible-body">
                                 <ul>
-                                    <li class="bold {% if request.path == '/panel/actividades/' %}active{%endif%}"><a href="{% url 'actividades:home' %}">Calendario</a>
+                                    <li class="bold {% if request.path == '/panel/actividades' %}active{%endif%}"><a href="{% url 'actividades:home' %}">Calendario</a>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li class="bold {% if request.path == '/panel/actividades/iglesia' %}active{%endif%}"><a href="{% url 'actividades:index_iglesia' %}">Iglesias</a>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li class="bold {% if request.path == '/panel/actividades/entrenamiento' %}active{%endif%}"><a href="{% url 'actividades:index_entrenamiento' %}">Entrenamiento</a>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li class="bold {% if request.path == '/panel/actividades/grupo' %}active{%endif%}"><a href="{% url 'actividades:index_grupo' %}">Grupos</a>
                                     </li>
                                 </ul>
                                 <ul>
@@ -481,7 +489,23 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                         </li>
                     </ul>
                 </li>
+                {% endif %}
+                {% if request.user.is_iglesia and not request.user.is_superuser %}
+                <li class="no-padding">
+                        <ul class="collapsible collapsible-accordion">
+                            <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Material Alpha</a>
+                                <div class="collapsible-body">
+                                    <ul>
+                                        <li class="bold {% if request.path == '/panel/actividades/material' %}active{%endif%}"><a href="{% url 'actividades:index_material' %}">Listado</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
             </ul>
+            
                 <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating btn-medium waves-effect waves-light hide-on-large-only cyan"><i class="mdi-navigation-menu"></i></a>
             </aside>
             <!-- START CONTENT -->
@@ -613,6 +637,78 @@ var url_json = "{% url 'actividades:actividades_json' %}";
 
     <!-- jQuery Library -->
     <!--materialize js-->
+    <script type="text/javascript">
+            var cantidad = 0;
+                function noti(){
+                  $(function () {
+                    $.ajax({
+                      url: "{% url 'core:notification' %}",
+                      type: "GET",
+                      dataType: 'json',
+                      success: function (data) {
+                        if(data.length > 0){
+                          data.forEach(function(e){
+                            if (e.cantidad != 0) {
+                                if(!e.cantidad){
+                                    console.log('noti:',e);
+                                    $('#notifications-dropdown').append(`
+                                    <li>
+                                        <a style="white-space: initial; font-size:13px;" href="#" onclick="act(${e.notificacion.id})">${e.notificacion.contenido}</a>
+                                        <time class="media-meta" id="lei${e.notificacion.id}">${e.notificacion.fecha}  </time>
+                                    </li>
+                                    `);
+                                }
+                                else{
+                                    console.log('cantidad:',e);
+                                    $('.notis').append(e.cantidad+" No leidas");
+                                    cantidad = e.cantidad;
+                                    console.log("cantidad",cantidad);
+                                }
+                            }else{
+                                $('.notis').removeClass('blue');
+                                $('.notis').append("0 No leidas");
+                                $('.notis').addClass('red');
+                            }
+                          });
+                          
+                        }else{
+                            console.log('no se obtuvieron notification');
+                        }
+                      }
+                      });
+                  });
+                    
+                }
+                noti();
+          function act(id){
+            let not = "#lei"+id;
+            le = $(not).hasClass('le');
+            if(!le){
+                console.log("cantidad nueva",cantidad);
+                $.ajax({
+                  url: "{% url 'core:notification' %}",
+                  type: "POST",
+                  data: {"id":id,"csrfmiddlewaretoken":"{{ csrf_token }}"},
+                  dataType: 'json',
+                  success: function (data) {
+                    Materialize.toast(data.success, 3000, 'rounded');
+                    if(cantidad == 1){
+                        $('.notis').removeClass('blue');
+                        $('.notis').addClass('red');
+                    }
+                    cantidad =  cantidad-1;
+                    $('.notis').html(cantidad+" No Leidas");
+                    $(not).addClass('le');
+                    $(not).append("<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;leida</strong>");
+                  }
+                  });
+
+            }else{
+                console.log('Notificacion leida');
+            }
+
+          }
+        </script>
     <script type="text/javascript" src="{% static 'js/materialize.js'%}"></script>
     <script type="text/javascript" src="{% static 'ajax/ajax_actividades.js'%}"></script> 
     <!--scrollbar-->

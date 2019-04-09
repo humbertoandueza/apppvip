@@ -85,7 +85,8 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
     }
-}"""
+}
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -95,6 +96,7 @@ DATABASES = {
         'HOST':'vidaplena.mysql.pythonanywhere-services.com'
     }
 }
+
 """
 DATABASES = {
     'default': {
