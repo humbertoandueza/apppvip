@@ -15,6 +15,8 @@ $(document).ready(function(){
         },
         success: function (data) {
         $("#modal1 .modal-content").html(data.html_form);
+        $('#id_pastor').addClass('text')
+        $('#id_nombre').addClass('text')
         }
     });
     });

@@ -105,6 +105,10 @@ function actualizar(numero){
         },
         success: function (data) {
             $("#modal1 .modal-content").html(data.html_form);
+            $('#id_cedula').addClass('number')
+            $('#id_telefono').addClass('number')
+            $('#id_nombre').addClass('text')
+            $('#id_apellido').addClass('text')
         }
         });
     });

@@ -87,6 +87,8 @@ function actualizar(numero){
         },
         success: function (data) {
             $("#modal1 .modal-content").html(data.html_form);
+            $('#id_monto').addClass('number')
+
         }
         });
     });
