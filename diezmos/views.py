@@ -54,13 +54,13 @@ class IngresoCreate(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
 class IngresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
     def post(self,request,*args,**kwargs):
         data = dict()
-        
+
         if request.method == 'POST':
             form = IngresoForm(request.POST)
             if form.is_valid():
                 form.save()
-                notificacions(user=request.user,contenido=request.user.first_name+" registro un ingreso de: <strong>"+str(request.POST['monto'])+" Bs.</strong>")
-                
+                #notificacions(user=request.user,contenido=request.user.first_name+" registro un ingreso de: <strong>"+str(request.POST['monto'])+" Bs.</strong>")
+
                 data['form_is_valid'] = True
             else:
                 data['form_is_valid'] = False
@@ -200,7 +200,7 @@ class EgresoCreate(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
 class EgresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
     def post(self,request,*args,**kwargs):
         data = dict()
-        
+
         if request.method == 'POST':
             form = EgresoForm(request.POST)
             capital = int(capital_obtener())
@@ -220,7 +220,7 @@ class EgresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
                     usuario = form.save(commit=False)
                     usuario.usuario = request.user
                     form.save()
-                    notificacions(user=request.user,contenido=request.user.first_name+" realizó un retiro de: <strong>"+str(request.POST['monto'])+" Bs.</strong>")
+                    #notificacions(user=request.user,contenido=request.user.first_name+" realizó un retiro de: <strong>"+str(request.POST['monto'])+" Bs.</strong>")
                     data['form_is_valid'] = True
 
                 else:
@@ -276,8 +276,8 @@ class ConceptoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView)
             form = ConceptoForm(request.POST)
             if form.is_valid():
                 form.save()
-                notificacions(user=request.user,contenido="se ha registrado un nuevo concepto: <strong>"+str(request.POST['concepto'])+"</strong>",url="")
-                
+                #notificacions(user=request.user,contenido="se ha registrado un nuevo concepto: <strong>"+str(request.POST['concepto'])+"</strong>",url="")
+
                 data['form_is_valid'] = True
             else:
                 data['form_is_valid'] = False

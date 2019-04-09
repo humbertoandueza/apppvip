@@ -21,9 +21,9 @@ $(document).ready(function(){
 
 });
 
-//Ajax para crear el miembro
+//Ajax para crear el Egreso
 $("#modal1").on("submit", ".js-book-create-form", function (e) {
-    
+
     var form = $(this);
     var data = $("#form :input").serializeArray();
     for (var i = 0; i < data.length; i+=1) {
@@ -33,9 +33,9 @@ $("#modal1").on("submit", ".js-book-create-form", function (e) {
                 $( "#id_cedula" ).addClass( "invalid" );
                 $('#error').html('<p style="color:red; margin-left:40px;">La cedula no es correcta</p>');
                 //alert('La cedula no cumple con lo requerido');
-                return false;                
+                return false;
             }
-        } 
+        }
     }
 
     $.ajax({
@@ -45,7 +45,7 @@ $("#modal1").on("submit", ".js-book-create-form", function (e) {
     dataType: 'json',
     success: function (data) {
         if (data.form_is_valid) {
-            Materialize.toast('Miembro Registrado', 3000, 'rounded')
+            Materialize.toast('Egreso Registrado', 3000, 'rounded')
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
         else {
