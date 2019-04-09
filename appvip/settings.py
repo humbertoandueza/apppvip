@@ -77,14 +77,32 @@ WSGI_APPLICATION = 'appvip.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'appvip',
+        'USER': 'root',
+        'PASSWORD': '',
+    }
+}"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'vidaplena$default',
+        'USER': 'vidaplena',
+        'PASSWORD': '01051998a',
+        'HOST':'vidaplena.mysql.pythonanywhere-services.com'
+    }
+}
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

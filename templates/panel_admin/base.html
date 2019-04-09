@@ -421,6 +421,26 @@
         $('.id_avatar').click();
     }
 </script>
+<script>
+$(document).on('keypress','.number',function(e){
+    var key = e.which,
+        keye = e.keyCode,
+        tecla = String.fromCharCode(key).toLowerCase(),
+        letras = "1234567890";
+    if(letras.indexOf(tecla)==-1 && keye!=9&& (key==37 || keye!=37)&& (keye!=39 || key==39) && keye!=8 && (keye!=46 || key==46) || key==161){
+        e.preventDefault();
+    }
+})
+$(document).on('keypress','.text',function(e){
+    var key = e.which,
+        keye = e.keyCode,
+        tecla = String.fromCharCode(key).toLowerCase(),
+        letras = "abcdefghijklmnñopqrstuvwxyz ";
+    if(letras.indexOf(tecla)==-1 && keye!=9&& (key==37 || keye!=37)&& (keye!=39 || key==39) && keye!=8 && (keye!=46 || key==46) || key==161){
+        e.preventDefault();
+    }
+})
+</script>
 <script type="text/javascript">
         $(document).ready(function(){
             // Basic

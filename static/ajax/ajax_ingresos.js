@@ -1,3 +1,5 @@
+
+
 $(document).ready(function(){
     $('select').material_select();
     });
@@ -15,6 +17,7 @@ $(document).ready(function(){
         },
         success: function (data) {
         $("#modal1 .modal-content").html(data.html_form);
+        $('#id_monto').addClass('number')
         }
     });
     });
@@ -26,6 +29,12 @@ $("#modal1").on("submit", ".js-book-create-form", function (e) {
 
     var form = $(this);
     var data = $("#form :input").serializeArray();
+    if($('#id_monto').val()<1){
+        $('#error').html('<p style="color:red; margin-left:40px;">Introduzca un valor valido</p>');
+        $( "#id_monto" ).addClass( "invalid" );
+
+        return false;
+    }
     for (var i = 0; i < data.length; i+=1) {
         if(data[i].name == "cedula"){
             //console.log('cedula: ', data[i].value.length);
