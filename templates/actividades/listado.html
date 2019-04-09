@@ -263,7 +263,7 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                     </tr>
                     <tr>
                     <th>Fecha y Hora:</th>
-                    <td>${event.start}</td>
+                    <td>${moment(event.start).format('LLL')}</td>
                     </tr>
                     <th>Lugar:</th>
                     <td>${event.lugar}</td>
