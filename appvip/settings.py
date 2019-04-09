@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'appvip.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -96,7 +96,7 @@ DATABASES = {
         'HOST':'vidaplena.mysql.pythonanywhere-services.com'
     }
 }
-"""
+
 """
 DATABASES = {
     'default': {
