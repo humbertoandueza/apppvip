@@ -58,15 +58,9 @@ class IngresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
         if request.method == 'POST':
             form = IngresoForm(request.POST)
             if form.is_valid():
-<<<<<<< HEAD
-                form.save()
-                #notificacions(user=request.user,contenido=request.user.first_name+" registro un ingreso de: <strong>"+str(request.POST['monto'])+" Bs.</strong>")
-
-=======
                 ingreso = form.save()
                 notificacions(user=request.user,contenido=request.user.first_name+" registro un ingreso de: <strong>"+str(request.POST['monto'])+" Bs.</strong>",url=ingreso.pk)
                 
->>>>>>> 9498892d6190124257699a05a930bf8c1ef1a6ea
                 data['form_is_valid'] = True
             else:
                 data['form_is_valid'] = False
@@ -225,13 +219,9 @@ class EgresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
                 if form.is_valid():
                     usuario = form.save(commit=False)
                     usuario.usuario = request.user
-<<<<<<< HEAD
-                    form.save()
-                    #notificacions(user=request.user,contenido=request.user.first_name+" realizó un retiro de: <strong>"+str(request.POST['monto'])+" Bs.</strong>")
-=======
                     egreso = form.save()
                     notificacions(user=request.user,contenido=request.user.first_name+" realizó un retiro de: <strong>"+str(request.POST['monto'])+" Bs.</strong>",url=egreso.pk)
->>>>>>> 9498892d6190124257699a05a930bf8c1ef1a6ea
+
                     data['form_is_valid'] = True
 
                 else:
