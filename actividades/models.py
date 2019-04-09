@@ -57,6 +57,7 @@ class Actividades(models.Model):
     persona = models.ForeignKey(Persona,on_delete=models.CASCADE)
     status = models.ForeignKey(Status,on_delete=models.CASCADE,blank=True,null=True)
     tipo = models.ForeignKey(Tipo_actividad,on_delete=models.CASCADE)
+    observacion = models.TextField(verbose_name="Observación",blank=True,null=True)
     entrenamiento = models.ForeignKey(Entrenamiento,blank=True,null=True,on_delete=models.CASCADE)
 
     def __str__(self):

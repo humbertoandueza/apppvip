@@ -43,7 +43,7 @@ def ActividadesJson(request):
             color = "#00B0F0"
         if i.status.status == 'No Realizada':
             color = "red"
-        dicts.append({"color":color,"id":i.pk,"title":i.nombre,"start":str(i.fecha)+"T"+str(i.hora),"descripcion":i.descripcion,"lugar":i.lugar,"estatus":i.status.status,"allDay":False})
+        dicts.append({"color":color,"id":i.pk,"title":i.nombre,"start":str(i.fecha)+"T"+str(i.hora),"descripcion":i.descripcion,"lugar":i.lugar,"observacion":i.observacion,"estatus":i.status.status,"allDay":False})
     #print ('dictionario: ',dicts)
 
     #json = serializers.serialize('json', dicts)

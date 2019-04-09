@@ -21,6 +21,9 @@
                     {{form.status}}
                     <label for="id_status" class="active">Cambiar Estatus</label>
                 </div>
+                <div class="input-field col s12 m12" id="obs">
+
+                </div>
             </div>
         </div>
         <div class="row">
@@ -52,6 +55,17 @@
         });*/
 $('#id_fecha').attr("type","date");
 $('#id_hora').attr("type","time");
+$('#id_status').on('change',function(){
+    if($(this).val() ==2){
+        $('#obs').append(`
+        <textarea class="materialize-textarea" required="" name="observacion" id="id_observacion" rows="10" required="" cols="40"></textarea>
+        <label for="id_observacion" class="active">Observacion</label>
+         `)
+        
+    }else{
+        $('#obs').html('')
+    }
+})
 </script>
 {% endif %}
 {% if actividad.status.status == "Suspendida" %}
@@ -76,6 +90,7 @@ $('#id_hora').attr("type","time");
                         <label for="id_hora" class="active">Hora</label>
                     </div>
                 </div>
+                <input type="text" name="observacion" id="id_observacion">
             <div class="row">
                 <div id="error" class="col s10 offset-s1 center"></div>
             </div>

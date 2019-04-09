@@ -67,7 +67,38 @@ var url_json = "{% url 'actividades:actividades_json' %}";
 <script src="{% static 'datapicker/js/bootstrap-datetimepicker.js'%}"></script>
 <link rel="stylesheet" href="{% static 'datapicker/css/bootstrap-datetimepicker.css'%}">
 <script>
+function Imp(){
+    $('#imp').css('max-width','1200px')
+    $('#imp').css('margin-left','-200px')
+    //$('#salir').css('display','none')
+    //$('#impi').css('display','none')
+    $('#imp').css('background-color','#fff')
+    //$('#imp').css('padding-top','40px')
+    //$('#im').css('display','none')
+    //$('#sampleTable1_wrapper').css('display','none')
+    //$('#info').css('margin-bottom','80px')
+    html2canvas(document.querySelector("#imp")).then(canvas => {
+    //document.body.appendChild(canvas)
+    //$('#impp').append(canvas)
+    var pdf = new jsPDF("p", "mm", "a4");
+    pdf.addImage(canvas, 'PNG', 0, 0);
+    pdf.save("actividad.pdf");
+    $('#imp').css('max-width','100%')
+    //$('#salir').css('display','initial')
+    $('#imp').css('margin-left','0px')
 
+
+    //$('#impi').css('display','initial')
+
+    //$('#imp').css('padding-top','-40px')
+    //$('#im').css('display','block')
+    //$('#sampleTable1_wrapper').css('display','block')
+    //$('#info').css('margin-bottom','-80px')
+
+    });
+
+
+  }
   $(document).ready(function() {
     // Setup FullCalendar
 (function () {
@@ -202,26 +233,27 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                 //finaliza
                 var  form = `
                     <style>
-                    table, th, td {
+                        table, th, td {
                     border-collapse: collapse;
-                    background-color:#00b0f0;
-                    color:#fff;
-                    border-radius:10px;
+                    
+                    color:#000;
+                    
                     }
                     th, td {
                     padding: 5px;
-                    border-bottom: 2px solid #fff;
+                    border: 2px solid #000;
 
                     text-align: center;
                     }
                     td{
-                        border-left: 5px solid #fff;
+                        border-left: 5px solid #000;
 
                         padding:15px;
                     }
                     td{
+                        margin-left:10px;
                         text-align:left;
-                        font-weight:bold;
+                        
                     }
                     .cortar{
                         width:350px;
@@ -237,15 +269,20 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                         overflow:visible;
                         }
                     </style>
+                <div id="imp">
                 <div class="row">
-                    <div class="col m3 offset-m2">
-                        <i class="mdi-action-done-all large left" style="font-size: 170px;"></i>
+                    <br><br>
+                    <img src="/static/assets/img/logo.png" width="150">
+                    <br><br>
 
+                    <div class="col m1 offset-m4">
+                        <i class="mdi-action-done-all center" style="font-size: 90px;"></i>
                     </div>
-                    <div class="col m2" style="padding:0px;">
+                    <div class="col m6" style="padding:0px;">
                     <br>
-                    <h5 style="margin-top:80px;text-align:left; font-size:36px;">Actividad:</h5>
-                    <h5 class="left cortar" style="font-size:45px;font-weight:bold; text-align:left;"> ${event.title}</h5>
+                    <br>
+                    <h5 class="left" style="font-weight:bold;margin-left:10px;">Actividad: ${event.title}</h5>
+
 
                     </div>
 
@@ -258,21 +295,28 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                     <td>${event.title}</td>
                     </tr>
                     <tr>
-                    <th>Descripcion:</th>
+                    <th>Descripción:</th>
                     <td>${event.descripcion}</td>
                     </tr>
                     <tr>
                     <th>Fecha y Hora:</th>
                     <td>${moment(event.start).format('LLL')}</td>
                     </tr>
+                    <tr>
                     <th>Lugar:</th>
                     <td>${event.lugar}</td>
                     </tr>
+                    <tr>
                     <th>Estatus:</th>
                     <td>${event.estatus}</td>
                     </tr>
+                    <th>Observación:</th>
+                    <td>${event.observacion}</td>
+                    </tr>
+
                 </table>
                     </div>
+                </div>
                 </div>
 
                 `;
@@ -347,7 +391,7 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                 <div class="nav-wrapper">
 
                     <ul class="left">
-                      <li><h1 class="logo-wrapper"><a href="{% url 'core:home' %}" class="brand-logo darken-1"><img src="{% static 'assets/img/logo.png'%}" alt="materialize logo"></a> <span class="logo-text">Vida Plena</span></h1></li>
+                      <li><h1 class="logo-wrapper"><a href="{% url 'core:home' %}" class="brand-logo darken-1"><img src="{% static 'assets/img/logo.png'%}" alt="materialize logo" style="width: 60px!important"></a> <span class="logo-text">Vida Plena</span></h1></li>
 
                     </ul>
                     <ul class="right hide-on-med-and-down">
@@ -593,7 +637,9 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                       </div>
                       <div style="display: none;" id="cerrar">
                           <center>
-                            <button class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button> 
+                            <button class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button>
+                            <button  id="impi" class="center btn btn-primary blue" onclick="Imp();">Imprimir</button>   
+
                           </center>
                       </div>
 
@@ -709,6 +755,10 @@ var url_json = "{% url 'actividades:actividades_json' %}";
 
           }
         </script>
+    <script src="{% static 'js/html2canvas.js' %}"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
+
     <script type="text/javascript" src="{% static 'js/materialize.js'%}"></script>
     <script type="text/javascript" src="{% static 'ajax/ajax_actividades.js'%}"></script> 
     <!--scrollbar-->

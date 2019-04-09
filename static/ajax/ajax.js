@@ -225,33 +225,39 @@ function ver(numero){
                 <style>
                 table, th, td {
                 border-collapse: collapse;
-                background-color:#00b0f0;
-                color:#fff;
-                border-radius:10px;
+                
+                color:#000;
+                
                 }
                 th, td {
                 padding: 5px;
-                border-bottom: 2px solid #fff;
+                border: 2px solid #000;
 
                 text-align: center;
                 }
                 td{
-                    border-left: 5px solid #fff;
+                    border-left: 5px solid #000;
 
                     padding:15px;
                 }
                 td{
+                    margin-left:10px;
                     text-align:left;
-                    font-weight:bold;
+                    
                 }
                 </style>
+            <div id="imp">
             <div class="row">
-                <div class="col m3 offset-m3">
-                    <i class="mdi-action-account-circle prefix large left" style="font-size: 190px;"></i>
+                <br><br>
+                <img src="/static/assets/img/logo.png" width="150">
+                <br><br>
 
+                <div class="col m2 offset-m3">
+                    <i class="mdi-action-account-circle prefix large center" style="font-size: 90px;"></i>
                 </div>
-                <div class="col m2" style="padding:0px;">
-                <h5 class="left" style="font-size:60px;margin-top:80px;font-weight:bold;">${data.persona.nombre} ${data.persona.apellido}</h5>
+                <div class="col m6" style="padding:0px;">
+                <br>
+                <h3 class="left" style="font-weight:bold;margin-left:10px;">${data.persona.nombre} ${data.persona.apellido}</h3>
 
                 </div>
 
@@ -264,18 +270,18 @@ function ver(numero){
                   <td>${data.persona.cedula}</td>
                 </tr>
                 <tr>
-                  <th>Nombre:</th>
+                  <th>Nombres:</th>
                   <td>${data.persona.nombre}</td>
                 </tr>
                 <tr>
-                <th>Apellido:</th>
+                <th>Apellidos:</th>
                   <td>${data.persona.apellido}</td>
                 </tr>
                 <tr>
                   <th>Telefono:</th>
                   <td>${data.persona.telefono}</td>
                 </tr>
-                <th>Direcion:</th>
+                <th>Dirección:</th>
                   <td>${data.persona.direccion}</td>
                 </tr>
                 <tr>
@@ -288,8 +294,11 @@ function ver(numero){
                 </tr>
                 <tr>
               </table>
-              <button class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button>    
+              <br>
+              <button  id="salir" class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button>   
+              <button  id="impi" class="center btn btn-primary blue" onclick="Imp('${data.persona.nombre}');">Imprimir</button>   
                 </div>
+            </div>
             </div>
             `;
             console.log(data);
@@ -307,6 +316,38 @@ function ver(numero){
         }
         });
 }
+function Imp(nombre){
+    $('#imp').css('max-width','1200px')
+    $('#imp').css('margin-left','-200px')
+    $('#salir').css('display','none')
+    $('#impi').css('display','none')
+    $('#imp').css('background-color','#fff')
+    //$('#imp').css('padding-top','40px')
+    //$('#im').css('display','none')
+    //$('#sampleTable1_wrapper').css('display','none')
+    //$('#info').css('margin-bottom','80px')
+    html2canvas(document.querySelector("#imp")).then(canvas => {
+    //document.body.appendChild(canvas)
+    //$('#impp').append(canvas)
+    var pdf = new jsPDF("p", "mm", "a4");
+    pdf.addImage(canvas, 'JPG', 0, 0);
+    pdf.save(`${nombre}_miembro_reporte.pdf`);
+    $('#imp').css('max-width','100%')
+    $('#salir').css('display','initial')
+    $('#imp').css('margin-left','0px')
+
+
+    $('#impi').css('display','initial')
+
+    //$('#imp').css('padding-top','-40px')
+    //$('#im').css('display','block')
+    //$('#sampleTable1_wrapper').css('display','block')
+    //$('#info').css('margin-bottom','-80px')
+
+    });
+
+
+  }
 function mostrar_modal(){
     $('#modal1 .modal-content').html(loader);
     $('.modal-full').css("display", "block");

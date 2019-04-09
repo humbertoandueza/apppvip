@@ -24,7 +24,7 @@ class StatusForm(forms.ModelForm):
 
     class Meta:
         model =  Actividades
-        fields = ('status',)
+        fields = ('status','observacion')
 
 class IglesiaForm(forms.ModelForm):
     class Meta:
