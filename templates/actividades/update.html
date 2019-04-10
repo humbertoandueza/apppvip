@@ -73,7 +73,7 @@ $('#id_status').on('change',function(){
     {% csrf_token %}
     <div class="row">
             <div class="col s12">
-                <h2>Mover Actividad</h2>
+                <h2>Reasignar Actividad</h2>
             </div>
         </div>
         <div class="row">
@@ -90,7 +90,7 @@ $('#id_status').on('change',function(){
                         <label for="id_hora" class="active">Hora</label>
                     </div>
                 </div>
-                <input type="text" name="observacion" id="id_observacion">
+                <input type="text" name="observacion" id="id_observacion" style="display: none;">
             <div class="row">
                 <div id="error" class="col s10 offset-s1 center"></div>
             </div>
@@ -102,6 +102,7 @@ $('#id_status').on('change',function(){
             </div>
         </div>
 </form>
+
 <script>
 $('#id_hora').attr("type","time");
 var d = new Date();

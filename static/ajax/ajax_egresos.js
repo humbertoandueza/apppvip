@@ -92,3 +92,111 @@ function cerrar_modal(){
     $('.modal-full').css("display", "none");
     $('#modal1 .modal-content').html(loader);
 }
+function ver(numero){
+    mostrar_modal();
+    var url = window.location;
+    console.log(url)
+     /*
+    $.ajax({
+        url: url+"ver_persona/"+numero,
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+        },
+        success: function (data) {
+           
+            var  form = `
+                <style>
+                table, th, td {
+                border-collapse: collapse;
+                
+                color:#000;
+                
+                }
+                th, td {
+                padding: 5px;
+                border: 2px solid #000;
+
+                text-align: center;
+                }
+                td{
+                    border-left: 5px solid #000;
+
+                    padding:15px;
+                }
+                td{
+                    margin-left:10px;
+                    text-align:left;
+                    
+                }
+                </style>
+            <div id="imp">
+            <div class="row">
+                <br><br>
+                <img src="/static/assets/img/logo.png" width="150">
+                <br><br>
+
+                <div class="col m2 offset-m3">
+                    <i class="mdi-action-account-circle prefix large center" style="font-size: 90px;"></i>
+                </div>
+                <div class="col m6" style="padding:0px;">
+                <br>
+                <h3 class="left" style="font-weight:bold;margin-left:10px;">${data.persona.nombre} ${data.persona.apellido}</h3>
+
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col col m6 offset-m3 s12">
+                <table style="width:100%;margin-bottom:5px;" class="table">
+                <tr>
+                  <th>Cedula:</th>
+                  <td>${data.persona.cedula}</td>
+                </tr>
+                <tr>
+                  <th>Nombres:</th>
+                  <td>${data.persona.nombre}</td>
+                </tr>
+                <tr>
+                <th>Apellidos:</th>
+                  <td>${data.persona.apellido}</td>
+                </tr>
+                <tr>
+                  <th>Telefono:</th>
+                  <td>${data.persona.telefono}</td>
+                </tr>
+                <th>Dirección:</th>
+                  <td>${data.persona.direccion}</td>
+                </tr>
+                <tr>
+                <th>Correo:</th>
+                  <td>${data.persona.correo}</td>
+                </tr>
+                <tr>
+                <th>Rol:</th>
+                  <td>${data.persona.rol}</td>
+                </tr>
+                <tr>
+              </table>
+              <br>
+              <button  id="salir" class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button>   
+              <button  id="impi" class="center btn btn-primary blue" onclick="Imp('${data.persona.nombre}');">Imprimir</button>   
+                </div>
+            </div>
+            </div>
+            `;
+            $("#modal1 .modal-content").html(form);
+
+            //$("#modal1 .modal-content").append("<p>"+data.persona.cedula+"</p>");
+            //$("#modal1 .modal-content").append("<p>"+data.persona.nombre+"</p>");
+            
+            //$("#modal1 .modal-content").append("<p>"+data.persona.apellido+"</p>");
+            //$("#modal1 .modal-content").append("<p>"+data.persona.telefono+"</p>");
+            //$("#modal1 .modal-content").append("<p>"+data.persona.direccion+"</p>");
+            //$("#modal1 .modal-content").append("<p>"+data.persona.rol+"</p>");
+            //$("#modal1 .modal-content").append("<p>"+data.persona.correo+"</p>");
+
+        }
+        });
+        */
+}

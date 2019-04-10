@@ -43,7 +43,12 @@
                              { "data": "fields.fecha" },
                              { "data": "fields.monto" },
                              { "data": "fields.descripcion"},
-                             { "data": "fields.concepto" }
+                             { "data": "fields.concepto" },
+                             {"data": null,
+                                render: function ( data, type, row ) {
+                                    return '<a class="btn btn-primary js-borrar" onclick="ver('+data.pk+')"><i class="mdi-image-remove-red-eye"></i></a>' ;
+                                }
+                                }
                          ],
                          dom: 'frti<"right"p>', 
                          //'<"top"f>rt<"right"p><"button"ir>',

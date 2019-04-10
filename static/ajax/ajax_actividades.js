@@ -39,6 +39,7 @@ $("#modal2").on("submit", ".js-book-create-form", function (e) {
                 start: data.start,
                 descripcion:data.descripcion,
                 lugar:data.lugar,
+                observacion:data.observacion,
                 estatus:'Por Realizar',
                 color : '#00B0F0',
                 allDay: false
@@ -83,6 +84,11 @@ function actualizar(numero){
 $("#modal2").on("submit", ".js-book-update-form", function (e) {
     
     var form = $(this);
+    if($('#id_observacion').val().length >500){
+        $('#error').html('<p style="color: red;">El campo supera la cantidad permitida de caracteres.</p>')
+        $('#id_observacion').addClass('invalid')
+        return false;
+    }
     $.ajax({
     url: form.attr("action"),
     data: form.serialize(),
@@ -98,6 +104,7 @@ $("#modal2").on("submit", ".js-book-update-form", function (e) {
                     start: data.start,
                     descripcion:data.descripcion,
                     lugar:data.lugar,
+                    observacion:data.observacion,
                     estatus:data.estatus,
                     color : data.color,
                     allDay: false
@@ -106,6 +113,8 @@ $("#modal2").on("submit", ".js-book-update-form", function (e) {
                 evento.color = data.color,
                 evento.estatus = data.estatus,
                 evento.start = data.start,
+                evento.observacion=data.observacion,
+
                 $('#calendar').fullCalendar('updateEvent', evento);
             }
 
@@ -188,6 +197,8 @@ function cerrar_modal(){
     $('#cargar').css("display","none");
     $('#gallery').css("display","none");
     $("#gallery").html("");
+    $("#pdf").html("");
+
 
     $('#cerrar').css("display","none");
     $('.modal-full').css("display", "none");

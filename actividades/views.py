@@ -123,6 +123,7 @@ def Status_update(request, pk):
             data['create'] =True
             data['lugar'] = estatus.lugar
             data['descripcion'] = estatus.descripcion
+            data['observacion'] = estatus.observacion
             data['title'] = estatus.nombre
             data['color'] = "#00B0F0"
             data['start'] = str(fecha)+"T"+str(hora)
@@ -133,7 +134,8 @@ def Status_update(request, pk):
 
         else:
             if form.is_valid():
-                form.save()
+                save = form.save()
+
                 if estatus.status.status == 'Suspendida':
                     color = "#ffc100"
                     print ("Suspendida")
@@ -148,6 +150,7 @@ def Status_update(request, pk):
                 data['form_is_valid'] = True
                 data['color'] = color
                 notificacions(user=request.user,contenido="Actividad titulada: <strong>"+estatus.nombre+"</strong> actualizada a: <p style='color:"+color+";display: contents;'><strong>"+estatus.status.status+"</strong></p>",url="")
+                data['observacion'] = save.observacion
                 data['estatus'] = estatus.status.status
     else:
         form = StatusForm(instance=estatus)

@@ -301,7 +301,6 @@ function ver(numero){
             </div>
             </div>
             `;
-            console.log(data);
             $("#modal1 .modal-content").html(form);
 
             //$("#modal1 .modal-content").append("<p>"+data.persona.cedula+"</p>");

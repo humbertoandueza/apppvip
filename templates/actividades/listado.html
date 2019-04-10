@@ -66,35 +66,33 @@ var url_json = "{% url 'actividades:actividades_json' %}";
 
 <script src="{% static 'datapicker/js/bootstrap-datetimepicker.js'%}"></script>
 <link rel="stylesheet" href="{% static 'datapicker/css/bootstrap-datetimepicker.css'%}">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.js"></script>
 <script>
 function Imp(){
-    $('#imp').css('max-width','1200px')
-    $('#imp').css('margin-left','-200px')
-    //$('#salir').css('display','none')
-    //$('#impi').css('display','none')
-    $('#imp').css('background-color','#fff')
-    //$('#imp').css('padding-top','40px')
-    //$('#im').css('display','none')
-    //$('#sampleTable1_wrapper').css('display','none')
-    //$('#info').css('margin-bottom','80px')
-    html2canvas(document.querySelector("#imp")).then(canvas => {
-    //document.body.appendChild(canvas)
-    //$('#impp').append(canvas)
-    var pdf = new jsPDF("p", "mm", "a4");
-    pdf.addImage(canvas, 'PNG', 0, 0);
-    pdf.save("actividad.pdf");
-    $('#imp').css('max-width','100%')
-    //$('#salir').css('display','initial')
-    $('#imp').css('margin-left','0px')
+
+    $('#imp1').css('width','800px')
+
+    $('#imp1').css('background-color','#fff')
+    $('.row').css('margin-bottom','0px');
+    $('#cargando').html(loader)
+
+    div = document.getElementById('imp1')
+    domtoimage.toJpeg(div,{ quality: 0.95 })
+    .then (function (dataUrl) {
+
+        var pdf = new jsPDF("p", "mm", "a4");
+        pdf.addImage(dataUrl, 'JPEG', 0, 20);
+        pdf.save("actividad.pdf");
+        $('#imp1').css('width','100%')
+        $('.row').css('margin-bottom','20px');
+        $('#imp1').css('background-color','#fafafa')
+        $('#pdf').html('')
+        $('#cargando').html('')
 
 
-    //$('#impi').css('display','initial')
-
-    //$('#imp').css('padding-top','-40px')
-    //$('#im').css('display','block')
-    //$('#sampleTable1_wrapper').css('display','block')
-    //$('#info').css('margin-bottom','-80px')
-
+    })
+    .catch(function (error) {
+        console.error('oops, something went wrong!', error);
     });
 
 
@@ -269,12 +267,14 @@ function Imp(){
                         overflow:visible;
                         }
                     </style>
-                <div id="imp">
-                <div class="row">
-                    <br><br>
-                    <img src="/static/assets/img/logo.png" width="150">
-                    <br><br>
 
+                <div>
+                    <div class="col-m12" id="img">
+                    <img src="/static/assets/img/logo.png" width="150">
+                    <br>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col m1 offset-m4">
                         <i class="mdi-action-done-all center" style="font-size: 90px;"></i>
                     </div>
@@ -288,7 +288,7 @@ function Imp(){
 
                 </div>
                 <div class="row">
-                    <div class="col col m6 offset-m3 s12">
+                    <div class="col s6 offset-m3">
                     <table style="width:100%;margin-bottom:5px;" class="table">
                     <tr>
                     <th>Nombre:</th>
@@ -317,9 +317,65 @@ function Imp(){
                 </table>
                     </div>
                 </div>
+                <div class="center" id="cargando">
+
                 </div>
 
                 `;
+                var pdf = ` 
+                <div id="imp1" >
+                <div>
+                    <div class="col-m12" id="img">
+                    <img src="/static/assets/img/logo.png" width="150">
+                    <br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m4 offset-m1">
+                        <h5>Reporte de Actividad:</h5>
+                    </div>
+                    <div class="col m5" style="padding:0px;">
+                    <h5 class="left" style="font-weight:bold;margin-left:10px;">${event.title}</h5>
+
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col s10 offset-m1">
+                    <table style="width:100%;margin-bottom:5px;" class="table">
+                    <tr>
+                    <th>Nombre:</th>
+                    <td>${event.title}</td>
+                    </tr>
+                    <tr>
+                    <th>Descripción:</th>
+                    <td>${event.descripcion}</td>
+                    </tr>
+                    <tr>
+                    <th>Fecha y Hora:</th>
+                    <td>${moment(event.start).format('LLL')}</td>
+                    </tr>
+                    <tr>
+                    <th>Lugar:</th>
+                    <td>${event.lugar}</td>
+                    </tr>
+                    <tr>
+                    <th>Estatus:</th>
+                    <td>${event.estatus}</td>
+                    </tr>
+                    <th>Observación:</th>
+                    <td>${event.observacion}</td>
+                    </tr>
+
+                </table>
+                    </div>
+                </div>
+                
+
+                </div>
+                `
+                $("#pdf").html(pdf);
                 $("#modal2 .modal-content").html(form);
             }
 
@@ -562,6 +618,7 @@ function Imp(){
                         <div class="row ">
                             <div class="col col s9 m9 l0 offset-s1 offset-m1 offset-l1 center" style="margin-bottom: 50px;">
                                 <div id='calendar'></div>
+                                <div id="pdf"></div>
                             </div>
                         </div>
                     </div>
