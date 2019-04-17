@@ -66,27 +66,31 @@ var url_json = "{% url 'actividades:actividades_json' %}";
 
 <script src="{% static 'datapicker/js/bootstrap-datetimepicker.js'%}"></script>
 <link rel="stylesheet" href="{% static 'datapicker/css/bootstrap-datetimepicker.css'%}">
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.js"></script>
+<script type="text/javascript" src="{% static 'js/dom-to-image.js'%}"></script>
 <script>
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 function Imp(){
 
-    $('#imp1').css('width','800px')
-
-    $('#imp1').css('background-color','#fff')
-    $('.row').css('margin-bottom','0px');
-    $('#cargando').html(loader)
+    $('#cargando').html(pre)
+    $('#fecha').html(moment().format('L'))
 
     div = document.getElementById('imp1')
-    domtoimage.toJpeg(div,{ quality: 0.95 })
+    domtoimage.toJpeg(div,{ bgcolor : 'white'})
     .then (function (dataUrl) {
 
-        var pdf = new jsPDF("p", "mm", "a4");
-        pdf.addImage(dataUrl, 'JPEG', 0, 20);
-        pdf.save("actividad.pdf");
-        $('#imp1').css('width','100%')
-        $('.row').css('margin-bottom','20px');
-        $('#imp1').css('background-color','#fafafa')
-        $('#pdf').html('')
+        var pdf = new jsPDF("p", "mm", "Letter");
+        pdf.addImage(dataUrl, 'JPEG', 0, 10);
+        pdf.setProperties({
+            title: 'Reporte Actividad',
+           
+        });
+        window.open(pdf.output('bloburl'), '_blank');
+
         $('#cargando').html('')
 
 
@@ -98,6 +102,7 @@ function Imp(){
 
   }
   $(document).ready(function() {
+
     // Setup FullCalendar
 (function () {
     $('#form').click(function(e){
@@ -132,6 +137,17 @@ function Imp(){
                 },
                 success: function (data) {
                 $("#modal2 .modal-content").html(data.html_form);
+
+                if(getParameterByName('id') && getParameterByName('titulo')){
+                    titulo = getParameterByName('titulo')
+                    id = getParameterByName('id')
+                    $('#id_nombre').val('Entrenamiento para la organizacion '+titulo)
+                    $('#form').append('<input type="number" class="hidden hide" value="'+id+'" name="entrenamiento" id="id_entrenamiento">' )
+                    $('#id_tipo').val(2)
+                    history.replaceState('data to be passed', 'Title of the page', "{% url 'actividades:home'%}");
+
+                    //$('#id_tipo').attr('disabled','disabled')
+                }
                 }
             });
             }
@@ -300,15 +316,18 @@ function Imp(){
                     </tr>
                     <tr>
                     <th>Fecha y Hora:</th>
-                    <td>${moment(event.start).format('LLL')}</td>
+                    <td>${moment(event.start).format('LLLL')}</td>
                     </tr>
-                    <tr>
                     <th>Lugar:</th>
                     <td>${event.lugar}</td>
                     </tr>
                     <tr>
-                    <th>Estatus:</th>
-                    <td>${event.estatus}</td>
+                    <th>Tipo:</th>
+                    <td>${event.tipo}</td>
+                    </tr>
+                    <tr>
+                    <th>Resultado:</th>
+                    <td>${event.estatuss}</td>
                     </tr>
                     <th>Observación:</th>
                     <td>${event.observacion}</td>
@@ -323,27 +342,30 @@ function Imp(){
 
                 `;
                 var pdf = ` 
-                <div id="imp1" >
-                <div>
-                    <div class="col-m12" id="img">
-                    <img src="/static/assets/img/logo.png" width="150">
-                    <br>
+                <div id="imp1" style="min-width:830px !important; width:830px!important;max-width:830px !important;font-size:16px!important; margin:0px!important;padding-bottom:90px!important;">
+                    <div class="row" style="margin 0px!important;">
+                    <div class="col m3 offset-m9 s3 offset-s9">
+                        <p id="fecha"  style="font-size:12px;padding-left:20px;"></p>
                     </div>
+
+                <div class="col m12 s12 center" id="img">
+                    <img src="/static/assets/img/logo.jpg" width="350">
+                    <br>
                 </div>
-                <div class="row">
-                    <div class="col m4 offset-m1">
+                </div>
+                <div class="row" style="margin 0px!important;">
+
+                    <div class="col m4 offset-m1 s4 offset-s1" style="padding-left:30px">
                         <h5>Reporte de Actividad:</h5>
                     </div>
-                    <div class="col m5" style="padding:0px;">
-                    <h5 class="left" style="font-weight:bold;margin-left:10px;">${event.title}</h5>
-
-
+                    <div class="col m6" style="padding:0px;">
+                        <h5 class="left" style="text-align:left;font-weight:bold;margin-left:10px;">${event.title}</h5>
                     </div>
 
                 </div>
-                <div class="row">
-                    <div class="col s10 offset-m1">
-                    <table style="width:100%;margin-bottom:5px;" class="table">
+                <div class="row" style="margin 0px!important;padding-bottom: 20px;">
+                    <div class="col m10 offset-m1 s10 offset-s1" style="padding-left:30px">
+                    <table style="width:600px;" class="table" style="margin 0px!important;">
                     <tr>
                     <th>Nombre:</th>
                     <td>${event.title}</td>
@@ -354,17 +376,20 @@ function Imp(){
                     </tr>
                     <tr>
                     <th>Fecha y Hora:</th>
-                    <td>${moment(event.start).format('LLL')}</td>
+                    <td>${moment(event.start).format('LLLL')}</td>
                     </tr>
-                    <tr>
                     <th>Lugar:</th>
                     <td>${event.lugar}</td>
                     </tr>
                     <tr>
-                    <th>Estatus:</th>
-                    <td>${event.estatus}</td>
+                    <th>Tipo:</th>
+                    <td>${event.tipo}</td>
                     </tr>
-                    <th>Observación:</th>
+                    <tr>
+                    <th>Resultado:</th>
+                    <td>${event.estatuss}</td>
+                    </tr>
+                    <th style="min-width:130px;">Observación:</th>
                     <td>${event.observacion}</td>
                     </tr>
 
@@ -814,7 +839,7 @@ function Imp(){
         </script>
     <script src="{% static 'js/html2canvas.js' %}"></script>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
+    <script src="{% static 'js/jspdf.min.js'%}"></script>
 
     <script type="text/javascript" src="{% static 'js/materialize.js'%}"></script>
     <script type="text/javascript" src="{% static 'ajax/ajax_actividades.js'%}"></script> 
@@ -833,6 +858,10 @@ function Imp(){
     <!-- Toast Notification -->
     <script type="text/javascript">
         $(document).ready(function(){
+        if(getParameterByName('id') && getParameterByName('titulo')){
+            titulo = getParameterByName('titulo')
+            $('.fc-addEventButton-button').click()
+        }
             $('.tooltipped').tooltip({delay: 50});
           });
         $('.datepicker').pickadate({

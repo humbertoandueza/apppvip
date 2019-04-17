@@ -39,8 +39,10 @@ $("#modal2").on("submit", ".js-book-create-form", function (e) {
                 start: data.start,
                 descripcion:data.descripcion,
                 lugar:data.lugar,
+                tipo:data.tipo,
                 observacion:data.observacion,
                 estatus:'Por Realizar',
+                estatuss:data.estatuss,
                 color : '#00B0F0',
                 allDay: false
               });
@@ -82,12 +84,15 @@ function actualizar(numero){
 }
 //Ajax para Actualizar
 $("#modal2").on("submit", ".js-book-update-form", function (e) {
-    
+    e.preventDefault()
     var form = $(this);
-    if($('#id_observacion').val().length >500){
-        $('#error').html('<p style="color: red;">El campo supera la cantidad permitida de caracteres.</p>')
-        $('#id_observacion').addClass('invalid')
-        return false;
+    obs = $('#id_observacion').val()
+    if(obs){
+        if($('#id_observacion').val().length >500){
+            $('#error').html('<p style="color: red;">El campo supera la cantidad permitida de caracteres.</p>')
+            $('#id_observacion').addClass('invalid')
+            return false;
+        }
     }
     $.ajax({
     url: form.attr("action"),
@@ -104,16 +109,20 @@ $("#modal2").on("submit", ".js-book-update-form", function (e) {
                     start: data.start,
                     descripcion:data.descripcion,
                     lugar:data.lugar,
+                    tipo:data.tipo,
                     observacion:data.observacion,
                     estatus:data.estatus,
+                    estatuss:data.estatuss,
                     color : data.color,
                     allDay: false
                   });
             }else{
                 evento.color = data.color,
                 evento.estatus = data.estatus,
+                evento.estatuss = data.estatuss,
                 evento.start = data.start,
                 evento.observacion=data.observacion,
+                evento.tipo=data.tipo,
 
                 $('#calendar').fullCalendar('updateEvent', evento);
             }
@@ -184,7 +193,15 @@ var loader = `
     </div>
 </div>
 `;
-
+var pre = `
+<div class="row">
+<div class="col s6 offset-s3 m6 offset-m3">
+<div class="progress">
+      <div class="indeterminate"></div>
+</div>
+</div>
+</div>`;
+pdf = ''
 
 function mostrar_modal(){
     $('#modal2 .modal-content').html(loader);

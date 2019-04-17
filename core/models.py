@@ -76,7 +76,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Notificacion(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    contenido = models.CharField(max_length=150,verbose_name="Contenido de la notificacion")
+    contenido = models.CharField(max_length=450,verbose_name="Contenido de la notificacion")
     date = models.DateField(auto_now_add=True)
     url = models.URLField(verbose_name="link a redireccionar",null=True)
     estatus = models.CharField(max_length=20,default="No leida")

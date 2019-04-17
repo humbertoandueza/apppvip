@@ -11,6 +11,7 @@ admin.site.register(Iglesia)
 admin.site.register(Grupo)
 admin.site.register(Material)
 admin.site.register(Entrenamiento)
+admin.site.register(AsignarMaterial)
 
 
 

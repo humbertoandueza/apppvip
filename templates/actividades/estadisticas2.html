@@ -1,0 +1,494 @@
+{% extends "panel_admin/base.html" %}
+{% load static %}
+{% block content %}
+<script src="{% static 'assets/js/jquery-2.1.3.min.js'%}"></script>
+<script src="{% static 'js/amchart/core.js'%}"></script>
+<script src="{% static 'js/amchart/charts.js'%}"></script>
+<script src="{% static 'js/amchart/animated.js'%}"></script>
+
+
+
+<style type="text/css">
+#chartdiv {
+  width: 100%;
+  height: 300px;
+}
+#chartdiv1 {
+  width: 100%;
+  height: 300px;
+
+}
+#chartdiv3 {
+  width: 100%;
+  height: 300px;
+
+}
+#chartdiv4 {
+  width: 100%;
+  height: 300px;
+
+}
+#chart-full {
+  width: 100%;
+  height: 500px;
+
+}
+#chart2 {
+  width: 100%;
+  height: 500px;
+}
+#main {
+    padding-left: 270px;
+}
+
+@media only screen and (max-width: 993px) {
+  #main {
+    padding-left: 0;
+  }
+  footer {
+    padding-left: 0;
+  }
+}
+</style>
+<!-- HTML -->
+<section id="content" style="padding-bottom: 50px;">
+	<div class="container">
+		<div class="row">
+            <div id="est" style="display:none;">{{estadistica}}</div>
+            <div id="result" style="display:none;">{{result}}</div>
+            <div id="tipo" style="display:none;">{{tipo_}}</div>
+            <div id="persona" style="display:none;">{{persona_}}</div>
+            <h2 class="center" id="title"></h2>
+            <div class="input-field col m2 s12 offset-m2">
+                <select id="lider" name="lider">
+                    <option value="" selected >Lider</option>
+                    {% for per in persona%}
+                        <option value="{{per.id}}">{{per.nombre}} {{per.apellido}}</option>
+                    {% endfor%}
+                </select>
+            </div>
+            <div class="input-field col m2 s12">
+                <select id="tipo" name="tipo">
+                    <option value="" selected >Tipo de actividad</option>
+                    {% for tip in tipo%}
+                        <option value="{{tip.id}}">{{tip.tipo}}</option>
+                    {% endfor%}
+                </select>
+            </div>
+            <div class="input-field col m2 s12">
+                <select id="trimestre" name="rango">
+                    <option value="" selected >Fecha</option>
+                    <option value="1">Primer Trimestre (Enero-Marzo)</option>
+                    <option value="4">Segundo Trimestre (Abril-Junio)</option>
+                    <option value="7">Tercer Trimestre (Julio-Septiembre)</option>
+                    <option value="10">Cuarto Trimestre (Octubre-Diciembre)</option>
+                </select>
+            </div>
+            <div class="input-field col m1 s12 center">
+                <button class="btn btn-primary" id="filtrar">Filtrar</button>
+            </div>
+            <div class="input-field col m1 offset-m1  s12 loader center" style="display: none;">
+                <div class="preloader-wrapper active small" style="margin-top:5%;">
+                    <div class="spinner-layer spinner-blue-only small">
+                        <div class="circle-clipper left ">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+        <div class="col s12 center" id="error">
+            
+        </div>
+        <div class="row caja2" style="display: none;">
+            <div class="center col s12 m12">
+                <div class="card">
+                    <a href="" onclick="return false" id="exit" class="right" style="font-weight: bold;padding: 10px;">x</a>
+                    <div class="card-content">
+                      <button class="btn-floating halfway-fab right" href="" onclick="ver('tri')"><i class="mdi-action-settings-overscan" style="font-size:16px;"></i></button>
+                      <span class="card-title"></span>
+                      <div id="chart2"></div>
+                    </div>
+                    <div class="card-action">
+                      <p id="total_tri" class="right"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>  
+        
+        <div class="row caja">
+            <div class="row">
+                <div class="col m6 s12 center" >
+                    <div class="card">
+                        <div class="card-content">
+                          <button class="btn-floating halfway-fab right" href="" onclick="ver('tipo')"><i class="mdi-action-settings-overscan" style="font-size:16px;"></i></button>
+                          <span class="card-title">Tipo de actividades</span>
+                          <div id="chartdiv3">
+                        </div>
+                        <div class="card-action">
+                          <p class="right">Total de actividades: {{total}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col m6  s12 center">
+                    <div class="card">
+                        <div class="card-content">
+                          <button class="btn-floating halfway-fab right" href="" onclick="ver('lider')"><i class="mdi-action-settings-overscan" style="font-size:16px;"></i></button>
+                          <span class="card-title">Lideres a cargo</span>
+                          <div id="chartdiv4">
+                        </div>
+                        <div class="card-action">
+                          <p class="right">Total de actividades: {{total}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row caja">
+            <div class="row">
+                <div class="col s12 m12 center" id="chart">
+                    <div class="card">
+                        <div class="card-content">
+                          <button class="btn-floating halfway-fab right" href="" onclick="ver('est')"><i class="mdi-action-settings-overscan" style="font-size:16px;"></i></button>
+                          <span class="card-title" id="text2"></span>
+                          <div id="chartdiv">
+                        </div>
+                        <div class="card-action">
+                          <p class="right">Total de actividades: {{total}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="center s12" id="chart1">
+                    <div class="card">
+                        <div class="card-content">
+                          <button class="btn-floating halfway-fab right" href="" onclick="ver('result')"><i class="mdi-action-settings-overscan" style="font-size:16px;"></i></button>
+                          <span class="card-title" id="text"></span>
+                          <div id="chartdiv1">
+                        </div>
+                        <div class="card-action">
+                          <p id="total" class="right"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<div id="modal1" class="modal-full">
+  <div class="modal-content center">
+    
+    </div>
+</div>
+</section>
+<script>
+var d = new Date();
+var month = d.getMonth();
+
+const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
+
+document.getElementById('title').innerHTML = 'Estadisticas del mes de '+monthNames[month]
+am4core.useTheme(am4themes_animated);
+
+var est = document.getElementById('est').innerHTML;
+var result = document.getElementById('result').innerHTML;
+var tipo = document.getElementById('tipo').innerHTML;
+var persona = document.getElementById('persona').innerHTML;
+//formateo los valores
+eval('var tip='+tipo);
+eval('var person='+persona);
+eval('var obj='+est);
+
+color = [
+    am4core.color("#3498db"),
+    am4core.color("#2ecc71"),
+    am4core.color("#1abc9c"),
+    am4core.color("#e74c3c"),
+    am4core.color("#2ecc71"),
+    am4core.color("#9b59b6"),
+    am4core.color("#34495e"),
+    am4core.color("#9b59b6"),
+    am4core.color("#16a085"),
+    am4core.color("#16a085"),
+    am4core.color("#7f8c8d"),
+    am4core.color("#3498db"),
+    am4core.color("#1abc9c"),
+    am4core.color("#e74c3c"),
+    am4core.color("#34495e"),
+    am4core.color("#7f8c8d"),
+]
+color1 = [
+  am4core.color("#039c25"),
+  am4core.color("#ffbe00"),
+  am4core.color("#e60000"),
+]
+
+chart(tip,'chartdiv3',color,true)
+chart(person,'chartdiv4',color,true)
+
+
+if(result){
+    eval('var resultado='+result);
+    total = 0
+    for(var i= 0;i<resultado.length;i++){
+        total += resultado[i].count
+
+    }
+    document.getElementById('text').innerHTML ="Actividades realizadas";
+    document.getElementById('total').innerHTML ="Total de actividades: "+total;
+    document.getElementById('chart').classList.remove('m12');
+    document.getElementById('chart').classList.add('m6');
+    document.getElementById('chart1').classList.add('col','m6');
+
+    chart(resultado,'chartdiv1',color1,true)
+}
+if(obj[3].found == "False"){
+    error = ` 
+    <i class="mdi-action-info-outline large" style="color: red !important;font-size: 200px;"></i>
+    <h3>No hay estadisticas disponibles</h3>
+    `
+    document.getElementById('error').innerHTML = error;
+    $('.caja').css('display','none')
+}else{
+    document.getElementById('text2').innerHTML ='Estatus de actividades';
+    chart([obj[0],obj[1],obj[2]],'chartdiv',color1,true)
+}
+
+// Themes begin
+// Themes end
+function chart(data,id,color,label) {
+    var chart = am4core.create(id, am4charts.PieChart);
+    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+    chart.data = data;
+    chart.radius = am4core.percent(70);
+    chart.innerRadius = am4core.percent(40);
+    chart.startAngle = 180;
+    chart.endAngle = 360;  
+    var series = chart.series.push(new am4charts.PieSeries());
+    series.colors.list = color;
+    //series.ticks.template.disabled = true;
+    series.labels.template.disabled = label;
+    series.ticks.template.disabled = label;
+    series.dataFields.value = "count";
+    series.dataFields.category = "nombre";
+
+    //series.slices.template.cornerRadius = 10;
+    series.slices.template.innerCornerRadius = 7;
+    //series.slices.template.draggable = true;
+    series.slices.template.inert = true;
+    series.alignLabels = false;
+
+    series.hiddenState.properties.startAngle = 90;
+    series.hiddenState.properties.endAngle = 90;
+
+    chart.legend = new am4charts.Legend();
+    $(`#${id} > div > svg > g > g > g > g >g`)[3].remove()
+    // body...
+}   
+    //var g = document.getElementsByTagName("g")[0].childNodes[1].lastChild.childNodes[0];
+    //g.children[2].remove()
+function chart2(data,id){
+    var chart = am4core.create(id, am4charts.XYChart);
+
+
+    // Add data
+    chart.data = data;
+    chart.colors.list = color1;
+
+    // Create axes
+    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "mes";
+    categoryAxis.renderer.grid.template.location = 0;
+
+
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.renderer.inside = true;
+    valueAxis.renderer.labels.template.disabled = true;
+    valueAxis.min = 0;
+
+
+    // Create series
+    function createSeries(field, name) {
+      
+      // Set up series
+      var series = chart.series.push(new am4charts.ColumnSeries());
+      series.name = name;
+
+      series.dataFields.valueY = field;
+      series.dataFields.categoryX = "mes";
+      series.sequencedInterpolation = true;
+      //series.columns.template.fill = am4core.color("#104547");
+      
+      // Make it stacked
+      series.stacked = true;
+      
+      // Configure columns
+      series.columns.template.width = am4core.percent(60);
+      series.columns.template.tooltipText = "[bold]{name}[/]\n[font-size:14px]{categoryX}: {valueY}";
+      
+      // Add label
+      var labelBullet = series.bullets.push(new am4charts.LabelBullet());
+      labelBullet.label.text = "{valueY}";
+      labelBullet.locationY = 0.5;
+      
+      return series;
+    }
+
+    createSeries("realizadas", "Realizadas");
+    createSeries("suspendidas", "Suspendidas");
+    createSeries("no_realizadas", "No realizadas");
+
+    var series2 = chart.series.push(new am4charts.LineSeries());
+    series2.name = "Unidad";
+    series2.stroke = am4core.color("#f0000");
+    series2.strokeWidth = 3;
+    series2.dataFields.valueY = "realizadas";
+    series2.dataFields.categoryX = "mes";
+
+    // Legend
+    chart.legend = new am4charts.Legend();
+    $(`#${id} > div > svg > g > g > g > g >g`)[3].remove()
+}
+tri = []
+count = 0
+$('#filtrar').on('click',function(){
+    $('.loader').css('display','initial')
+    lider = $('#lider').val()
+    tipo = $('#tipo').val()
+    trimestre = $('#trimestre').val()
+    data = {
+        lider:lider,
+        trimestre:trimestre,
+        tipo:tipo,
+        csrfmiddlewaretoken:"{{csrf_token}}",
+    }
+    $.ajax({
+      url: "{% url 'actividades:estadisticas_actividades'%}",
+      type: "post",
+      data:data,
+      dataType: "json",
+      success: function (data) {
+        dato = data
+        $('.loader').css('display','none')
+        found = 0
+        count = 0
+        for(var i =0;i<dato.length;i++){
+            count += dato[i].realizadas
+            count += dato[i].suspendidas
+            count += dato[i].no_realizadas
+            if(dato[i].found == "True"){
+                found +=1
+            }
+        }
+        if(found == 0){
+            Materialize.toast('No se encontraron resultados.',2000)
+        }else{
+            tri = dato
+            chart2(dato,'chart2')
+
+            $('.caja').css('display','none')
+            $('#total_tri').html('Total de actividades: '+count)
+            $('.caja2').css('display','initial')
+        }
+        
+        }
+      });
+    return false;
+})
+$('#exit').on('click',function(){
+    $('#chart2').html('')
+    $('.caja').css('display','initial')
+    $('.caja2').css('display','none')
+})
+function ver(tipo){
+    mostrar_modal()
+    if(tipo == 'tipo'){
+        $('#titulo').html('Tipo de actividades')
+        $('.total').html('Total: {{total}}')
+        chart(tip,'chart-full',color,false)
+    }
+    else if(tipo == 'lider'){
+        $('#titulo').html('Lideres a cargo')
+        $('.total').html('Total: {{total}}')
+
+        chart(person,'chart-full',color,false)
+    }
+    else if(tipo == 'est'){
+        $('#titulo').html('Estatus de actividades')
+        $('.total').html('Total: {{total}}')
+
+        chart([obj[0],obj[1],obj[2]],'chart-full',color1,false)
+
+    }
+    else if(tipo == 'result') {
+        $('#titulo').html('Resultados de las actividades realizadas')
+        $('.total').html('Total: '+total)
+
+        chart(resultado,'chart-full',color1,false)
+    }
+    else if(tipo == 'tri') {
+        chart2(tri,'chart-full')
+        $('#titulo').html('Resultados de las actividades trimestrales')
+        $('.total').html('Total: '+count)
+
+    }
+
+    return false;
+}
+function mostrar_modal(){
+    $('#modal1 .modal-content').css('position','relative');
+
+    html = `
+        <div class="row" style="padding-top:45px;">
+            <div class="col s1 offset-s2 center" >
+                <img src="/static/assets/img/logo.png" width="150">
+            </div>
+            <div class="col s7 center">
+                <h3>Estadisticas</h3>
+                <h4 id="titulo"></h4>
+                <h5 class="right total"></h5> 
+            </div>
+            <div class="col s12 center"  style="padding:20px;">
+                <div id="chart-full"></div>
+            </div>
+            <div class="col s12">
+            <button class="btn btn-primary red" onclick="cerrar_modal()">salir</button>
+            </div>
+        </div>
+     `
+    $('#modal1 .modal-content').html(html);
+    $('.modal-full').css("display", "block");
+    $('.modal-full').css("z-index", "1003");
+}
+
+//modals personalizados
+function cerrar_modal(){
+    $('.modal-full').css("display", "none");
+    $('#modal1 .modal-content').html('');
+}
+</script>
+
+<!--
+var strFecha = '2018/01/09'
+    var fecha = new Date(strFecha); //'yyyy-mm-dd'
+    fecha.setMonth(fecha.getMonth() - 1); //mes anterior
+    console.log(fecha.getFullYear() + '-'+ (fecha.getMonth()+1));
+-->
+{% endblock%}
+

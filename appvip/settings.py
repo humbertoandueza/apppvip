@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'appvip.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -96,7 +96,7 @@ DATABASES = {
         'HOST':'vidaplena.mysql.pythonanywhere-services.com'
     }
 }
-
+"""
 """
 DATABASES = {
     'default': {
@@ -163,7 +163,7 @@ LOGOUT_REDIRECT_URL = 'login'
 AUTH_USER_MODEL = 'core.User'
 
 #Envio de Email
-if not DEBUG:
+if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
     EMAIL_FILE_PATH = os.path.join(BASE_DIR,'email_enviados')
 else:

@@ -209,7 +209,13 @@ var loader = `
     </div>
 </div>
 `;
-
+var pre = `
+<div class="col s6 offset-s3 m6 offset-m3">
+<div class="progress">
+      <div class="indeterminate"></div>
+</div>
+</div>`;
+pdf = ''
 function ver(numero){
     mostrar_modal();
     var url = window.location;
@@ -236,7 +242,7 @@ function ver(numero){
                 text-align: center;
                 }
                 td{
-                    border-left: 5px solid #000;
+                    border-left: 3px solid #000;
 
                     padding:15px;
                 }
@@ -246,13 +252,12 @@ function ver(numero){
                     
                 }
                 </style>
-            <div id="imp">
             <div class="row">
                 <br><br>
                 <img src="/static/assets/img/logo.png" width="150">
                 <br><br>
 
-                <div class="col m2 offset-m3">
+                <div class="col m1 offset-m3 s10 offset-s1">
                     <i class="mdi-action-account-circle prefix large center" style="font-size: 90px;"></i>
                 </div>
                 <div class="col m6" style="padding:0px;">
@@ -263,7 +268,7 @@ function ver(numero){
 
             </div>
             <div class="row">
-                <div class="col col m6 offset-m3 s12">
+                <div class="col col m6 offset-m3 s10 offset-s1">
                 <table style="width:100%;margin-bottom:5px;" class="table">
                 <tr>
                   <th>Cedula:</th>
@@ -295,13 +300,78 @@ function ver(numero){
                 <tr>
               </table>
               <br>
-              <button  id="salir" class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button>   
-              <button  id="impi" class="center btn btn-primary blue" onclick="Imp('${data.persona.nombre}');">Imprimir</button>   
+            </div>
+            </div>
+            <div class="row">
+                <div class="cargando">
+
+                </div>
+                <div class="col s12">
+                    <button  id="salir" class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button>   
+                    <button  id="impi" class="center btn btn-primary blue" onclick="Imp();">Imprimir</button>   
                 </div>
             </div>
-            </div>
             `;
+            pdf = `
+            <div id="imp" style="min-width:830px !important; width:830px!important;max-width:830px !important;font-size:16px!important; margin:0px!important;padding-bottom:90px!important;">
+                <div class="row" style="margin 0px!important;">
+                <div class="col m3 offset-m9 s3 offset-s9">
+                    <p id="fecha"  style="font-size:12px;padding-left:20px;"></p>
+                </div>
+
+            <div class="col m12 s12 center" id="img">
+                <img src="/static/assets/img/logo.jpg" width="350">
+                <br>
+            </div>
+            </div>
+            <div class="row" style="margin 0px!important;">
+
+                <div class="col m4 offset-m1 s4 offset-s1" style="padding-left:30px">
+                    <h5>Reporte de miembro:</h5>
+                </div>
+                <div class="col m6" style="padding:0px;">
+                    <h5 class="left" style="text-align:left;font-weight:bold;margin-left:10px;">${data.persona.nombre} ${data.persona.apellido}</h5>
+                </div>
+
+            </div>
+            <div class="row" style="margin 0px!important;padding-bottom: 20px;">
+                <div class="col m10 offset-m1 s10 offset-s1" style="padding-left:30px">
+                    <table style="width:600px;" class="table" style="margin 0px!important;">
+                        <tr>
+                          <th>Cedula:</th>
+                          <td>${data.persona.cedula}</td>
+                        </tr>
+                        <tr>
+                          <th>Nombres:</th>
+                          <td>${data.persona.nombre}</td>
+                        </tr>
+                        <tr>
+                        <th>Apellidos:</th>
+                          <td>${data.persona.apellido}</td>
+                        </tr>
+                        <tr>
+                          <th>Telefono:</th>
+                          <td>${data.persona.telefono}</td>
+                        </tr>
+                        <th style="min-width:130px;">Dirección:</th>
+                          <td>${data.persona.direccion}</td>
+                        </tr>
+                        <tr>
+                        <th>Correo:</th>
+                          <td>${data.persona.correo}</td>
+                        </tr>
+                        <tr>
+                        <th>Rol:</th>
+                          <td>${data.persona.rol}</td>
+                        </tr>
+                        <tr>
+                      </table>
+                    </div>
+                </div>
+            </div>
+             `
             $("#modal1 .modal-content").html(form);
+            $("#pdf").html(pdf);
 
             //$("#modal1 .modal-content").append("<p>"+data.persona.cedula+"</p>");
             //$("#modal1 .modal-content").append("<p>"+data.persona.nombre+"</p>");
@@ -315,6 +385,7 @@ function ver(numero){
         }
         });
 }
+/*
 function Imp(nombre){
     $('#imp').css('max-width','1200px')
     $('#imp').css('margin-left','-200px')
@@ -346,6 +417,34 @@ function Imp(nombre){
     });
 
 
+  }*/
+
+function Imp(){
+
+    $('.cargando').html(pre)
+    $('#fecha').html(moment().format('L'))
+
+    div = document.getElementById('imp')
+    domtoimage.toJpeg(div,{ bgcolor : 'white'})
+    .then (function (dataUrl) {
+
+        var pdf = new jsPDF("p", "mm", "Letter");
+        pdf.addImage(dataUrl, 'JPEG', 0, 10);
+        pdf.setProperties({
+            title: 'Reporte Miembro',
+           
+        });
+        window.open(pdf.output('bloburl'), '_blank');
+
+        $('.cargando').html('')
+
+
+    })
+    .catch(function (error) {
+        console.error('oops, something went wrong!', error);
+    });
+
+
   }
 function mostrar_modal(){
     $('#modal1 .modal-content').html(loader);
@@ -355,6 +454,7 @@ function mostrar_modal(){
 
 //modals personalizados
 function cerrar_modal(){
+    $('#pdf').html('')
     $('.modal-full').css("display", "none");
     $('#modal1 .modal-content').html(loader);
 }

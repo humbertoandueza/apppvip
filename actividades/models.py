@@ -25,27 +25,33 @@ class Iglesia(models.Model):
     def __str__(self):
         return '{},{}'.format(self.nombre,self.pastor)
 
-class Grupo(models.Model):
-    nombre = models.CharField(verbose_name="Nombre",max_length=200)
-    descripcion = models.TextField(verbose_name="Descripcion")
-
-    def __str__(self):
-        return '{},{}'.format(self.nombre,self.descripcion)
-
 class Material(models.Model):
     nombre = models.CharField(verbose_name="Nombre",max_length=200)
     url = models.URLField(verbose_name="Link del Material")
-    grupo = models.ForeignKey(Grupo,verbose_name="Grupo Alpha",on_delete=models.CASCADE)
     
     def __str__(self):
-        return '{},{}'.format(self.nombre,self.grupo.nombre)
+        return self.nombre
+
+class Grupo(models.Model):
+    nombre = models.CharField(verbose_name="Nombre",max_length=200)
+    descripcion = models.TextField(verbose_name="Descripcion")
+    
+    def __str__(self):
+        return '{},{}'.format(self.nombre,self.descripcion)
 
 class Entrenamiento(models.Model):
     iglesia = models.ForeignKey(Iglesia,on_delete=models.CASCADE)
-    material = models.ManyToManyField(Material)
+    grupo = models.ForeignKey(Grupo,verbose_name="Grupo Alpha",on_delete=models.CASCADE)
 
     def __str__(self):
         return self.iglesia.nombre
+
+class AsignarMaterial(models.Model):
+    material = models.ForeignKey(Material,null=True,blank=True,on_delete=models.CASCADE)
+    entrenamiento = models.ForeignKey(Entrenamiento,null=True,blank=True,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{},{}' .format(self.entrenamiento.iglesia.nombre,self.material.nombre)
 
 class Actividades(models.Model):
     nombre = models.CharField(verbose_name="Nombre de la Actividad",max_length=200)
@@ -56,6 +62,12 @@ class Actividades(models.Model):
     suspended = models.BooleanField(default=False)
     persona = models.ForeignKey(Persona,on_delete=models.CASCADE)
     status = models.ForeignKey(Status,on_delete=models.CASCADE,blank=True,null=True)
+    est = (
+        ('Exitosa','Exitosa'),
+        ('Regular','Regular'),
+        ('No exitosa','No exitosa'),
+        )
+    statuss = models.CharField(verbose_name="Resultado",blank=True,null=True,choices=est,max_length=200)
     tipo = models.ForeignKey(Tipo_actividad,on_delete=models.CASCADE)
     observacion = models.TextField(verbose_name="Observación",blank=True,null=True)
     entrenamiento = models.ForeignKey(Entrenamiento,blank=True,null=True,on_delete=models.CASCADE)
