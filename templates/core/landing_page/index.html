@@ -55,7 +55,10 @@
         <![endif]-->
     </head>
 
-    <body id="top" class="has-header-search">
+    <body id="top" class="has-header-search" style="z-index: 0;">
+      <div class="modal2" style="top:0;bottom:0;right:0;left:0;z-index:1003;background-color: #fff;position: fixed;padding-top: 50px;display: none;overflow-y: auto;">        
+        
+      </div>
 
         <!--header start-->
         <header id="header" class="tt-nav transparent-header">
@@ -340,7 +343,7 @@
                             <h2>ALPHA SERIES</h2>
                             <p>General.</p>
                             <br>
-                            <a class="waves-effect waves-light btn white">Obtener</a>
+                            <a class="waves-effect waves-light btn white obt" id="1">Obtener</a>
                         </div>
                     </div><!-- /.featured-item -->
                   </div><!-- /.col-md-4 -->
@@ -357,7 +360,7 @@
                             <h2>ALPHA NIÑOS</h2>
                             <p>Que cada niño se identifique.</p>
                             <br>
-                            <a class="waves-effect waves-light btn white">Obtener</a>
+                            <a class="waves-effect waves-light btn white obt" id="2">Obtener</a>
                         </div>
                     </div><!-- /.featured-item -->
                   </div><!-- /.col-md-4 -->
@@ -372,7 +375,7 @@
                             <h2>ALPHA JOVEN</h2>
                             <p>Cada joven tenga una vision.</p>
                             <br>
-                            <a class="waves-effect waves-light btn white">Obtener</a>
+                            <a class="waves-effect waves-light btn white obt" id="3">Obtener</a>
                         </div>
                     </div><!-- /.featured-item -->
                   </div><!-- /.col-md-4 -->
@@ -389,7 +392,7 @@
                             <h2>ALPHA MATRIMONIO</h2>
                             <p>Lleve el modelo de jesus.</p>
                             <br>
-                            <a class="waves-effect waves-light btn white">Obtener</a>
+                            <a class="waves-effect waves-light btn white obt" id="4">Obtener</a>
                         </div>
                     </div><!-- /.featured-item -->
                   </div><!-- /.col-md-4 -->
@@ -520,6 +523,171 @@
         <script type="text/javascript" src="{% static 'vanillabox/jquery.vanillabox.js'%}"></script>
 
         <script type="text/javascript">
+          $('.obt').on('click',function(){
+            //$('.modal2').css('overflow','initial')
+            if(parseInt(this.id) == 1){
+              title = 'ALPHA SERIES'
+              content = 'General.'
+              icon = 'group'
+              id= 1
+            }else if(parseInt(this.id) == 2){
+              title = 'ALPHA NIÑOS'
+              content = 'Que cada niño se identifique.'
+              icon = 'mood'
+              id= 2
+            }else if(parseInt(this.id) == 3){
+              title = 'ALPHA JOVEN'
+              content = 'Cada joven tenga una vision.'
+              icon = 'accessibility'
+              id= 3
+            }else if(parseInt(this.id) ==4){
+              title = 'ALPHA MATRIMONIO'
+              content = 'Lleve el modelo de jesus.'
+              icon = 'wc'
+              id= 4
+            }
+            $('.modal2').css('display','block')
+            $('.modal2').append(`
+              <style>
+                .row{
+                  margin-right:0px;
+                }
+              </style>
+            <div class="row">
+              <div class="col s12 m6 gray-bg" style="height:100vh;">
+                <br>
+                <br>
+                <br>
+                <div class="col s12">
+                <center style="padding:10px;">
+                <img src="/static/assets/img/logo.png" style="width:40%;">
+                </center>
+                    <div class="featured-item border-box radius-4 hover brand-hover equal-height-column">
+                        <div class="icon mb-30">
+                            <i class="material-icons brand-icon" style="font-size:100px;">${icon}</i>
+                        </div>
+                        <div class="desc">
+                            <h2>${title}</h2>
+                            <p style="text-align: center;">${content}</p>
+                            <br>
+                            
+                            <p style="text-align: center;">Para solicitar el entranamiento alpha por favor llena el formulario y registrate</p>
+                            
+                            
+                        </div>
+                    </div><!-- /.featured-item -->
+                  </div><!-- /.col-md-4 -->
+              </div>
+              <div class="col s12 m6">
+                <div class="row">
+                <br>
+                <br>
+                <br>
+                <div class="col m12 s10 offset-s1 center">
+                    <h2>Registro de Organización</h2>
+                </div>
+            
+            <div class="row">
+            <form  action="{% url 'actividades:post_iglesia' %}" id="form" method="post" class="col s12 js-book-create-form" autocomplete="off" onsubmit="return false;">
+            {% csrf_token %}
+            <style>
+                select{
+                    display: block;
+                }
+            </style>
+                <div class="col s10 offset-s2 m10 offset-m1">
+                    <div class="row">
+                        <div class="input-field col s12 m6">
+                            <input  type="text" class="validate" name="nombre" id="id_nombre" required="" maxlength="50">
+                            <input  type="number" name="grupo" id="id_grupo" class="hidden hide" value="${id}">
+                            <label for="id_nombre" class="active">Nombre de organización</label>
+                        </div>
+                        <div class="input-field col s12 m6">
+                            <input  type="text" class="validate text" name="pastor" id="id_pastor" required="">
+                            <label for="id_pastor" class="active">Nombre del director</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12 m12">
+                                <textarea class="materialize-textarea" name="direccion" id="id_direccion" cols="40" required="" rows="10" ></textarea>
+                                <label for="id_direccion" class="active">Direccion</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12 m6">
+                            <input  type="text" class="validate" name="telefono" id="id_telefono" required="">
+                            <label for="id_telefono" class="active">Telefono</label>
+                        </div>
+                        <div class="input-field col s12 m6">
+                            <input  type="email" class="validate" name="email" id="id_email" required="">
+                            <label for="id_email" class="active">Correo</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="error" class="col s10 offset-s2 center"></div>
+                </div>
+                <div class="row">
+                    <div class="col s10 offset-s2 m12 center">
+                        <a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                        <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Registrar</button>
+                    </div>
+                </div>
+            </div>
+
+              </div> 
+            </form>
+            </div>
+            </div>
+            
+
+            
+
+             `)
+            $('body').css('overflow','hidden')
+          })
+          function cerrar_modal(){
+            $('.modal2').css('display','none')
+            $('.modal2').html('')
+            $('body').css('overflow','initial')
+
+          }
+          //Ajax para crear el miembro
+          $(document).on("submit", ".js-book-create-form", function (e) {
+              e.preventDefault()
+              var form = $(this);
+
+              $.ajax({
+              url: form.attr("action"),
+              data: form.serialize(),
+              type: form.attr("method"),
+              dataType: 'json',
+              success: function (data) {
+                $('#error').html('')
+                  if (data.form_is_valid) {
+                      //M.toast('Iglesia Registrada', 3000, 'rounded')
+                      $('#error').append('<p style="color:green;text-align:center">Registro realizado con exito, le hemos enviado a su correo electronico su usuario y clave de acceso, en breve nos comunicaremos con usted.</p>');
+                      $('#id_nombre').val('')
+                      //$('#id_grupo').val('')
+                      $('#id_pastor').val('')
+                      $('#id_direccion').val('')
+                      $('#id_telefono').val('')
+                      $('#id_email').val('')
+
+
+                      //cerrar_modal();  // <-- This is just a placeholder for now for testing
+                  }
+                  else {
+                      //$(".modal2").html(data.html_form);
+                      var error = data.error
+                      $('#error').html('<p style="color:red;text-align:center">'+error+'</p>')
+                      
+
+                  }
+              }
+              });
+              return false;
+          });
           $(function () {
             $.ajax({
               url: "{% url 'actividades:progress_bar_upload' %}",

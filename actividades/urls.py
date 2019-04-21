@@ -42,7 +42,10 @@ actividades_urlpatterns = ([
     path('post',ActividadesCreateView1.as_view(),name="post_actividad"),
     path('actualizar/<int:pk>/', Status_update,name="actualizar_status"),
     path('chart',chart,name="chart"),
-    path('estadisticas',EstadisticasView.as_view(),name="estadisticas")
+    path('estadisticas',EstadisticasView.as_view(),name="estadisticas"),
+
+    #Estadisticas
+    path('estadisticas_act',ActividadesEstadisticas.as_view(),name="estadisticas_actividades")
 
 
 ],"actividades")

@@ -8,7 +8,7 @@ class ActividadesForm(forms.ModelForm):
 
     class Meta:
         model = Actividades
-        fields = ('nombre','descripcion','lugar','persona','tipo','fecha','hora')
+        fields = ('nombre','descripcion','lugar','persona','tipo','fecha','hora','entrenamiento')
         widget = {
             'hora':forms.TimeField(),
         }
@@ -24,7 +24,7 @@ class StatusForm(forms.ModelForm):
 
     class Meta:
         model =  Actividades
-        fields = ('status','observacion')
+        fields = ('status','observacion','statuss')
 
 class IglesiaForm(forms.ModelForm):
     class Meta:
@@ -34,7 +34,7 @@ class IglesiaForm(forms.ModelForm):
 class EntrenamientoForm(forms.ModelForm):
     class Meta:
         model = Entrenamiento
-        fields = ('iglesia','material')
+        fields = ('iglesia','grupo')
 
 class GrupoForm(forms.ModelForm):
     class Meta:

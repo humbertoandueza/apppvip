@@ -163,7 +163,7 @@ LOGOUT_REDIRECT_URL = 'login'
 AUTH_USER_MODEL = 'core.User'
 
 #Envio de Email
-if not DEBUG:
+if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
     EMAIL_FILE_PATH = os.path.join(BASE_DIR,'email_enviados')
 else:

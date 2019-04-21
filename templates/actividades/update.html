@@ -10,16 +10,28 @@
     {% csrf_token %}
 
     <div class="row">
-        <div class="col s12">
+        <div class="col s12 m6 offset-m3">
+            <br>
+            <br>
+            <img src="/static/assets/img/logo.png" width="300">
             <h2>Actualizar Actividad</h2>
+            <h5 style="font-weight: bold;">{{actividad.nombre}}</h5>
+            <h6 style="text-align: left;"><strong>Descripcion:</strong> {{actividad.descripcion}}</h6>
+            <h6 style="text-align: left;"><strong>Tipo:</strong> {{actividad.tipo}}</h6>
+            <h6 style="text-align: left;"><strong>Fecha:</strong> {{actividad.fecha}}</h6>
         </div>
     </div>
     <div class="row">
-        <div class="col s12 m10 offset-m1">
+        <div class="col s12 m6 offset-m3">
             <div class="row">
                 <div class="input-field col s12 m12">
                     {{form.status}}
                     <label for="id_status" class="active">Cambiar Estatus</label>
+                </div>
+                <div class="input-field col s12 m12 hide" id="listo">
+                    {{form.statuss}}
+                    <label for="id_status" class="active">Resultado de actividad</label>
+
                 </div>
                 <div class="input-field col s12 m12" id="obs">
 
@@ -61,9 +73,13 @@ $('#id_status').on('change',function(){
         <textarea class="materialize-textarea" required="" name="observacion" id="id_observacion" rows="10" required="" cols="40"></textarea>
         <label for="id_observacion" class="active">Observacion</label>
          `)
-        
+        $('#listo').removeClass('hide')
+        $('#id_statuss').attr('required','')
+
     }else{
         $('#obs').html('')
+        $('#listo').addClass('hide')
+        $('#id_statuss').removeAttr('required')
     }
 })
 </script>
@@ -72,12 +88,20 @@ $('#id_status').on('change',function(){
 <form action="{% url 'actividades:actualizar_status' form.instance.pk %}" id="form" method="post" class="js-book-update-form">
     {% csrf_token %}
     <div class="row">
-            <div class="col s12">
-                <h2>Reasignar Actividad</h2>
-            </div>
+        <div class="col s12 m6 offset-m3">
+            <br>
+            <br>
+            <img src="/static/assets/img/logo.png" width="300">
+            <h2>Reasignar Actividad</h2>
+            <h5 style="font-weight: bold;">{{actividad.nombre}}</h5>
+            <h6 style="text-align: left;"><strong>Descripcion:</strong> {{actividad.descripcion}}</h6>
+            <h6 style="text-align: left;"><strong>Tipo:</strong> {{actividad.tipo}}</h6>
+            <h6 style="text-align: left;"><strong>Fecha:</strong> {{actividad.fecha}}</h6>
+        </div>
+    </div>
         </div>
         <div class="row">
-            <div class="col s12 m10 offset-m1">
+            <div class="col s12 m6 offset-m3">
                 <div class="row">
                     <div class="input-field col s12 m12">
                         <input type="date" name="fecha" id="id_fecha">
@@ -133,7 +157,20 @@ $('#id_fecha').pickadate({
 {% endif %}
 {% else %}
 
-<h1>Esta actividad a sido reasignada a otra fecha</h1>
-<a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
+
+<div class="row">
+    <div class="col s12 m6 offset-m3">
+                <br>
+                <br>
+                <img src="/static/assets/img/logo.png" width="300">
+                <h2>Esta actividad a sido reasignada a otra fecha</h2>
+                <h5 style="font-weight: bold;">{{actividad.nombre}}</h5>
+                <h6 style="text-align: left;"><strong>Descripcion:</strong> {{actividad.descripcion}}</h6>
+                <h6 style="text-align: left;"><strong>Tipo:</strong> {{actividad.tipo}}</h6>
+    </div>
+
+    
+</div>
+    <a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
 
 {% endif%}
