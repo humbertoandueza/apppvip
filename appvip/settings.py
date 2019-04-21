@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'core',
     'persona',
     'diezmos',
-    'actividades'
+    'actividades',
 
 ]
 
