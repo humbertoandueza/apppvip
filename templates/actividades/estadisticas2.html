@@ -68,7 +68,7 @@
                 </select>
             </div>
             <div class="input-field col m2 s12">
-                <select id="tipo" name="tipo">
+                <select id="tipos" name="tipo">
                     <option value="" selected >Tipo de actividad</option>
                     {% for tip in tipo%}
                         <option value="{{tip.id}}">{{tip.tipo}}</option>
@@ -368,9 +368,8 @@ function chart2(data,id){
 tri = []
 count = 0
 $('#filtrar').on('click',function(){
-    $('.loader').css('display','initial')
     lider = $('#lider').val()
-    tipo = $('#tipo').val()
+    tipo = $('#tipos').val()
     trimestre = $('#trimestre').val()
     data = {
         lider:lider,
@@ -378,41 +377,46 @@ $('#filtrar').on('click',function(){
         tipo:tipo,
         csrfmiddlewaretoken:"{{csrf_token}}",
     }
-    $.ajax({
-      url: "{% url 'actividades:estadisticas_actividades'%}",
-      type: "post",
-      data:data,
-      dataType: "json",
-      success: function (data) {
-        dato = data
-        $('.loader').css('display','none')
-        found = 0
-        count = 0
-        for(var i =0;i<dato.length;i++){
-            count += dato[i].realizadas
-            count += dato[i].suspendidas
-            count += dato[i].no_realizadas
-            if(dato[i].found == "True"){
-                found +=1
+    if (trimestre) {
+        $('.loader').css('display','initial')
+        $.ajax({
+          url: "{% url 'actividades:estadisticas_actividades'%}",
+          type: "post",
+          data:data,
+          dataType: "json",
+          success: function (data) {
+            dato = data
+            $('.loader').css('display','none')
+            found = 0
+            count = 0
+            for(var i =0;i<dato.length;i++){
+                count += dato[i].realizadas
+                count += dato[i].suspendidas
+                count += dato[i].no_realizadas
+                if(dato[i].found == "True"){
+                    found +=1
+                }
             }
-        }
-        if(found == 0){
-            Materialize.toast('No se encontraron resultados.',2000)
-        }else{
-            tri = dato
-            chart2(dato,'chart2')
+            if(found == 0){
+                Materialize.toast('No se encontraron resultados.',2000)
+            }else{
+                tri = dato
+                ver('tri')
 
-            $('.caja').css('display','none')
-            $('#total_tri').html('Total de actividades: '+count)
-            $('.caja2').css('display','initial')
-        }
-        
-        }
-      });
+                //$('.caja').css('display','none')
+                //$('#total_tri').html('Total de actividades: '+count)
+                //$('.caja2').css('display','initial')
+            }
+            
+            }
+          });
+    }else{
+        Materialize.toast('Selecciona el trimestre a consultar',2000)
+    }
     return false;
 })
 $('#exit').on('click',function(){
-    $('#chart2').html('')
+    //$('#chart2').html('')
     $('.caja').css('display','initial')
     $('.caja2').css('display','none')
 })

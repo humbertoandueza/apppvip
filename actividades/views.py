@@ -19,6 +19,7 @@ from django.core.mail import send_mail
 from core.mixins import LoginRequiredMixin,SuperUserMixinRequired
 from core.views import notificacions
 from dateutil.relativedelta import relativedelta
+from django.db.models import Q
 # Create your views here.
 class ActividadesView(ListView):
     model = Actividades
@@ -508,11 +509,16 @@ class ActividadesEstadisticas(TemplateView):
         data = request.POST
         json = []
         persona = ''
+        tipo = ''
         today=datetime.datetime.now()
         if data['tipo']:
-            tipo = data['tipo']
+            tipo = "and a.tipo_id="+data['tipo']
+        else:
+            tipo = ''
         if data['lider']:
-            persona = data['lider']
+            persona = "and a.persona_id="+data['lider']
+        else:
+            persona = ''
 
         if data['trimestre']:
             count = 0
@@ -520,9 +526,19 @@ class ActividadesEstadisticas(TemplateView):
                 mes = int(data['trimestre'])+count
                 inicio="%s-%s-01" % (today.year, mes)
                 fin="%s-%s-%s" % (today.year, mes, calendar.monthrange(today.year-1, int(mes))[1])
-                suspendida = Actividades.objects.filter(status__status="Suspendida",fecha__range=[inicio,fin]).count()
-                realizada = Actividades.objects.filter(status__status="Realizada",fecha__range=[inicio,fin]).count()
-                no_realizada = Actividades.objects.filter(status__status="No Realizada",fecha__range=[inicio,fin]).count()
+                print(inicio,fin)
+                realizada = 0
+                suspendida = 0
+                no_realizada = 0
+                for a in Actividades.objects.raw("select a.id,s.status as estatua,count(a.status_id)as cantidada,t.tipo as tipos from actividades_actividades a inner join actividades_status s inner join actividades_tipo_actividad t where s.id=a.status_id and a.fecha>='"+inicio+"' and a.fecha<='"+fin+"'and t.id=a.tipo_id "+tipo+" "+persona+" and a.status_id!=1 group by a.status_id;"):
+                    if a.estatua == 'Realizada':
+                        realizada += a.cantidada
+                        print(realizada)
+                    if a.estatua == 'No Realizada':
+                        no_realizada += a.cantidada
+                    if a.estatua == 'Suspendida':
+                        suspendida += a.cantidada
+                        
                 found = "True"
                 if realizada == 0 and suspendida == 0 and no_realizada == 0:
                     found = "False"
@@ -536,3 +552,7 @@ class ActividadesEstadisticas(TemplateView):
                 json.append(datos)
                 count +=1
         return JsonResponse(json,safe=False)
+
+"""
+ select a.*,s.status from actividades_actividades a inner join actividades_status s where a.status_id="4" and s.id=a.status_id and a.fecha>='2019-04-01' and a.fecha<='2019-04-30' and a.persona_id=5 and a.tipo_id=1;
+"""
