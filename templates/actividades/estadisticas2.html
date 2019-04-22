@@ -40,7 +40,47 @@
 #main {
     padding-left: 270px;
 }
+body::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
 
+}
+
+body::-webkit-scrollbar
+{
+    width: 5px;
+    background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #00b0f0;
+    
+}
+
+div::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+div::-webkit-scrollbar
+{
+    width: 5px;
+    background-color: #F5F5F5;
+}
+
+div::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #00b0f0;
+}
 @media only screen and (max-width: 993px) {
   #main {
     padding-left: 0;
@@ -459,7 +499,16 @@ function mostrar_modal(){
     $('#modal1 .modal-content').css('position','relative');
 
     html = `
+    <style>
+    body::-webkit-scrollbar{
+        display: none;
+    }
+
+    </style>
         <div class="row" style="padding-top:45px;">
+            <div class="col s12">
+                <button class="btn btn-primary red right" onclick="cerrar_modal()"><strong>X</strong></button>
+            </div>
             <div class="col s1 offset-s2 center" >
                 <img src="/static/assets/img/logo.png" width="150">
             </div>
@@ -470,9 +519,6 @@ function mostrar_modal(){
             </div>
             <div class="col s12 center"  style="padding:20px;">
                 <div id="chart-full"></div>
-            </div>
-            <div class="col s12">
-            <button class="btn btn-primary red" onclick="cerrar_modal()">salir</button>
             </div>
         </div>
      `
