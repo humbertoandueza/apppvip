@@ -6,6 +6,86 @@
         display: block;
     }
 </style>
+<div class="row hide" id="edit">
+    <div class="col s10 offset-s1">
+        <form action="{% url 'actividades:edit_actividad' %}" id="form1" method="post" class="js-book-edit-form">
+        {% csrf_token %}
+        <style>
+            select{
+                display: block;
+            }
+        </style>
+        <div class="row">
+            <div class="col s12">
+                <h2>Actualizar Actividad</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <div class="row">
+                    <div class="input-field col s12 m12">
+                        <input type="number" class="hide" name="ida" value="{{actividad.id}}">
+                        <input type="text" name="nombre" class="validate" id="id_nombre" maxlength="200" required="" value="{{actividad.nombre}}">
+                        <label for="id_nombre" class="active">Nombre de la actividad</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <textarea class="materialize-textarea" name="descripcion" id="id_descripcion" rows="10" required="" cols="40">{{actividad.descripcion}}</textarea>
+                        <label for="id_descripcion" class="active">Descripción</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <textarea class="materialize-textarea" name="lugar" id="id_lugar" rows="10" required="" cols="40">{{actividad.lugar}}</textarea>
+                        <label for="id_lugar" class="active">Lugar</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <select id="id_persona" name="persona">
+                            {% for i in lider%}
+                                <option value="{{i.id}}">{{i.cedula}},{{i.nombre}}</option>
+                            {% endfor%}
+                            <!--<option  value="{{actividad.persona.id}}" selected="">{{actividad.persona}}</option>-->
+                            
+                        </select>
+                        <label for="id_persona" class="active">Lider</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <select id="id_tipo" name="tipo">
+                            <!--<option  value="{{actividad.tipo.id}}" selected="">{{actividad.tipo}} </option>-->
+                            {% for i in tipo%}
+                                <option value="{{i.id}}">{{i.tipo}}</option>
+                            {% endfor%}
+                        </select>
+                        <label for="id_tipo" class="active">Tipo de Actividad</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        {{formm.fecha}}
+                        {{actividad.fecha}}
+                        <label for="id_fecha" class="active">Fecha</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        {{form.hora}}
+                        <input type="time" id="id_hora" value="{{actividad.hora}}">
+                        <label for="id_hora" class="active">Hora</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="error1" class="col s10 offset-s1 center"></div>
+            </div>
+            <div class="row">
+                <div class="col m6 offset-m4 s10 offset-s1 center">
+                    <p><a class="btn waves-effect waves-light red cancelar_est">Volver</a>
+                    <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Actualizar</button></p>
+                </div>
+            </div>
+        </div>
+        </form> 
+    </div>
+</div>
 <form action="{% url 'actividades:actualizar_status' form.instance.pk %}" id="form" method="post" class="js-book-update-form">
     {% csrf_token %}
 
@@ -19,6 +99,7 @@
             <h6 style="text-align: left;"><strong>Descripcion:</strong> {{actividad.descripcion}}</h6>
             <h6 style="text-align: left;"><strong>Tipo:</strong> {{actividad.tipo}}</h6>
             <h6 style="text-align: left;"><strong>Fecha:</strong> {{actividad.fecha}}</h6>
+            <h6>¿Desea editar la información? click <a href="#" onclick="return false;" class="editar">Aqui</a></h6>
         </div>
     </div>
     <div class="row">
@@ -39,12 +120,11 @@
             </div>
         </div>
         <div class="row">
-            <div id="error" class="col s10 offset-s1 center"></div>
+            <div id="error" class="col s10 offset-s1 center m6 offset-m4"></div>
         </div>
         <div class="row">
-            <div class="col m6 offset-m5 s10 offset-s1">
-                <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
-                <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Registrar</button></p>
+            <div class="col m6 offset-m3 s10 offset-s1">
+                <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Actualizar Estatus</button></p>
             </div>
         </div>
     </div>
@@ -65,16 +145,40 @@
         labelMonthSelect: 'Selecciona un mes',
         labelYearSelect: 'Selecciona un año',
         });*/
-$('#id_fecha').attr("type","date");
+
+$('#id_persona').val('{{actividad.persona.id}}')
+$('#id_tipo').val('{{actividad.tipo.id}}')
+$(document).on('click','.editar',function(){
+    $('#form').addClass('hide');
+    $('#edit').removeClass('hide');
+
+})
+$(document).on('click','.cancelar_est',function(){
+    $('#form').removeClass('hide');
+    $('#edit').addClass('hide');
+})
+$('#id_fecha').addClass('hide')
+//$('#id_fecha').attr("type","date");
 $('#id_hora').attr("type","time");
+$('#id_hora').attr("name","hora");
 $('#id_status').on('change',function(){
     if($(this).val() ==2){
-        $('#obs').append(`
-        <textarea class="materialize-textarea" required="" name="observacion" id="id_observacion" rows="10" required="" cols="40"></textarea>
-        <label for="id_observacion" class="active">Observacion</label>
-         `)
-        $('#listo').removeClass('hide')
-        $('#id_statuss').attr('required','')
+        fecha =($('#id_fecha').val())
+        fecha_n = fecha.split('/');
+        fecha_l = fecha_n[1]+'/'+fecha_n[0]+'/'+fecha_n[2]
+        hoy = moment().format('L')
+        fechaa = moment(fecha_l).format('L')
+        if(hoy<fechaa){
+            $('#error').html('<p style="color:red;">Debe esperar el día de la actividad para poder actualizar a este estatus.</p>');
+            $(this).val(1)
+        }else{
+            $('#obs').append(`
+            <textarea class="materialize-textarea" required="" name="observacion" id="id_observacion" rows="10" required="" cols="40"></textarea>
+            <label for="id_observacion" class="active">Observacion</label>
+             `)
+            $('#listo').removeClass('hide')
+            $('#id_statuss').attr('required','')
+        }
 
     }else{
         $('#obs').html('')
@@ -119,15 +223,15 @@ $('#id_status').on('change',function(){
                 <div id="error" class="col s10 offset-s1 center"></div>
             </div>
             <div class="row">
-                <div class="col m6 offset-m5 s10 offset-s1">
-                    <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
-                    <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Registrar</button></p>
+                <div class="col m6 offset-m3 s10 offset-s1">
+                    <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Actualizar Estatus</button></p>
                 </div>
             </div>
         </div>
 </form>
 
 <script>
+
 $('#id_hora').attr("type","time");
 var d = new Date();
 
@@ -153,7 +257,6 @@ $('#id_fecha').pickadate({
 {% endif %}
 {% if actividad.status.status == 'Realizada' %}
 <h1>Esta actividad a sido completada</h1>
-<a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
 {% endif %}
 {% else %}
 
@@ -171,6 +274,6 @@ $('#id_fecha').pickadate({
 
     
 </div>
-    <a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
+
 
 {% endif%}

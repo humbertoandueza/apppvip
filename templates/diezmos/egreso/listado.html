@@ -14,14 +14,16 @@
         <script type="text/javascript" src="{% static 'select2/select2.min.js'%}"></script>
 
         <script>
-             jQuery(document).ready(function($jquery) {
+             /*jQuery(document).ready(function($jquery) {
                  var table= $jquery('#postsTable').DataTable({
                     "language": {
                         "url": "{% static 'datatables/spanish.json'%}"
                         },
-                        responsive: true,
-                        ordering: true,
-                        responsive: true,
+
+                    ordering: true,
+                    responsive: true,
+                    scrollY: 380,
+                    scrollCollapse: true,
 
                      "iDisplayLength": 10,
                      "ajax": {
@@ -68,19 +70,41 @@
                         }, 3000);
                     
                     
-             });
+             });*/
          </script>
 <section id="content">
 <div class="container">
   <div class="section">
       <div class="row">
-          <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
-                <div class="capital left"></div>
-                <button class="btn btn-primary modal-full-screen right anadir">Añadir Egreso</button>
+        <h3 class="center">Listado de Egresos</h3>
+        <div class="col s10 offset-s1">
+            <br>
+                <div class="divider"></div>
+                <table>
+                  <thead>
+                    <tr id="capital">
+                      
+                    </tr>
+                  </thead>
+                </table>
+                <div class="divider"></div>
+              <br>
 
           </div>
-        <h3 class="center">Listado de Egresos</h3>
-
+          <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
+             <div class="col s2 impr">
+                <a class="btn btn-primary " onclick="tipo()">Imprimir</a>
+            </div>
+            <div class="col s3 impr">
+                <select id="tipo">
+                    <option value="" selected="" disabled="">Tipo</option>
+                    {% for i in concepto%}
+                        <option value="{{i.id}}">{{i.concepto}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+                <button class="btn btn-primary modal-full-screen right anadir">Añadir Egreso</button>
+          </div>
       </div>
       <div class="row mb-2">
       <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
@@ -94,10 +118,11 @@
                         <th>Descripcion</th>
                         <th>Concepto</th>
 
+
                     </tr>
                 </thead>
                 <tbody>
-                    <td></td>
+                    
                 </tbody>
            </table>
         </div>
@@ -112,9 +137,27 @@
     </div>
 <script>
     var url_crear = "{% url 'diezmo:crear_egreso' %}";
+    var url_list = "{% url 'diezmo:EgresosJson' %}";
 </script>
 <script src="{% static 'ajax/ajax_egresos.js' %}" type="text/javascript"></script>
 <script>
+    function mes(){
+  var d = new Date();
+  var month = new Array();
+  month[0] = "Enero";
+  month[1] = "Febrero";
+  month[2] = "Marzo";
+  month[3] = "Abril";
+  month[4] = "Mayo";
+  month[5] = "Junio";
+  month[6] = "Julio";
+  month[7] = "Augosto";
+  month[8] = "Septimbre";
+  month[9] = "Octubre";
+  month[10] = "Noviembre";
+  month[11] = "Diciembre";
+  return month[d.getMonth()];
+}
 function capital(){
     $.ajax({
         url: "{% url 'diezmo:capital'%}",
@@ -125,23 +168,40 @@ function capital(){
         success: function (data) {
             if (data['total']== 0){
                 var color = 'color:red';
-                $(".anadir").attr("disabled", "disabled");
+                $('.anadir').attr('disabled',true);
             }else{
                 var color = 'color:green';
-                $(".anadir").removeAttr("disabled");
-
             }
-            var capital = "<p style='font-size:24px;"+color+"'>Disponible: <strong>"+data['total']+"</strong> bs.</p>"
-            $('.capital').html(capital);
+            if(data['ofrenda'] == 0){
+                var color1 = 'color:red';
+            }else{
+                var color1 = 'color:green';
+            }
+            if(data['diezmo'] == 0){
+                var color2 = 'color:red';
+            }else{
+                var color2 = 'color:green';
+            }
+            /*var capital = "<strong><p style='font-size:15px; color:green;'>Mes actual: "+mes()+"</strong></p><p style='font-size:15px;"+color1+"'>Ofrenda del mes de: <strong>"+data['ofrenda']+"</strong> Bs.</p><p style='font-size:15px;"+color2+"'>Diezmo del mes: <strong>"+data['diezmo']+"</strong> Bs.</p><p style='font-size:15px;"+color+"'>Disponible: <strong>"+data['total']+"</strong> Bs.</p>"
+            $('.capital').html(capital);*/
+            var th = "<th style='color:green;'>Mes actual: "+mes()+"</th>"
+            th += "<th style='"+color1+";'>Ofrenda del mes de: "+data['ofrenda']+" bs.</th>"
+            th += "<th style='"+color2+";'>Diezmo del mes: "+data['diezmo']+" Bs.</th>"
+            th += "<th style='"+color+";'>Disponible: "+data['total']+" Bs.</th>"
+            $('#capital').html(th);
         }
         });
 }
 capital();
-setInterval(function(){ 
-    capital();
-    }, 3000);
+
 
 $("#id_persona").select2();
 </script>
-
+<script type="text/javascript">
+    function tipo(){
+        var url = "{% url 'reportes:egresos'%}"
+        var tipo = document.getElementById('tipo').value;
+        window.open(url+'?tipo='+tipo, '_blank');
+    }
+</script>
 {% endblock %}

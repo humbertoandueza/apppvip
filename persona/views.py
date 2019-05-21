@@ -122,6 +122,6 @@ def persona_delete(request, pk):
 
 #Retorno Json para Imprimir con DataTables 
 def PersonasJson(request):
-    personas = Persona.objects.exclude(nombre="Ofrenda")
+    personas = Persona.objects.exclude(nombre="Ofrenda").order_by('-id')
     json = serializers.serialize('json', personas)
     return HttpResponse(json, content_type='application/json')

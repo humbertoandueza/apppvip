@@ -79,7 +79,7 @@
                         <ul class="menuzord-menu pull-right">
                             <li><a href="javascript:void(0)">Panel admin</a>
                                 <ul class="dropdown">
-                                    <li><a href="{% url 'login' %}">Login</a></li>
+                                    <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -521,6 +521,26 @@
         <!-- jQuery -->
         <script src="{% static 'assets/js/jquery-2.1.3.min.js'%}"></script>
         <script type="text/javascript" src="{% static 'vanillabox/jquery.vanillabox.js'%}"></script>
+        <script>
+        $(document).on('keypress','.number',function(e){
+            var key = e.which,
+                keye = e.keyCode,
+                tecla = String.fromCharCode(key).toLowerCase(),
+                letras = "1234567890";
+            if(letras.indexOf(tecla)==-1 && keye!=9&& (key==37 || keye!=37)&& (keye!=39 || key==39) && keye!=8 && (keye!=46 || key==46) || key==161){
+                e.preventDefault();
+            }
+        })
+        $(document).on('keypress','.text',function(e){
+            var key = e.which,
+                keye = e.keyCode,
+                tecla = String.fromCharCode(key).toLowerCase(),
+                letras = "abcdefghijklmnñopqrstuvwxyz ";
+            if(letras.indexOf(tecla)==-1 && keye!=9&& (key==37 || keye!=37)&& (keye!=39 || key==39) && keye!=8 && (keye!=46 || key==46) || key==161){
+                e.preventDefault();
+            }
+        })
+        </script>
 
         <script type="text/javascript">
           $('.obt').on('click',function(){
@@ -615,7 +635,7 @@
                     </div>
                     <div class="row">
                         <div class="input-field col s12 m6">
-                            <input  type="text" class="validate" name="telefono" id="id_telefono" required="">
+                            <input  type="text" class="validate number" maxlength="11" name="telefono" id="id_telefono" required="">
                             <label for="id_telefono" class="active">Telefono</label>
                         </div>
                         <div class="input-field col s12 m6">
@@ -656,7 +676,11 @@
           $(document).on("submit", ".js-book-create-form", function (e) {
               e.preventDefault()
               var form = $(this);
-
+              if($('#id_telefono').val().length<11){
+                $('#error').html('<p style="color:red;">Introduzca un número de telefono valido.</p>')
+                $('#id_telefono').focus();
+                return false;
+              }
               $.ajax({
               url: form.attr("action"),
               data: form.serialize(),

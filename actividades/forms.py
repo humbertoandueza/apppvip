@@ -26,6 +26,18 @@ class StatusForm(forms.ModelForm):
         model =  Actividades
         fields = ('status','observacion','statuss')
 
+
+class FechaForm(forms.ModelForm):
+
+    class Meta:
+        model =  Actividades
+        fields = ('fecha',)
+
+    def __init__(self,*args,**kwargs):
+        super (FechaForm,self ).__init__(*args,**kwargs) # populates the post
+        self.fields['fecha'].input_formats=(settings.DATE_INPUT_FORMATS)
+
+
 class IglesiaForm(forms.ModelForm):
     class Meta:
         model = Iglesia

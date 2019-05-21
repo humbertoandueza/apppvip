@@ -13,74 +13,38 @@
 
         <script type="text/javascript" src="{% static 'select2/select2.min.js'%}"></script>
 
-        <script>
-             jQuery(document).ready(function($jquery) {
-                 var table= $jquery('#postsTable').DataTable({
-                    "language": {
-                        "url": "{% static 'datatables/spanish.json'%}"
-                        },
-                        responsive: true,
-                        ordering: true,
-                        responsive: true,
-
-                     "iDisplayLength": 10,
-                     "ajax": {
-                         "processing": true,
-                         "url": "{% url 'diezmo:IngresosJson' %}",
-                         "dataSrc": ""
-                     },
-                     columnDefs: [ {
-                        sortable: false,
-                        "class": "index",
-                        targets: 0
-                    } ],
-                    order: [[ 1, 'desc' ]],
-                    fixedColumns: true,
-    
- 
-                     "columns": [
-                            {"data":"fields.fecha"},
-                             { "data": "fields.fecha" },
-                             { "data": "fields.monto" },
-                             { "data": "fields.cedula"},
-                             { "data": "fields.persona" },
-                             { "data": "fields.tipo_de_pago" },
-                             {"data": null,
-                                render: function ( data, type, row ) {
-                                    return '<button onclick="actualizar('+data.pk+')" class="btn btn-primary js-update center"><i class="mdi-editor-border-color"></i></button>' ;
-                                }
-                                }
-                         ],
-                         dom: 'frti<"right"p>', 
-                         //'<"top"f>rt<"right"p><"button"ir>',
-                         buttons: [
-                         { "extend": 'pdf', "text":'<i class="mdi-editor-insert-drive-file"</i>',"className": 'btn btn-default btn-xs right' }
-                        ]
-                        },
-                    );
-
-                    table.on( 'order.dt search.dt', function () {
-                    table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-                        cell.innerHTML = i+1;
-                    } );
-                } ).draw();
-                    setInterval(function(){ 
-                        table.ajax.reload( null, false );
-                        }, 3000);
-                    
-                    
-             });
-         </script>
 <section id="content">
 <div class="container">
   <div class="section">
       <div class="row">
-          <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
-                <div class="capital left"></div>
-                <a class="btn btn-primary modal-full-screen right">Añadir Diezmo</a>
+        <h3 class="center">Listado de Ingresos</h3>
+          <div class="col s10 offset-s1">
+            <br>
+                <div class="divider"></div>
+                <table>
+                  <thead>
+                    <tr id="capital">
+                      
+                    </tr>
+                  </thead>
+                </table>
+                <div class="divider"></div>
+              <br>
 
           </div>
-        <h3 class="center">Listado de Ingresos</h3>
+          <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
+             <div class="col s2 impr">
+                <a class="btn btn-primary " onclick="tipo()">Imprimir</a>
+            </div>
+            <div class="col s3 impr">
+                <select id="tipo">
+                    <option value="" disabled="" selected="">Tipo</option>
+                    <option value="1">Transferencia</option>
+                    <option value="2">Efectivo</option>
+                </select>
+            </div>
+                <a class="btn btn-primary modal-full-screen right">Añadir Diezmo</a>
+          </div>
 
       </div>
       <div class="row mb-2">
@@ -100,7 +64,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <td></td>
+                    
                 </tbody>
            </table>
         </div>
@@ -115,6 +79,7 @@
     </div>
 <script>
     var url_crear = "{% url 'diezmo:crear_ingreso' %}";
+    var url_list ="{% url 'diezmo:IngresosJson' %}";
 </script>
 <script src="{% static 'ajax/ajax_ingresos.js' %}" type="text/javascript"></script>
 <script>
@@ -158,17 +123,27 @@ function capital(){
             }else{
                 var color2 = 'color:green';
             }
-            var capital = "<strong><p style='font-size:15px; color:green;'>Mes: "+mes()+"</strong></p><p style='font-size:15px;"+color1+"'>Ofrenda del mes de: <strong>"+data['ofrenda']+"</strong> Bs.</p><p style='font-size:15px;"+color2+"'>Diezmo del mes: <strong>"+data['diezmo']+"</strong> Bs.</p><p style='font-size:15px;"+color+"'>Disponible: <strong>"+data['total']+"</strong> Bs.</p>"
-            $('.capital').html(capital);
+            /*var capital = "<strong><p style='font-size:15px; color:green;'>Mes actual: "+mes()+"</strong></p><p style='font-size:15px;"+color1+"'>Ofrenda del mes de: <strong>"+data['ofrenda']+"</strong> Bs.</p><p style='font-size:15px;"+color2+"'>Diezmo del mes: <strong>"+data['diezmo']+"</strong> Bs.</p><p style='font-size:15px;"+color+"'>Disponible: <strong>"+data['total']+"</strong> Bs.</p>"
+            $('.capital').html(capital);*/
+            var th = "<th style='color:green;'>Mes actual: "+mes()+"</th>"
+            th += "<th style='"+color1+";'>Ofrenda del mes de: "+data['ofrenda']+" bs.</th>"
+            th += "<th style='"+color2+";'>Diezmo del mes: "+data['diezmo']+" Bs.</th>"
+            th += "<th style='"+color+";'>Disponible: "+data['total']+" Bs.</th>"
+            $('#capital').html(th);
         }
         });
 }
 capital();
-setInterval(function(){ 
-    capital();
-    }, 3000);
+
 
 $("#id_persona").select2();
+</script>
+<script type="text/javascript">
+    function tipo(){
+        var url = "{% url 'reportes:ingresos'%}"
+        var tipo = document.getElementById('tipo').value;
+        window.open(url+'?tipo='+tipo, '_blank');
+    }
 </script>
 
 {% endblock %}

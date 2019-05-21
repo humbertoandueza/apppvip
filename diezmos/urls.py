@@ -22,6 +22,7 @@ diezmo_urlpatterns = ([
     path('post_concepto',ConceptoCreateView.as_view(),name="post_concepto"),
     path('concepto/ver_concepto/<int:pk>/', Concepto_detail.as_view(),name="concepto_detail"),
     path('concepto/actualizar/<int:pk>/', concepto_update,name="concepto_actualizar"),
+    path('concepto/delete/', concepto_delete,name="concepto_delete"),
 
 
 

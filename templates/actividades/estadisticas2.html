@@ -33,6 +33,11 @@
   height: 500px;
 
 }
+#chart-full1 {
+  width: 95%;
+  height: 500px;
+
+}
 #chart2 {
   width: 100%;
   height: 500px;
@@ -228,7 +233,22 @@ div::-webkit-scrollbar-thumb
 </div>
 </div>
 </div>
-
+<div class="pdf hide row">
+<div id="imp" style="display: table;min-width: 1150px;max-width: 1150px;">
+    <div class="right fecha"></div>
+    <div class="col s1 offset-s2 center" >
+        <img src="/static/assets/img/logo.png" width="150">
+    </div>
+    <div class="col s6 center">
+        <h3>Estadisticas</h3>
+        <h4 id="titulo1"></h4>
+        <h5 class="total1"></h5> 
+    </div>
+    <div class="col s12 center"  style="padding:20px;">
+        <div id="chart-full1"></div>
+    </div>
+</diV>
+</div>
 <div id="modal1" class="modal-full">
   <div class="modal-content center">
     
@@ -462,16 +482,25 @@ $('#exit').on('click',function(){
 })
 function ver(tipo){
     mostrar_modal()
+    $('.pdf').removeClass('hide')
     if(tipo == 'tipo'){
         $('#titulo').html('Tipo de actividades')
         $('.total').html('Total: {{total}}')
         chart(tip,'chart-full',color,false)
+
+        $('#titulo1').html('Tipo de actividades')
+        $('.total1').html('Total: {{total}}')
+        chart(tip,'chart-full1',color,false)
     }
     else if(tipo == 'lider'){
         $('#titulo').html('Lideres a cargo')
         $('.total').html('Total: {{total}}')
 
         chart(person,'chart-full',color,false)
+
+        $('#titulo1').html('Lideres a cargo')
+        $('.total1').html('Total: {{total}}')
+        chart(person,'chart-full1',color,false)
     }
     else if(tipo == 'est'){
         $('#titulo').html('Estatus de actividades')
@@ -479,17 +508,53 @@ function ver(tipo){
 
         chart([obj[0],obj[1],obj[2]],'chart-full',color1,false)
 
+        $('#titulo1').html('Estatus de actividades')
+        $('.total1').html('Total: {{total}}')
+        chart([obj[0],obj[1],obj[2]],'chart-full1',color1,false)
+
     }
     else if(tipo == 'result') {
         $('#titulo').html('Resultados de las actividades realizadas')
         $('.total').html('Total: '+total)
 
         chart(resultado,'chart-full',color1,false)
+
+
+        $('#titulo1').html('Resultados de las actividades realizadas')
+        $('.total1').html('Total: '+total)
+        chart(resultado,'chart-full1',color1,false)
     }
     else if(tipo == 'tri') {
+        var html = ''
+        if($('#lider').val() != ''){
+            html += 'Lider: '+$('#lider :selected').html()+'      | '
+        }
+        if($('#tipos').val() != ''){
+            html += 'Tipo: '+$('#tipos :selected').html()+'     | '
+        }
+        if($('#lider').val() == '' && $('#tipos').val() == ''){
+            html = 'Total: '+count
+            $('.total').removeClass('center')
+            $('.total').removeClass('center')
+            $('.total1').removeClass('center')
+            $('.total1').addClass('right')
+        }else{
+            html += 'Total: '+count
+            $('.total').removeClass('right')
+            $('.total').addClass('center')
+            $('.total1').removeClass('right')
+            $('.total1').addClass('center')
+
+        }
+
         chart2(tri,'chart-full')
         $('#titulo').html('Resultados de las actividades trimestrales')
-        $('.total').html('Total: '+count)
+        $('.total').html(html)
+
+        chart2(tri,'chart-full1')
+        $('#titulo1').html('Resultados de las actividades trimestrales')
+        $('.total1').html(html)
+
 
     }
 
@@ -505,32 +570,82 @@ function mostrar_modal(){
     }
 
     </style>
-        <div class="row" style="padding-top:45px;">
+        <div class="row">
             <div class="col s12">
                 <button class="btn btn-primary red right" onclick="cerrar_modal()"><strong>X</strong></button>
             </div>
+            <div class="col s3 offset-s9">
+                <button class="btn" onclick="Imp()">Imprimir</button>
+            </div> 
+
+            <div class="cargando"></div>
             <div class="col s1 offset-s2 center" >
                 <img src="/static/assets/img/logo.png" width="150">
             </div>
-            <div class="col s7 center">
+            <div class="col s6 center">
                 <h3>Estadisticas</h3>
                 <h4 id="titulo"></h4>
-                <h5 class="right total"></h5> 
+                <h5 class="total"></h5> 
             </div>
             <div class="col s12 center"  style="padding:20px;">
                 <div id="chart-full"></div>
             </div>
+        </div>
+        <div>
         </div>
      `
     $('#modal1 .modal-content').html(html);
     $('.modal-full').css("display", "block");
     $('.modal-full').css("z-index", "1003");
 }
+var pre = `
+<div class="s12 loader">
+    <div class="preloader-wrapper active small">
+        <div class="spinner-layer spinner-blue-only small">
+            <div class="circle-clipper left ">
+                <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+                <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+                <div class="circle"></div>
+            </div>
+        </div>
+    </div>
+</div>`;
 
+function Imp(){
+
+    $('.cargando').html(pre)
+    $('.fecha').html('<p style="font-weight:bold;font-size:10px; margin-left:-185px!important;">Fecha: '+moment().format('L')+'</p>')
+    div = document.getElementById('imp');
+    domtoimage.toJpeg(div,{ bgcolor : 'white'})
+    .then (function (dataUrl) {
+
+        var pdf = new jsPDF("landscape", "mm", "A4");
+        pdf.addImage(dataUrl, 'JPEG', 0, 10);
+        pdf.setProperties({
+            title: 'Reporte Estadistica',
+           
+        });
+        window.open(pdf.output('bloburl'), '_blank');
+
+        $('.cargando').html('')
+
+
+    })
+    .catch(function (error) {
+        console.error('oops, something went wrong!', error);
+    });
+
+
+  }
 //modals personalizados
 function cerrar_modal(){
     $('.modal-full').css("display", "none");
     $('#modal1 .modal-content').html('');
+    $('.pdf').addClass('hide')
 }
 </script>
 

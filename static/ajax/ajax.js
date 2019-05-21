@@ -1,4 +1,21 @@
-$(document).ready(function(){
+var tables= $('#postsTable').DataTable({
+    "language": {
+        "url": "/static/datatables/spanish.json"
+        },
+    responsive: true,
+    ordering: true,
+    responsive: true,
+    scrollY: 380,
+    scrollCollapse: true,
+
+    "iDisplayLength": 10,
+    dom: 'frti<"right"p>'
+    });
+$(document).ready(function($jquery){
+    listado_s()
+    
+
+
     $('select').material_select();
     });
 
@@ -72,6 +89,7 @@ $("#modal1").on("submit", ".js-book-create-form", function (e) {
         console.log(data);
         if (data.form_is_valid) {
             Materialize.toast('Miembro Registrado', 3000, 'rounded')
+            listado_s();
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
         else {
@@ -137,6 +155,7 @@ $("#modal1").on("submit", ".js-book-update-form", function (e) {
     dataType: 'json',
     success: function (data) {
         if (data.form_is_valid) {
+            listado_s()
             Materialize.toast('Miembro Actualizado', 3000, 'rounded')
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
@@ -184,6 +203,7 @@ $("#modal1").on("submit", ".js-book-borrar-form", function (e) {
     dataType: 'json',
     success: function (data) {
         if (data.form_is_valid) {
+            listado_s()
             Materialize.toast('Miembro Eliminado', 3000, 'rounded')
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
@@ -253,6 +273,9 @@ function ver(numero){
                 }
                 </style>
             <div class="row">
+                <div class="col s12">
+                    <button class="btn btn-primary red right" onclick="cerrar_modal()"><strong>X</strong></button>
+                </div>
                 <br><br>
                 <img src="/static/assets/img/logo.png" width="150">
                 <br><br>
@@ -306,8 +329,7 @@ function ver(numero){
                 <div class="cargando">
 
                 </div>
-                <div class="col s12">
-                    <button  id="salir" class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button>   
+                <div class="col s12">  
                     <button  id="impi" class="center btn btn-primary blue" onclick="Imp();">Imprimir</button>   
                 </div>
             </div>
@@ -458,3 +480,24 @@ function cerrar_modal(){
     $('.modal-full').css("display", "none");
     $('#modal1 .modal-content').html(loader);
 }
+function listado_s(){
+    $.ajax({
+        url : url_list,
+        type:'GET',
+        success:function(data){
+            actualizar_data(data)
+
+    }
+    })
+    }
+    function actualizar_data(data){
+        count = 0
+        count1 = 0
+        tables.clear().draw();
+        for(var i = 0;i<data.length;i++){
+            datos = data[i]
+            var row1 = '<button onclick="actualizar('+datos.pk+')" class="btn btn-primary js-update"><i class="mdi-editor-border-color"></i></button> <a class="btn btn-primary js-borrar" onclick="ver('+datos.pk+')"><i class="mdi-image-remove-red-eye"></i></a>'
+            var row = [count+=1,datos.fields.cedula,datos.fields.nombre,datos.fields.apellido,datos.fields.telefono,datos.fields.correo,datos.fields.roles,row1]
+            tables.row.add(row).draw().node();
+        }
+    }

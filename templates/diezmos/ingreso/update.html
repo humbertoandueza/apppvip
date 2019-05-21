@@ -51,7 +51,11 @@
     
 </form>
 <script>
-
+var fecha = $('#id_fecha').val()
+$('#id_fecha').attr('type','date');
+var fec = fecha.split('/');
+var fecha_l = fec[2]+'-'+fec[1]+'-'+fec[0];
+$('#id_fecha').val(fecha_l)
 $("#id_persona").select2();
 $('.select2-container--default .select2-selection--single').css("background-color", "transparent");
 $('.select2-container--default .select2-selection--single').css("width", "100%");

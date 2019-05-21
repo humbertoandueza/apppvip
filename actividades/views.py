@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 
 from django.core import serializers
-from .forms import ActividadesForm,StatusForm,IglesiaForm,EntrenamientoForm,GrupoForm,PhotoForm
+from .forms import ActividadesForm,StatusForm,IglesiaForm,EntrenamientoForm,GrupoForm,PhotoForm,FechaForm
 from django.template.loader import render_to_string
 from datetime import datetime
 import calendar
@@ -98,12 +98,40 @@ class ActividadesCreateView1(TemplateView):
     def  get(self,request):
         return redirect('actividades:home')
 
+class ActividadesEditView1(TemplateView):
+    def post(self,request,*args,**kwargs):
+        data = dict()
+        estatus_id = get_object_or_404(Status,status="Por Realizar")
+        actividad = get_object_or_404(Actividades,pk=request.POST['ida'])
+
+        data['form_is_valid'] = True
+        data['lugar'] = request.POST['lugar']
+        data['descripcion'] = request.POST['descripcion']
+        data['tipo'] = request.POST['tipo']
+        data['title'] = request.POST['nombre']
+        data['color'] = "#00B0F0"
+        data['hora'] = request.POST['hora']
+        data['persona'] = request.POST['persona']
+        data['start'] = str(actividad.fecha)+"T"+str(request.POST['hora'])
+
+        #actividad = form.save()
+
+        Actividades.objects.filter(pk=actividad.pk).update(nombre=data['title'],descripcion=data['descripcion'],hora=data['hora'],lugar=data['lugar'],persona=data['persona'],tipo=data['tipo'])
+
+        data['id'] = actividad.pk
+
+        return JsonResponse(data)
+    def  get(self,request):
+        return redirect('actividades:home')
+
 
 def Status_update(request, pk):
     data = dict()
     estatus = get_object_or_404(Actividades, pk=pk)
     if request.method == 'POST':
         form = StatusForm(request.POST, instance=estatus)
+        formm = FechaForm(instance=estatus)
+        
         fecha = ''
         for i in request.POST:
             print (request.POST)
@@ -161,7 +189,10 @@ def Status_update(request, pk):
                 data['estatuss'] = estatus.statuss
     else:
         form = StatusForm(instance=estatus)
-    context = {'form': form,'actividad':estatus}
+        formm = FechaForm(instance=estatus)
+    tipo = Tipo_actividad.objects.all()
+    lider = Persona.objects.all().filter(roles="Lider")
+    context = {'form': form,'actividad':estatus,'lider':lider,'tipo':tipo,'formm':formm}
     data['html_form'] = render_to_string('actividades/update.html',
         context,
         request=request
@@ -524,6 +555,9 @@ class ActividadesEstadisticas(TemplateView):
             count = 0
             for i in range(3):
                 mes = int(data['trimestre'])+count
+                if len(str(mes)) == 1:
+                    mes = '0'+str(mes)
+                    print(mes)
                 inicio="%s-%s-01" % (today.year, mes)
                 fin="%s-%s-%s" % (today.year, mes, calendar.monthrange(today.year-1, int(mes))[1])
                 print(inicio,fin)
@@ -533,7 +567,6 @@ class ActividadesEstadisticas(TemplateView):
                 for a in Actividades.objects.raw("select a.id,s.status as estatua,count(a.status_id)as cantidada,t.tipo as tipos from actividades_actividades a inner join actividades_status s inner join actividades_tipo_actividad t where s.id=a.status_id and a.fecha>='"+inicio+"' and a.fecha<='"+fin+"'and t.id=a.tipo_id "+tipo+" "+persona+" and a.status_id!=1 group by a.status_id;"):
                     if a.estatua == 'Realizada':
                         realizada += a.cantidada
-                        print(realizada)
                     if a.estatua == 'No Realizada':
                         no_realizada += a.cantidada
                     if a.estatua == 'Suspendida':
@@ -544,7 +577,7 @@ class ActividadesEstadisticas(TemplateView):
                     found = "False"
                 total = realizada+suspendida+no_realizada
                 datos = {
-                "mes":str(meses[mes-1])+" ("+str(total)+")",
+                "mes":str(meses[int(mes)-1])+" ("+str(total)+")",
                 "realizadas":realizada,
                 "suspendidas":suspendida,
                 "no_realizadas":no_realizada,

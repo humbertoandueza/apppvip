@@ -109,7 +109,13 @@
             <!-- START LEFT SIDEBAR NAV-->
             <aside id="left-sidebar-nav">
                 <ul id="slide-out" class="side-nav fixed leftside-navigation">
-                <li class="user-details cyan darken-2">
+                    <style type="text/css">
+                        .bg-1{
+                            background: url(/static/images/user-bg.jpg);
+                            background-size: cover;
+                        }
+                    </style>
+                <li class="user-details cyan darken-2 bg-1">
                 <div class="row">
                 <div class="col col s4 m4 l4">
                     {% if request.user.perfil.avatar %}
@@ -372,6 +378,7 @@
 
     <script src="{% static 'js/dom-to-image.js'%}"></script>
     <script src="{% static 'js/jspdf.min.js'%}"></script>
+    <script src="{% static 'js/autotable.js'%}"></script>
 
     <script type="text/javascript" src="{% static 'js/materialize.js'%}"></script>
     <script type="text/javascript" src="{% static 'js/moment.min.js'%}"></script>
@@ -408,20 +415,6 @@
         labelYearSelect: 'Selecciona un año',
         });
     </script>
-    <script type="text/javascript">
-    $(document).ready(function(){
-            setTimeout(function(){
-                $('.toast').click();
-            },2000);
-            setTimeout(function() {
-            $('.modal-trigger').click();
-            setTimeout(function() {
-                location.href = '{% url 'logout' %}'
-            },15000);
-            }, 144440000);
-          });
-
-</script>
 <script type="text/javascript">
     function miclick() {
         $('.id_avatar').click();

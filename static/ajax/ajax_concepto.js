@@ -1,4 +1,19 @@
+var tables= $('#postsTable').DataTable({
+    "language": {
+        "url": "/static/datatables/spanish.json"
+        },
+    responsive: true,
+    ordering: true,
+    responsive: true,
+    scrollY: 380,
+    scrollCollapse: true,
+
+    "iDisplayLength": 10,
+    dom: 'frti<"right"p>'
+    });
+
 $(document).ready(function(){
+    listado_s()
     $('select').material_select();
     });
 
@@ -34,6 +49,7 @@ $("#modal1").on("submit", ".js-book-create-form", function (e) {
     success: function (data) {
         if (data.form_is_valid) {
             Materialize.toast('Concepto Registrado', 3000, 'rounded')
+            listado_s();
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
         else {
@@ -136,6 +152,37 @@ function actualizar(numero){
         });
     });
 }
+$(document).on('click','.js-borrar',function(){
+    id = this.id;
+    var toastContent = '<span>¿Está seguro?</span><br><button class="btn toast-action red conf_si" id="'+id+'">Si</button>';
+    Materialize.toast(toastContent, 4000);
+    });
+
+$(document).on('click','.conf_si',function(){
+    $(this).attr('disabled',true)
+    data = {
+        id:this.id,
+        csrfmiddlewaretoken:token,
+    }
+    $.ajax({
+        url:url_delete,
+        type:'POST',
+        data:data,
+        success:function(data){
+            console.log(data.form_is_valid)
+                if (data.form_is_valid) {
+                    Materialize.toast('Eliminado con éxito',2000);
+                    listado_s();
+                }else{
+                    Materialize.toast('Esta información esta siendo utilizada, no la puede eliminar.',4000);
+                }
+            
+        },
+        error:function(err){
+            Materialize.toast('Error al eliminar',2000);
+        }
+    })
+})
 //Ajax para Actualizar
 $("#modal1").on("submit", ".js-book-update-form", function (e) {
     
@@ -160,7 +207,8 @@ $("#modal1").on("submit", ".js-book-update-form", function (e) {
     dataType: 'json',
     success: function (data) {
         if (data.form_is_valid) {
-            Materialize.toast('Miembro Actualizado', 3000, 'rounded')
+            Materialize.toast('Concepto Actualizado', 3000, 'rounded')
+            listado_s();
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
         else {
@@ -174,4 +222,27 @@ $("#modal1").on("submit", ".js-book-update-form", function (e) {
     }
     });
     return false;
+
+
 });
+function listado_s(){
+$.ajax({
+    url : url_list,
+    type:'GET',
+    success:function(data){
+        actualizar_data(data)
+
+}
+})
+}
+function actualizar_data(data){
+    count = 0
+    count1 = 0
+    tables.clear().draw();
+    for(var i = 0;i<data.length;i++){
+        datos = data[i]
+        var row1 = '<button onclick="actualizar('+datos.pk+')" class="btn btn-primary js-update"><i class="mdi-editor-border-color"></i></button> <a class="btn red js-borrar" id='+datos.pk+'><strong>X</strong></a>'
+        var row = [count+=1,datos.fields.concepto,row1]
+        tables.row.add(row).draw().node();
+    }
+}

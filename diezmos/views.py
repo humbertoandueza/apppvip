@@ -27,7 +27,7 @@ class IndexPageView(LoginRequiredMixin,TemplateView):
 def IngresoJson(request):
     dicts = []
     monto = Ingreso.objects.aggregate(Sum('monto'))
-    ingresos = Ingreso.objects.all()
+    ingresos = Ingreso.objects.all().order_by('-fecha','-id')
     for i in ingresos:
         dicts.append({"model":"model.ingreso","pk":i.pk,"fields":{"fecha":i.fecha,"monto":str(i.monto)+" bs.","numero_trans":i.numero_trans,"cedula":i.persona.cedula,"persona":i.persona.nombre,"tipo_de_pago":i.tipo_de_pago.tipopago}})
     #print ('dictionario: ',dicts)
@@ -139,7 +139,7 @@ def ingreso_update(request, pk):
         form = IngresoForm(request.POST, instance=ingreso)
 
         if resta2 < 0:
-            data['error'] = "El monto que intenta actualizar es no coincide con el dinero disponible"
+            data['error'] = "El monto que intenta actualizar no coincide con el dinero disponible"
             print (data['error'])
             data['form_is_valid'] = False
         else:
@@ -170,13 +170,14 @@ def ingreso_update(request, pk):
 # Index del Egreso
 class IndexEgresoPageView(LoginRequiredMixin,TemplateView):
     def get(self,request,**kwargs):
-        return render(request,'diezmos/egreso/listado.html')
+        concepto = Concepto.objects.all()
+        return render(request,'diezmos/egreso/listado.html',{'concepto':concepto})
 
 #Retorno Json para Imprimir con DataTables
 def EgresoJson(request):
     dicts = []
     monto = Egreso.objects.aggregate(Sum('monto'))
-    egresos = Egreso.objects.all()
+    egresos = Egreso.objects.all().order_by('-fecha','-id')
     for i in egresos:
         dicts.append({"model":"model.egreso","pk":i.pk,"fields":{"fecha":i.fecha,"monto":str(i.monto)+" bs.","descripcion":i.descripcion,"concepto":i.concepto.concepto}})
     #print ('dictionario: ',dicts)
@@ -315,4 +316,20 @@ def concepto_update(request, pk):
         context,
         request=request
     )
+    return JsonResponse(data)
+
+def concepto_delete(request):
+    data = dict()
+    if request.method == 'POST':
+        pk = request.POST['id']
+        concepto = get_object_or_404(Concepto, pk=pk)
+        egreso = Egreso.objects.filter(concepto=concepto)
+        if egreso:
+            data['form_is_valid'] = False
+        else:
+            concepto.delete()
+            data['form_is_valid'] = True
+
+    else:
+        data['form_is_valid'] = False    
     return JsonResponse(data)

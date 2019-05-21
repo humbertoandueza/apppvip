@@ -137,6 +137,7 @@ function Imp(){
                 },
                 success: function (data) {
                 $("#modal2 .modal-content").html(data.html_form);
+                $('#close').addClass('hide')
 
                 if(getParameterByName('id') && getParameterByName('titulo')){
                     titulo = getParameterByName('titulo')
@@ -171,6 +172,7 @@ function Imp(){
             });
         },
         eventClick: function(event,element) {
+            $('#close').removeClass('hide')
             if (event.estatus == "Por Realizar" || event.estatus == "Suspendida" ){
                 var url_actualizar = window.location
                 $("#load").hide();
@@ -445,8 +447,8 @@ function Imp(){
 <style>
 
   #calendar {
-    max-width: 900px;
-    margin: 0 auto;
+    max-width: 1000px;
+    margin: 0 0;
   }
 
 </style>
@@ -513,7 +515,13 @@ function Imp(){
             <!-- START LEFT SIDEBAR NAV-->
             <aside id="left-sidebar-nav">
                 <ul id="slide-out" class="side-nav fixed leftside-navigation">
-                <li class="user-details cyan darken-2">
+                    <style type="text/css">
+                        .bg-1{
+                            background: url(/static/images/user-bg.jpg);
+                            background-size: cover;
+                        }
+                    </style>
+                <li class="user-details cyan darken-2 bg-1">
                 <div class="row">
                 <div class="col col s4 m4 l4">
                     {% if request.user.perfil.avatar %}
@@ -641,7 +649,7 @@ function Imp(){
 
                         </div>
                         <div class="row ">
-                            <div class="col col s9 m9 l0 offset-s1 offset-m1 offset-l1 center" style="margin-bottom: 50px;">
+                            <div class="col col s11 m11 l0 offset-s1  offset-l1 center" style="margin-bottom: 50px;">
                                 <div id='calendar'></div>
                                 <div id="pdf"></div>
                             </div>
@@ -678,6 +686,9 @@ function Imp(){
                 </div>
     <!--MODAL SESION EXPIRED -->
     <div id="modal2" class="modal-full">
+        <div class="col s12">
+                    <button class="btn btn-primary red right" id="close" onclick="cerrar_modal()"><strong>X</strong></button>
+                </div>
         <div class="row" style="margin-top: 50px; display: none;" id="cargar">
             <div class="col col m6 offset-m3 s12">
                 <div>
@@ -694,7 +705,9 @@ function Imp(){
         <div class="modal-content center">
               
         </div>
+
             <div class="row" style="margin-bottom: 60px;">
+
                 <div class="col col m6 offset-m3 s12">
                     <div id="load">
                         <center>
@@ -719,7 +732,6 @@ function Imp(){
                       </div>
                       <div style="display: none;" id="cerrar">
                           <center>
-                            <button class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button>
                             <button  id="impi" class="center btn btn-primary blue" onclick="Imp();">Imprimir</button>   
 
                           </center>

@@ -1,4 +1,18 @@
+var tables= $('#postsTable').DataTable({
+    "language": {
+        "url": "/static/datatables/spanish.json"
+        },
+    responsive: true,
+    ordering: true,
+    responsive: true,
+    scrollY: 380,
+    scrollCollapse: true,
+
+    "iDisplayLength": 10,
+    dom: 'frti<"right"p>'
+    });
 $(document).ready(function(){
+    listado_s()
     $('select').material_select();
     });
 
@@ -34,6 +48,12 @@ $("#modal1").on("submit", ".js-book-create-form", function (e) {
 
         return false;
     }
+    if(moment($('#id_fecha').val()) >moment()){
+        $('#error').html('<p style="color:red; margin-left:40px;">Fecha invalida: Introduzca una fecha igual o menor a la actual.</p>');
+        $( "#id_fecha" ).addClass( "invalid" );
+
+        return false;
+    }
     for (var i = 0; i < data.length; i+=1) {
         if(data[i].name == "cedula"){
             //console.log('cedula: ', data[i].value.length);
@@ -54,6 +74,8 @@ $("#modal1").on("submit", ".js-book-create-form", function (e) {
     success: function (data) {
         if (data.form_is_valid) {
             Materialize.toast('Egreso Registrado', 3000, 'rounded')
+            listado_s()
+            capital();
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
         else {
@@ -199,4 +221,31 @@ function ver(numero){
         }
         });
         */
+}
+function listado_s(){
+    $.ajax({
+        url : url_list,
+        type:'GET',
+        success:function(data){
+            if (data.length>0) {
+                actualizar_data(data)
+                $('.impr').css('display','block');
+            }else{
+                $('.impr').css('display','none');
+            }
+
+
+    }
+    })
+}
+function actualizar_data(data){
+    count = 0
+    count1 = 0
+    tables.clear().draw();
+    for(var i = 0;i<data.length;i++){
+        datos = data[i]
+        var row1 = '<a class="btn btn-primary js-borrar" onclick="ver('+datos.pk+')"><i class="mdi-image-remove-red-eye"></i></a>'
+        var row = [count+=1,datos.fields.fecha,datos.fields.monto,datos.fields.descripcion,datos.fields.concepto]
+        tables.row.add(row).draw().node();
+    }
 }

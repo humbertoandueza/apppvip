@@ -15,6 +15,7 @@ $(document).ready(function(){
         },
         success: function (data) {
         $("#modal1 .modal-content").html(data.html_form);
+        $('#close').addClass('hidden');
         }
     });
     });
@@ -100,6 +101,7 @@ $("#modal2").on("submit", ".js-book-update-form", function (e) {
     type: form.attr("method"),
     dataType: 'json',
     success: function (data) {
+        console.log('editando',data)
         if (data.form_is_valid) {
             Materialize.toast('Estatus Actualizado', 3000, 'rounded');
             if(data.create){
@@ -126,6 +128,41 @@ $("#modal2").on("submit", ".js-book-update-form", function (e) {
 
                 $('#calendar').fullCalendar('updateEvent', evento);
             }
+
+            cerrar_modal();  // <-- This is just a placeholder for now for testing
+        }
+        else {
+        $("#modal2 .modal-content").html(data.html_form);
+        }
+    }
+    });
+    return false;
+});
+
+$("#modal2").on("submit", ".js-book-edit-form", function (e) {
+    e.preventDefault()
+    var form = $(this);
+    $.ajax({
+    url: form.attr("action"),
+    data: form.serialize(),
+    type: form.attr("method"),
+    dataType: 'json',
+    success: function (data) {
+        console.log(data)
+        if (data.form_is_valid) {
+            Materialize.toast('Actividad Actualizada', 3000, 'rounded');
+                evento.title = data.title,
+                evento.descripcion = data.descripcion,
+                evento.lugar = data.lugar,
+                evento.color = data.color,
+                evento.estatus = data.estatus,
+                evento.estatuss = data.estatuss,
+                evento.observacion=data.observacion,
+                evento.tipo=data.tipo,
+                evento.start = data.start,
+
+                $('#calendar').fullCalendar('updateEvent', evento);
+            
 
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
