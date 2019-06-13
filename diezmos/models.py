@@ -13,10 +13,13 @@ class TipoDePago(models.Model):
 
 class Ingreso(models.Model):
     fecha = models.DateField(verbose_name="Fecha")
+    fecha_t = models.DateTimeField(verbose_name="Fecha",null=True,blank=True)
     monto = models.IntegerField(verbose_name="Monto")
+    disponible = models.CharField(max_length=200,null=True,blank=True)
     numero_trans = models.IntegerField(verbose_name="Numero de Transferencia",null=True,blank=True)
     persona = models.ForeignKey(Persona,on_delete=models.CASCADE)
-    tipo_de_pago = models.ForeignKey(TipoDePago,on_delete=models.CASCADE)
+    tipo_de_pago = models.ForeignKey(TipoDePago,on_delete=models.CASCADE) 
+    tipo = models.BooleanField(default=True) 
 
     def __str__(self):
         return '{},{},{}'.format(self.persona.nombre,self.fecha,self.monto)
@@ -30,10 +33,13 @@ class Concepto(models.Model):
 
 class Egreso(models.Model):
     fecha = models.DateField(verbose_name="Fecha")
+    fecha_t = models.DateTimeField(verbose_name="Fecha",null=True,blank=True)
     monto = models.IntegerField(verbose_name="Monto")
+    disponible = models.CharField(max_length=200,null=True,blank=True)
     descripcion = models.TextField(verbose_name="Descripcion")
     concepto = models.ForeignKey(Concepto,on_delete=models.CASCADE)
     usuario = models.ForeignKey(User,on_delete=models.CASCADE)
+    tipo = models.BooleanField(default=False)
 
     def __str__(self):
         return '{},{},{}'.format(self.usuario.first_name,self.fecha,self.monto)

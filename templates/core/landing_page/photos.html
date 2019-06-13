@@ -77,6 +77,10 @@
                             <li><a href="/">Inicio</a></li>
                             
                         </ul>
+                        <ul class="menuzord-menu pull-right hide panel">
+                          <li><a href="/panel">Panel</a></li>
+                          
+                      </ul>
                         <!--mega menu end-->
 
                     </div>
@@ -164,8 +168,14 @@
         <!-- jQuery -->
         <script src="{% static 'assets/js/jquery-2.1.3.min.js'%}"></script>
         <script type="text/javascript" src="{% static 'vanillabox/jquery.vanillabox.js'%}"></script>
-
+        
+        <script src="{% static 'assets/materialize/js/materialize.min.js'%}"></script>
         <script type="text/javascript">
+        var user = '{{request.user.is_programador}}'
+        if(user){
+          $('.panel').removeClass('hide');
+        }
+        console.log(user)
           $(function () {
             var url = "{% url 'actividades:photo' pk=5 %}";
             var url1 =url.slice(0,-2)+'{{id}}/';
@@ -177,6 +187,13 @@
                 console.log(data);
                 if(data.length > 0){
                   data.forEach(function(e){
+                    console.log(e)
+                    if(user){
+                      
+                      html = '<h2><a href="#" id="'+e.id+'" class="right delete"><i class="fa fa-trash " style="color:red;"></i></a></h2>'
+                    }else{
+                      html = ''
+                    }
                     $(".portfolio").append(`<div class="portfolio-item" >
                             <div class="portfolio-wrapper">
 
@@ -191,10 +208,10 @@
                                       <a href="/media/${e.imagen}" class="tt-lightbox"> <i class="fa fa-search"></i></a>
                                     </div>
                                   </div>
-                                  <!--<div class="portfolio-title">
-                                      <h2><a href="#"></a></h2>
-                                  </div>-->
                               </div><!-- thumb -->
+                                  <div class="portfolio-title">
+                                  ${html}
+                                  </div>
 
                             </div><!-- /.portfolio-wrapper -->
                         </div><!-- /.portfolio-item -->
@@ -209,11 +226,11 @@
               }
               });
           });
+          
 
         </script>
 
         <script src="{% static 'assets/bootstrap/js/bootstrap.min.js'%}"></script>
-        <script src="{% static 'assets/materialize/js/materialize.min.js'%}"></script>
         <script src="{% static 'assets/js/jquery.easing.min.js'%}"></script>
         <script src="{% static 'assets/js/jquery.sticky.min.js'%}"></script>
         <script src="{% static 'assets/js/smoothscroll.min.js'%}"></script>
@@ -227,6 +244,27 @@
         <script src="{% static 'assets/flexSlider/jquery.flexslider-min.js'%}"></script>
         <script src="{% static 'assets/magnific-popup/jquery.magnific-popup.min.js'%}"></script>
         <script src="{% static 'assets/js/scripts.js'%}"></script>
+        <script>
+        $(document).on('click','.delete',function(){
+            console.log(this.id)
+            val = confirm('¿Esta seguro?')
+            console.log(val)
+            if(val){
+              $.ajax({
+                url: '{% url "actividades:photo_delete"%}?pk='+this.id,
+                type: "get",
+                dataType: 'json',
+                success: function (data) {
+                  if(data[0].is_valid){
+                    window.location = '/panel/actividades/albumes/'
+                  }
+                }});
+
+            }else{
+              console.log('nope menor')
+            }
+          })
+          </script>
 
 
     </body>

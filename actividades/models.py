@@ -1,5 +1,6 @@
 from django.db import models
 from persona.models import Persona
+from core.models import User
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 # Create your models here.
@@ -21,16 +22,9 @@ class Iglesia(models.Model):
     email = models.EmailField(verbose_name="Correo")
     direccion = models.TextField(verbose_name="Direccion")
     telefono = models.CharField(verbose_name="Telefono",max_length=11)
-
+    usuario = models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE)
     def __str__(self):
         return '{},{}'.format(self.nombre,self.pastor)
-
-class Material(models.Model):
-    nombre = models.CharField(verbose_name="Nombre",max_length=200)
-    url = models.URLField(verbose_name="Link del Material")
-    
-    def __str__(self):
-        return self.nombre
 
 class Grupo(models.Model):
     nombre = models.CharField(verbose_name="Nombre",max_length=200)
@@ -38,10 +32,25 @@ class Grupo(models.Model):
     
     def __str__(self):
         return '{},{}'.format(self.nombre,self.descripcion)
+class Material(models.Model):
+    nombre = models.CharField(verbose_name="Nombre",max_length=200)
+    grupo = models.ForeignKey(Grupo,verbose_name="Grupo Alpha",on_delete=models.CASCADE)
+
+    url = models.URLField(verbose_name="Link del Material")
+    
+    def __str__(self):
+        return self.nombre
+
 
 class Entrenamiento(models.Model):
     iglesia = models.ForeignKey(Iglesia,on_delete=models.CASCADE)
     grupo = models.ForeignKey(Grupo,verbose_name="Grupo Alpha",on_delete=models.CASCADE)
+    est = (
+        ('pendiente','pendiente'),
+        ('aceptada','aceptada'),
+        ('rechazada','rechazada'),
+        )
+    estatus = models.CharField(verbose_name="Estatus",blank=True,null=True,choices=est,default="pendiente",max_length=200)
 
     def __str__(self):
         return self.iglesia.nombre
@@ -49,9 +58,10 @@ class Entrenamiento(models.Model):
 class AsignarMaterial(models.Model):
     material = models.ForeignKey(Material,null=True,blank=True,on_delete=models.CASCADE)
     entrenamiento = models.ForeignKey(Entrenamiento,null=True,blank=True,on_delete=models.CASCADE)
+    estatus = models.BooleanField(default=False)
 
     def __str__(self):
-        return '{},{}' .format(self.entrenamiento.iglesia.nombre,self.material.nombre)
+        return '{},{}' .format(self.entrenamiento,self.material)
 
 class Actividades(models.Model):
     nombre = models.CharField(verbose_name="Nombre de la Actividad",max_length=200)

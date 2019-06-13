@@ -1,0 +1,105 @@
+{% extends "panel_admin/base.html" %}
+{% load static %}
+{% block content %}
+        <script src="{% static 'admin/js/vendor/jquery/jquery.min.js'%}"></script>
+        <script src="{% static 'datatables/jquery.dataTables.min.js'%}"></script>
+        <script src="{% static 'datatables/dataTables.buttons.min.js'%}"></script>
+        <script src="{% static 'datatables/buttons.flash.min.js'%}"></script>
+        <script src="{% static 'datatables/buttons.print.min.js'%}"></script>
+        <script src="{% static 'datatables/pdfmake.min.js'%}"></script>
+        <script src="{% static 'datatables/vfs_fonts.js'%}"></script>
+        <script src="{% static 'datatables/buttons.html5.min.js'%}"></script>
+        <script src="{% static 'datatables/dataTables.bootstrap4.min.js'%}"></script>
+
+        <script type="text/javascript" src="{% static 'select2/select2.min.js'%}"></script>
+
+<section id="content">
+<div class="container">
+  <div class="section">
+      <div class="row">
+        <h3 class="center">Asignación de material Alpha</h3>
+      </div>
+      <div class="row mb-2">
+      <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
+
+        <table id="postsTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Organización</th>
+                        <th>Lider</th>
+                        <th>Tipo</th>
+                        <th>Opciones</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if entrenamientos %}
+                    {% for material in entrenamientos %}
+                        <tr>
+                            <td>{{material.entrenamiento.iglesia.nombre.capitalize}}</td>
+                            <td>{{material.entrenamiento.iglesia.pastor.capitalize}}</td>
+                            <td>{{material.entrenamiento.grupo.nombre.upper}}</td>
+                            {% if material.entrenamiento.estatus == 'aceptada' %}
+                            <td>
+                                <input type="checkbox" {% if material.estatus %} checked {% endif %} id="mater{{material.id}}" int="{{material.id}}" class="only-one mater"/>
+                                <label for="mater{{material.id}}">Acceso al material </label>
+                            </td> 
+                            {% else %}
+                            <td>No Aplica</td> 
+                            {% endif %}
+                        </tr>
+                        
+                        {% endfor %}
+                    {% else %}
+                        
+                    
+                    {% endif %}
+
+                </tbody>
+           </table>
+        </div>
+
+    </div>
+</div>
+</div>
+    <!--MODAL SESION EXPIRED -->
+    <div id="modal1" class="modal-full">
+      <div class="modal-content center">
+        
+    </div>
+
+<script>
+    var tables= $('#postsTable').DataTable({
+    "language": {
+        "url": "/static/datatables/spanish.json"
+        },
+    responsive: true,
+    ordering: true,
+    responsive: true,
+    scrollY: 380,
+    scrollCollapse: true,
+
+    "iDisplayLength": 10,
+    dom: 'frti<"right"p>'
+    });
+    
+    $(document).on('change','.mater',function(){
+        id = $(this).attr('int')
+        activo = $(this).is(':checked')
+        data = {"id":id,"activo":activo,"csrfmiddlewaretoken":"{{ csrf_token }}"}
+        console.log(id)
+        console.log(activo)
+        $.ajax({
+            url:'{% url "actividades:materiala" %}',
+            type:'POST',
+            data:data,
+            success:function(data){
+                Materialize.toast('Actualizado con éxito.',2000);
+            }
+        })
+        
+    })
+
+</script>
+
+{% endblock %}

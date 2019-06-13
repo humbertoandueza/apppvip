@@ -67,7 +67,7 @@
                         <label for="id_fecha" class="active">Fecha</label>
                     </div>
                     <div class="input-field col s12 m6">
-                        {{form.hora}}
+                        
                         <input type="time" id="id_hora" value="{{actividad.hora}}">
                         <label for="id_hora" class="active">Hora</label>
                     </div>
@@ -130,6 +130,8 @@
     </div>
 </form>
 <script type="text/javascript">
+
+
             /*$('#id_fecha').pickadate({
         monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
@@ -186,6 +188,21 @@ $('#id_status').on('change',function(){
         $('#id_statuss').removeAttr('required')
     }
 })
+
+    $("#id_persona").select2();
+        $("#id_tipo").select2();
+    $('.select2').css("width", "100%");
+    $('.select2-container--default .select2-selection--single').css("background-color", "transparent");
+    $('.select2-container--default .select2-selection--single').css("width", "100%");
+    $('.select2-container--default .select2-selection--single').css("min-width", "100%");
+    $('.select2-container--default .select2-selection--single').css("padding", "5px");
+    $('.select2-container--default .select2-selection--single').css("border", "none");
+    $('.select2-container--default .select2-selection--single').css("border-radius", "2px");
+    $('.select2-container--default .select2-selection--single').css("height", "3rem");
+    $('.select2-container--default .select2-selection--single').css("border-bottom", "1px solid #9e9e9e");
+
+
+
 </script>
 {% endif %}
 {% if actividad.status.status == "Suspendida" %}
@@ -266,10 +283,13 @@ $('#id_fecha').pickadate({
                 <br>
                 <br>
                 <img src="/static/assets/img/logo.png" width="300">
-                <h2>Esta actividad a sido reasignada a otra fecha</h2>
-                <h5 style="font-weight: bold;">{{actividad.nombre}}</h5>
+                <h5>Esta actividad a sido reasignada a otra fecha</h5>
+                <h3 style="font-weight: bold;">{{actividad.nombre}}</h3>
                 <h6 style="text-align: left;"><strong>Descripcion:</strong> {{actividad.descripcion}}</h6>
                 <h6 style="text-align: left;"><strong>Tipo:</strong> {{actividad.tipo}}</h6>
+                <h6 style="text-align: left;"><strong>Lider:</strong> {{actividad.persona.nombre}} {{actividad.persona.apellido}}</h6>
+                <h6 style="text-align: left;"><strong>Descripción:</strong> {{actividad.descripcion}}</h6>
+                <h6 style="text-align: left;"><strong>Lugar:</strong> {{actividad.lugar}}</h6>
     </div>
 
     

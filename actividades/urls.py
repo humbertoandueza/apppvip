@@ -27,6 +27,10 @@ actividades_urlpatterns = ([
     path('crear',ActividadCreate.as_view(),name="crear_actividad"),
     path('crear_iglesia',IglesiaCreate.as_view(),name="crear_iglesia"),
     path('crear_entrenamiento',EntrenamientoCreate.as_view(),name="crear_entrenamiento"),
+    path('soli_entrenamiento',SolicitarAlpha.as_view(),name="sentrenamiento"),
+    path('detailentrenamiento/<int:pk>',DetailActividad.as_view(),name="detail_entrenamiento"),
+    path('materiala/',MaterialA.as_view(),name="materiala"),
+
     path('crear_grupo',GrupoCreate.as_view(),name="crear_grupo"),
 
     #Galerria
@@ -34,6 +38,7 @@ actividades_urlpatterns = ([
     path('album/',Album_get.as_view(),name="album"),
     path('albumes/',Album_tem.as_view(),name="albumes"),
     path('photo/<int:pk>/',Photo_get.as_view(),name="photo"),
+    path('photo_delete/',Photo_del.as_view(),name="photo_delete"),
     path('photos/<int:pk>/',Photos_tem.as_view(),name="photos"),
 
 

@@ -16,7 +16,6 @@ class LoginRequiredMixin(object):
 class SuperUserMixinRequired(object):
 	"""Nivel de usuario super User"""
 	def dispatch(self,request,*args,**kwargs):
-		print (request.user.is_administrador)
 		if not request.user.is_administrador:
 			return redirect(reverse_lazy('core:prohibido'))
 		return super(SuperUserMixinRequired,self).dispatch(request,*args,**kwargs)
@@ -26,7 +25,21 @@ class SuperUserMixinRequired(object):
 class StaffMixinRequired(object):
 	"""Nivel de usuario super User"""
 	def dispatch(self,request,*args,**kwargs):
-		print (request.user.is_staff)
 		if not request.user.is_staff:
 			return redirect(reverse_lazy('login'))
 		return super(StaffMixinRequired,self).dispatch(request,*args,**kwargs)
+	
+#clase para acceso de staff
+class ProgramadorMixinRequired(object):
+	"""Nivel de usuario super User"""
+	def dispatch(self,request,*args,**kwargs):
+		if not request.user.is_programador:
+			return redirect(reverse_lazy('login'))
+		return super(ProgramadorMixinRequired,self).dispatch(request,*args,**kwargs)
+
+class AdministradorMixinRequired(object):
+	"""Nivel de usuario super User"""
+	def dispatch(self,request,*args,**kwargs):
+		if not request.user.is_administrador:
+			return redirect(reverse_lazy('login'))
+		return super(AdministradorMixinRequired,self).dispatch(request,*args,**kwargs)

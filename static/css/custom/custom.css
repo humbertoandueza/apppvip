@@ -9,6 +9,8 @@ NOTE:
 ------
 PLACE HERE YOUR OWN CSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
 WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+/*
 .bg {
-	background: url('http://vidaplena.pythonanywhere.com/static/assets/img/banner/banner-1.jpg');
+	background: url('/static/assets/img/banner/banner-1.jpg');
 }
+*/

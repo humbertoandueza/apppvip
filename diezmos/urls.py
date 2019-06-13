@@ -4,6 +4,7 @@ from .views import *
 diezmo_urlpatterns = ([
     #Url para ingresos
     path('ingresos', IndexPageView.as_view(), name="ingresos"),
+    path('transaccciones', Transacciones, name="transacciones"),
     path('ingresojson',IngresoJson,name="IngresosJson"),
     path('crear_ingreso',IngresoCreate.as_view(),name="crear_ingreso"),
     path('post_ingreso',IngresoCreateView.as_view(),name="post_ingreso"),

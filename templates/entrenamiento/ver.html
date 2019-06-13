@@ -1,0 +1,56 @@
+{% extends "panel_admin/base.html" %}
+{% load static %}
+{% block content %}
+
+<section id="content">
+<div class="container">
+  <div class="section">
+      <div class="row">
+        <h3 class="center">{{entrenamiento.nombre}}</h3>
+      </div>
+      <div class="row mb-2">
+      <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
+            <div class="row">
+                <div class="col s4">
+                    <label>Fecha de Entrenamiento</label>
+                    <h5>{{entrenamiento.fecha}} {{entrenamiento.hora}}</h5>
+                </div>
+                <div class="col s4">
+                    <label>Lugar</label>
+                    <h5>{{entrenamiento.lugar}}</h5>
+                </div>
+                <div class="col s4">
+                    <label>Descripción</label>
+                    <h5>{{entrenamiento.descripcion}}</h5>
+                </div>
+                <div class="col s4">
+                        <label>Lider a cargo</label>
+                        <h5>{{entrenamiento.persona.nombre}} {{entrenamiento.persona.apellido}}</h5>
+                    </div>
+                    <div class="col s4">
+                        <label>Tipo de entrenamiento</label>
+                        <h5> {{entrenamiento.entrenamiento.grupo.nombre.upper}} </h5>
+                    </div>
+                    <div class="col s4">
+                        <label>Estatus</label>
+                        <h5>{{entrenamiento.status}}</h5>
+                    </div>
+            </div>
+        
+        </div>
+
+    </div>
+</div>
+</div>
+    <!--MODAL SESION EXPIRED -->
+    <div id="modal1" class="modal-full">
+      <div class="modal-content center">
+        
+    </div>
+
+<script>
+
+
+</script>
+
+{% endblock %}

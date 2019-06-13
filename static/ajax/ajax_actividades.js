@@ -26,36 +26,152 @@ $(document).ready(function(){
 $("#modal2").on("submit", ".js-book-create-form", function (e) {
     var form = $(this);
     var datos = $("#form :input").serializeArray();
+    id_nombre = $('#id_nombre').val()
+    id_descripcion = $('#id_descripcion').val()
+    id_lugar = $('#id_lugar').val()
+    id_persona = $('#id_persona').val()
+    id_tipo = $('#id_tipo').val()
+    id_fecha = $('#id_fecha').val()
+    id_fecha1 = $('#id_fecha1').val()
+    id_hora = $('#id_hora').val()
+    if( $('#entrenamiento').length){
+        entrenamiento = $('#entrenamiento').val()
+    }else{
+        entrenamiento = ''
+    }
+    token = $("input[name=csrfmiddlewaretoken]").val();
+    dias = $('#dias')
+    data1 = []
+
+    if (dias.length){
+        if($('#dias').val()>0 && $('#dias').val()<6 && id_tipo == 3){
+            count = 0
+            for(var i =0;i<$('#dias').val();i++){
+                fec = id_fecha1.split('/')
+                fec1 = fec[2]+'-'+fec[1]+'-'+fec[0]
+                fecha = moment(fec1).add(count,'days').format('YYYY-MM-DD')
+                count += 7
+                dia1 = moment(fecha).day()
+
+                is_domingo = false;
+                
+                if($('#dias').val() >1){
+                    parte = ' (Parte '+(i+1)+')'
+                }else{
+                    parte = ''
+                }
+                arr = {
+                    "nombre" :id_nombre +parte,
+                    "descripcion":id_descripcion,
+                    "lugar":id_lugar,
+                    "persona":id_persona,
+                    "tipo":id_tipo,
+                    "fecha":fecha,
+                    "hora":id_hora,
+                    "is_domingo":is_domingo,
+                    "entre":entrenamiento
+                }
+                data1.push(arr)
+            }
+        }if($('#dias').val()>5){
+            $('#error').html('<p style="color:red;text-aling:center;">Cantidad  de dias:Introduzca un numero menor a 5</p>')
+            $('#dias').focus()
+        }if($('#dias').val()<1){
+            $('#error').html('<p style="color:red;text-aling:center;">Cantidad  de dias:Introduzca un numero mayor a 0</p>')
+            $('#dias').focus()
+
+        }
+        if($('#dias').val()>0 && $('#dias').val()<6 && (id_tipo == 1 || id_tipo == 2)){
+            count = 0
+            for(var i =0;i<$('#dias').val();i++){
+                if($('#dias').val() >1){
+                    dia = ' (Día '+(i+1)+')'
+                }else{
+                    dia = ''
+                }
+                fec = id_fecha.split('/')
+                fec1 = fec[2]+'-'+fec[1]+'-'+fec[0]
+                fecha = moment(fec1).add(count,'days').format('YYYY-MM-DD')
+                dia1 = moment(fecha).day()
+                if(dia1 == 0){
+                    is_domingo= true;
+                }else{
+                    is_domingo = false;
+                }
+                count += 1
+                arr = {
+                    "nombre" :id_nombre +dia,
+                    "descripcion":id_descripcion,
+                    "lugar":id_lugar,
+                    "persona":id_persona,
+                    "tipo":id_tipo,
+                    "fecha":fecha,
+                    "hora":id_hora,
+                    "is_domingo":is_domingo,
+                    "entre":entrenamiento
+                }
+                data1.push(arr)
+            }
+        }
+    }
+    else{
+        fec = id_fecha.split('/')
+        fec1 = fec[2]+'-'+fec[1]+'-'+fec[0]
+        fecha = moment(fec1).format('YYYY-MM-DD')
+        dia1 = moment(fecha).day()
+        if(dia1 == 0){
+            is_domingo= true;
+        }else{
+            is_domingo = false;
+        }
+        arr = {
+            "nombre" :id_nombre,
+            "descripcion":id_descripcion,
+            "lugar":id_lugar,
+            "persona":id_persona,
+            "tipo":id_tipo,
+            "fecha":fecha,
+            "hora":id_hora,
+            "is_domingo":is_domingo,
+            "entre":entrenamiento
+        }
+        data1.push(arr)
+    } 
+    data = {
+        data : JSON.stringify(data1),
+        csrfmiddlewaretoken:token,
+    }
     $.ajax({
     url: form.attr("action"),
-    data: form.serialize(),
-    type: form.attr("method"),
-    dataType: 'json',
+    data: data,
+    type: 'POST',
     success: function (data) {
+        console.log(data)
+        
         if (data.form_is_valid) {
             Materialize.toast('Actividad Registrada', 3000, 'rounded')
-            $('#calendar').fullCalendar('renderEvent', {
-                id: data.id,
-                title: data.title,
-                start: data.start,
-                descripcion:data.descripcion,
-                lugar:data.lugar,
-                tipo:data.tipo,
-                observacion:data.observacion,
-                estatus:'Por Realizar',
-                estatuss:data.estatuss,
-                color : '#00B0F0',
-                allDay: false
-              });
+            for(var i =0;i<data.data.length;i++){
+                $('#calendar').fullCalendar('renderEvent', {
+                    id: data.data[i].id,
+                    title: data.data[i].title,
+                    start: data.data[i].start,
+                    descripcion:data.data[i].descripcion,
+                    lugar:data.data[i].lugar,
+                    tipo:data.data[i].tipo,
+                    observacion:data.data[i].observacion,
+                    estatus:'Por Realizar',
+                    estatuss:data.data[i].estatuss,
+                    color : '#00B0F0',
+                    allDay: false
+                  });
+
+            }
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
         else {
             $("#modal2 .modal-content").html(data.html_form);
-            var error = data.error.split(',');
-            for(var i = 0;i < error.length; i+=1){
-                $('#error').append('<p style="color:red;">'+error[i]+'</p>');
-                console.log(error[i]);
-            }
+            var error = data.error;
+            $('#error').html('<p style="color:red;text-align:center;">'+error+'</p>');
 
         }
     }
@@ -215,6 +331,67 @@ $("#modal2").on("submit", ".js-book-borrar-form", function (e) {
     });
     return false;
 });
+$(document).on('change','#id_tipo',function(){
+    this.value
+    metodo = $('#form1');
+    console.log(metodo)
+    if(metodo != 'js-book-edit-form'){
+        if(!$('#form1').hasClass('js-book-edit-form')){
+            if(this.value == 3 || this.value == 2 || this.value == 1){
+                html = `<div class="input-field col s12 m12">
+                            <input type="number" name="nombre" class="validate number" id="dias" required="">
+                            <label for="dias" class="active">Cantidad de dias</label>
+                        </div>`
+                $('#num').html(html)
+                if(this.value == 3){
+                    $('#id_hora').val('09:00:00')
+                    $('#id_hora').attr('readonly','readonly')
+                    $('#id_fecha').addClass('hide')
+                    $('#id_fecha1').removeClass('hide')
+                    $('#id_fecha1').removeAttr('disabled')
+                    $('#id_fecha1').attr('required','required')
+                    $('#id_fecha').removeAttr('required')
+                    $('#id_fecha').attr('disabled','disabled')
+
+                }else{
+                    $('#id_hora').val('')
+
+                    $('#id_hora').removeAttr('readonly')
+
+                    $('#id_fecha').removeClass('hide')
+                    $('#id_fecha').attr('required','required')
+                    $('#id_fecha1').addClass('hide')
+                    $('#id_fecha').removeAttr('disabled')
+
+                    $('#id_fecha1').removeAttr('required')
+
+                    $('#id_fecha1').attr('disabled','disabled')
+                }
+
+
+
+            }else{
+                $('#id_hora').val('')
+
+                $('#id_hora').removeAttr('readonly')
+
+                $('#id_fecha').removeClass('hide')
+                $('#id_fecha1').addClass('hide')
+                $('#id_fecha').removeAttr('disabled')
+
+                $('#id_fecha').attr('required','required')
+
+                $('#id_fecha1').removeAttr('required')
+
+                $('#id_fecha1').attr('disabled','disabled')
+                $('#num').html('')
+            }
+            
+        }
+
+    }
+    
+})
 var loader = `
 <div class="preloader-wrapper active" style="margin-top:5%;">
     <div class="spinner-layer spinner-blue-only">

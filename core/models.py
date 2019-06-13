@@ -78,7 +78,12 @@ class Notificacion(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     contenido = models.CharField(max_length=450,verbose_name="Contenido de la notificacion")
     date = models.DateField(auto_now_add=True)
-    url = models.URLField(verbose_name="link a redireccionar",null=True)
+    est = (
+        ('organizacion','organizacion'),
+        ('programador','programador'),
+        )
+    tipo = models.CharField(max_length=200,choices=est)
+    url = models.CharField(max_length=200,verbose_name="link a redireccionar",null=True)
     estatus = models.CharField(max_length=20,default="No leida")
 
     def __str__(self):

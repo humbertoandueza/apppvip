@@ -1,6 +1,7 @@
 {% extends "panel_admin/base.html" %}
 {% load static %}
 {% block content %}
+{% if request.user.is_administrador or request.user.is_programador or request.user.is_superuser %}
 <style>
     @keyframes spin-horizontal {
     0% { transform: rotateY(0deg); }
@@ -24,5 +25,106 @@
 	</div>
 </section>
 <a class="toast hide" onclick="Materialize.toast('Bienvenido {{request.user.first_name}}', 3000, 'rounded')">Round Toast!</a>
+{% else %}
+<section class="section-padding gray-bg">
+					<div class="row">
+						<div class="col s10 offset-s1">
+
+							<div class="container">
+	
+								<div class="row">
+									<div class="col s12 center">
+										<h2>Entrenamientos Alpha</h2>
+									</div>
+										<div class="col s12 m6" >
+										<div class="card">
+											<div class="card-image">
+												{% if serie %}
+												<img src="{% static 'images/alpha-g.jpg'%}">
+												{% else %}
+												<img src="{% static 'images/alpha.jpg'%}">
+												{% endif %}
+												
+												<span  class="card-title">ALPHA SERIES</span>
+												<button int="1" {% if serie %} disabled {% endif %} class="btn-floating halfway-fab waves-effect waves-light blue right soli" style="text-align: center;font-size: 30px;top: -20px; right: 20px;" >+</button>
+											</div>
+											<div class="card-content">
+												<p>General.</p>
+											</div>
+										</div>
+									</div>
+									<div class="col s12 m6">
+										<div class="card">
+											<div class="card-image">
+													{% if joven %}
+													<img src="{% static 'images/alpha-g.jpg'%}">
+													{% else %}
+													<img src="{% static 'images/alpha.jpg'%}">
+													{% endif %}
+												<span class="card-title">ALPHA JOVEN</span>
+												<button int="3" {% if joven %} disabled {% endif %} class="btn-floating halfway-fab waves-effect waves-light blue right soli" style="text-align: center;font-size: 30px;top: -20px; right: 20px;">+</button>
+											</div>
+											<div class="card-content">
+												<p>Cada joven tenga una vision.</p>
+											</div>
+										</div>
+									</div>
+									<div class="col s12 m6">
+										<div class="card">
+											<div class="card-image">
+													{% if nino %}
+													<img src="{% static 'images/alpha-g.jpg'%}">
+													{% else %}
+													<img src="{% static 'images/alpha.jpg'%}">
+													{% endif %}
+												<span class="card-title">ALPHA NIÑOS</span>
+												<button int="2" {% if nino %} disabled {% endif %} class="btn-floating halfway-fab waves-effect waves-light blue right soli" style="text-align: center;font-size: 30px;top: -20px; right: 20px;">+</button>
+											</div>
+											<div class="card-content">
+												<p>Que cada niño se identifique.</p>
+											</div>
+										</div>
+									</div>
+									<div class="col s12 m6">
+										<div class="card">
+											<div class="card-image">
+													{% if matri %}
+													<img src="{% static 'images/alpha-g.jpg'%}">
+													{% else %}
+													<img src="{% static 'images/alpha.jpg'%}">
+													{% endif %}
+												<span class="card-title">ALPHA MATRIMONIO</span>												
+												<button  int="4" {% if matri %} disabled {% endif %} class="btn-floating halfway-fab waves-effect waves-light blue right soli" style="text-align: center;font-size: 30px;top: -20px; right: 20px;">+</button>
+											</div>
+											<div class="card-content">
+												<p>Lleve el modelo de jesus.</p>
+											</div>
+										</div>
+									</div>
+								</div><!-- /.row -->
+	
+							</div><!-- /.container -->
+						</div>
+					</div>
+		</section>
+        <script src="{% static 'admin/js/vendor/jquery/jquery.min.js'%}"></script>
+
+		<script>
+		$(document).on('click','.soli',function(){
+        id = $(this).attr('int')
+        data = {"id":id,"csrfmiddlewaretoken":"{{ csrf_token }}"}
+        $.ajax({
+            url:'{% url "actividades:sentrenamiento" %}',
+            type:'POST',
+            data:data,
+            success:function(data){
+				window.location = window.location; 
+				
+            }
+        })
+        
+    })
+		</script>
+{% endif %}
 {% endblock%}
 

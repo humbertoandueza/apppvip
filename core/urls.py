@@ -5,7 +5,8 @@ core_urlpatterns = ([
     path('', IndexPageView.as_view(), name="home"),
     path('panel/', IndexPagePanelView.as_view(), name="panel"),
     path('prohibido',ProhibidoView.as_view(),name="prohibido"),
-    path('notifications',Notification.as_view(),name="notification")
+    path('notifications',Notification.as_view(),name="notification"),
+    path('notificaciones',NotificacionesView.as_view(),name="notificaciones")
 
 
 ],"core")

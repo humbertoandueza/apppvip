@@ -789,18 +789,16 @@
 .light-blue-text.text-lighten-1 {
   color: #29b6f6 !important;
 }
-
+/*
 .light-blue {
   background-image: linear-gradient(to right, rgba(109, 179, 242, .6), rgba(109, 179, 242, .6)), url("http://vidaplena.pythonanywhere.com/static/assets/img/banner/banner-1.jpg");
   height: 100%;
   width: 100%; 
 
-    /* Center and scale the image nicely */
     background-position: center;
     background-size: cover;
-  /*background-color: #03a9f4 !important;*/
 }
-
+*/
 .light-blue-text {
   color: #03a9f4 !important;
 }

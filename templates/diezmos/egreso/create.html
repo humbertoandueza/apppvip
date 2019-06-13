@@ -52,3 +52,31 @@
 </form>
 
 
+<script>
+$('#id_fecha').on('mousedown',function(event){
+    event.preventDefault();
+});
+dias = moment().subtract(7, 'days').format('YYYY-MM-DD')
+$('#id_fecha').pickadate({
+        monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthsShort: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        weekdaysFull: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+        min: new Date(dias),
+        max:new Date(),
+        showWeekdaysFull: true,
+        showMonthsShort: true,
+        firstDay: 1,
+        formatSubmit: 'yyyy-mm-dd',
+        format: 'yyyy-mm-dd',
+        today: 'Hoy',
+        clear: 'Limpiar',
+        close: 'Ok',
+        labelMonthNext: 'Siguiente mes',
+        labelMonthPrev: 'Mes anterior',
+        labelMonthSelect: 'Selecciona un mes',
+        labelYearSelect: 'Selecciona un año',
+      
+
+    });
+    </script>

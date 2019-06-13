@@ -20,7 +20,7 @@
                 </div>
                 <div class="input-field col s12 m6">
                     <i class="mdi-action-account-circle prefix"></i>
-                    <input  type="text" class="validate" name="monto" id="id_monto" required="" value="{{form.monto.value}}">
+                    <input  type="text" class="validate" name="monto" id="id_monto" readonly required="" value="{{form.monto.value}}">
                     <label for="id_monto">Monto</label>
                 </div>
             </div>
@@ -52,7 +52,7 @@
 </form>
 <script>
 var fecha = $('#id_fecha').val()
-$('#id_fecha').attr('type','date');
+$('#id_fecha').attr('type','text');
 var fec = fecha.split('/');
 var fecha_l = fec[2]+'-'+fec[1]+'-'+fec[0];
 $('#id_fecha').val(fecha_l)
@@ -99,7 +99,31 @@ if(trans == 1){
       `;
       $('.tipopago').append(numero_tras);
 }
+$('#id_fecha').on('mousedown',function(event){
+    event.preventDefault();
+});
+dias = moment().subtract(1, 'days').format('YYYY-MM-DD')
+$('#id_fecha').pickadate({
+        monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthsShort: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        weekdaysFull: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+        max: new Date(),
+        showWeekdaysFull: true,
+        showMonthsShort: true,
+        firstDay: 1,
+        formatSubmit: 'yyyy-mm-dd',
+        format: 'yyyy-mm-dd',
+        today: 'Hoy',
+        clear: 'Limpiar',
+        close: 'Ok',
+        labelMonthNext: 'Siguiente mes',
+        labelMonthPrev: 'Mes anterior',
+        labelMonthSelect: 'Selecciona un mes',
+        labelYearSelect: 'Selecciona un año',
+      
 
+    });
 </script>
 <script>
 $('label').addClass('active');

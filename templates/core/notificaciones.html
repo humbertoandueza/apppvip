@@ -1,0 +1,107 @@
+{% extends "panel_admin/base.html" %}
+{% load static %}
+{% block content %}
+        <script src="{% static 'admin/js/vendor/jquery/jquery.min.js'%}"></script>
+        <script src="{% static 'datatables/jquery.dataTables.min.js'%}"></script>
+        <script src="{% static 'datatables/dataTables.buttons.min.js'%}"></script>
+        <script src="{% static 'datatables/buttons.flash.min.js'%}"></script>
+        <script src="{% static 'datatables/buttons.print.min.js'%}"></script>
+        <script src="{% static 'datatables/pdfmake.min.js'%}"></script>
+        <script src="{% static 'datatables/vfs_fonts.js'%}"></script>
+        <script src="{% static 'datatables/buttons.html5.min.js'%}"></script>
+        <script src="{% static 'datatables/dataTables.bootstrap4.min.js'%}"></script>
+
+        <script type="text/javascript" src="{% static 'select2/select2.min.js'%}"></script>
+
+<section id="content">
+<div class="container">
+  <div class="section">
+      <div class="row">
+        <h3 class="center">Notificaciones</h3>
+      </div>
+      <div class="row mb-2">
+      <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
+
+        <table id="postsTable" class="table">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Fecha</th>
+                        <th>Contenido</th>
+                        <th>Estatus</th>
+                        <th>Opción</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if notificaciones %}
+                    {% for notificacion in notificaciones %}
+                        <tr>
+                            <td>{{notificacion.count}}</td>
+                            <td>{{notificacion.fecha}}</td>
+                            <td>{{notificacion.contenido}}</td>
+                                {% if notificacion.estatus == 'Leida' %}
+                                <td>Leida</td>
+                                {% else %}
+                                <td style="color:red;">No leida</td>
+                                {% endif %}
+                                <td><a href="#" onclick="act({{notificacion.id}},'{{notificacion.url}}')">Ver</a></td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        
+                    
+                    {% endif %}
+
+                </tbody>
+           </table>
+        </div>
+
+    </div>
+</div>
+</div>
+    <!--MODAL SESION EXPIRED -->
+    <div id="modal1" class="modal-full">
+      <div class="modal-content center">
+        
+    </div>
+
+<script>
+    var tables= $('#postsTable').DataTable({
+    "language": {
+        "url": "/static/datatables/spanish.json"
+        },
+    responsive: true,
+    ordering: true,
+    responsive: true,
+    scrollY: 380,
+    scrollCollapse: true,
+
+    "iDisplayLength": 10,
+    dom: 'frti<"right"p>'
+    });
+    function act(id,url){
+            let not = "#lei"+id;
+            le = $(not).hasClass('le');
+            if(!le){
+                console.log("cantidad nueva",cantidad);
+                $.ajax({
+                  url: "{% url 'core:notification' %}",
+                  type: "POST",
+                  data: {"id":id,"csrfmiddlewaretoken":"{{ csrf_token }}"},
+                  dataType: 'json',
+                  success: function (data) {
+                    //Materialize.toast(data.success, 3000, 'rounded');
+                    window.location = url
+
+                  }
+                  });
+
+            }else{
+                console.log('Notificacion leida');
+            }
+
+          }
+</script>
+
+{% endblock %}

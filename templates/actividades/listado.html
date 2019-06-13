@@ -142,9 +142,15 @@ function Imp(){
                 if(getParameterByName('id') && getParameterByName('titulo')){
                     titulo = getParameterByName('titulo')
                     id = getParameterByName('id')
+                    entrenamiento = getParameterByName('entrenamiento')
                     $('#id_nombre').val('Entrenamiento para la organizacion '+titulo)
-                    $('#form').append('<input type="number" class="hidden hide" value="'+id+'" name="entrenamiento" id="id_entrenamiento">' )
-                    $('#id_tipo').val(2)
+                    $('#id_nombre').attr('readonly','readonly')
+
+                    $('#form').append('<input type="number" class="hidden hide" value="'+id+'" name="entrenamiento" id="id_entrenamiento"><input type="number" class="hidden hide" value="'+entrenamiento+'" name="entre" id="entrenamiento">' )
+                    option = '<option value="2">Entrenamiento</option>'
+                    $('#id_tipo').html(option)
+                    $('#id_tipo').val(2).change();
+                    $('#id_tipo').attr('readonly','readonly')
                     history.replaceState('data to be passed', 'Title of the page', "{% url 'actividades:home'%}");
 
                     //$('#id_tipo').attr('disabled','disabled')
@@ -478,22 +484,40 @@ function Imp(){
 
                     </ul>
                     <ul class="right hide-on-med-and-down">
-                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light notification-button" data-activates="notifications-dropdown"><i class="mdi-social-notifications"></i></a></li>
+                            <li>
+                                    <a href="javascript:void(0);" class="waves-effect waves-block waves-light notification-button" data-activates="notifications-dropdown">
+                                        <span class="notis" style="font-weight: bold;
+                                        border-radius: 50%;
+                                        top: 4px;
+                                        background-color: red;
+                                        position: fixed;
+                                        z-index: 999;
+                                        width: 16px;
+                                        height: 16px;
+                                        text-align: center;
+                                        font-size: 10px;
+                                        line-height: 17px;"></span>
+                                        <i class="mdi-social-notifications"></i>
+                                    </a>
+                                </li>
                     </ul>
 
                     <!-- notifications-dropdown -->
                     <!-- notifications-dropdown -->
                     <ul id="notifications-dropdown" class="dropdown-content" style="min-width:25vw;">
-                      <li>
-                      <center>
-                            </h5>
-                            NOTIFICACIONES
-                            <h5>
-                        </center>
-                        <span  class="notis blue" style="padding: 5px; color: white;font-weight: bold; width: 100%;"></span>   
-                        <br>
-                            <a href="#" class="right" style="color: blue;margin-left: 52px;">Ver todas</a>
-                      </li>
+                        <li>
+                                <div class="row valign-wrapper" style="margin: 0;padding:0;">
+                                    <div class="col s8">
+                                            <h5>
+                                            NOTIFICACIONES
+                                            </h5>
+                                    </div>
+                                    <div class="col s4">
+                                        <a href="{% url 'core:notificaciones'%}" class="right" style="color:#060606;font-size:10px;"><i class="mdi-social-notifications"></i> Ver todas</a>
+            
+                                    </div>
+                                </div>
+                                </li>
                       <li class="divider"></li>
                     <div class="right">
                     
@@ -585,6 +609,10 @@ function Imp(){
                                     </li>
                                 </ul>
                                 <ul>
+                                    <li class="bold {% if request.path == '/panel/diezmos/transacciones' %}active{%endif%}"><a href="{% url 'diezmo:transacciones' %}">Transacciones</a>
+                                    </li>
+                                </ul>
+                                <ul>
                                     <li class="bold {% if request.path == '/panel/diezmos/concepto' %}active{%endif%}"><a href="{% url 'diezmo:concepto' %}">Concepto</a>
                                     </li>
                                 </ul>
@@ -611,7 +639,7 @@ function Imp(){
                                     </li>
                                 </ul>
                                 <ul>
-                                    <li class="bold {% if request.path == '/panel/actividades/grupo' %}active{%endif%}"><a href="{% url 'actividades:index_grupo' %}">Grupos</a>
+                                    <li class="bold {% if request.path == '/panel/actividades/grupo' %}active{%endif%}"><a href="{% url 'actividades:albumes' %}">Galeria</a>
                                     </li>
                                 </ul>
                                 <ul>
@@ -792,22 +820,27 @@ function Imp(){
                                 if(!e.cantidad){
                                     console.log('noti:',e);
                                     $('#notifications-dropdown').append(`
-                                    <li>
-                                        <a style="white-space: initial; font-size:13px;" href="#" onclick="act(${e.notificacion.id})">${e.notificacion.contenido}</a>
-                                        <time class="media-meta" id="lei${e.notificacion.id}">${e.notificacion.fecha}  </time>
+                                    <li onclick="act(${e.notificacion.id},'${e.notificacion.url}')">
+                                        <a style="white-space: initial; font-size:13px;" href="#" >${e.notificacion.contenido}</a>
+                                        <time class="media-meta right" id="lei${e.notificacion.id}">${e.notificacion.fecha}  </time>
                                     </li>
                                     `);
                                 }
                                 else{
                                     console.log('cantidad:',e);
-                                    $('.notis').append(e.cantidad+" No leidas");
+                                    $('.notis').append(e.cantidad);
                                     cantidad = e.cantidad;
                                     console.log("cantidad",cantidad);
                                 }
                             }else{
                                 $('.notis').removeClass('blue');
-                                $('.notis').append("0 No leidas");
+                                $('.notis').append("0");
                                 $('.notis').addClass('red');
+                                $('#notifications-dropdown').append(`
+                                <li >
+                                    <a style="white-space: initial; font-size:13px;text-align:center;" href="#" >No hay notificaciones</a>
+                                </li>
+                                `);
                             }
                           });
                           
@@ -820,7 +853,7 @@ function Imp(){
                     
                 }
                 noti();
-          function act(id){
+          function act(id,url){
             let not = "#lei"+id;
             le = $(not).hasClass('le');
             if(!le){
@@ -831,15 +864,9 @@ function Imp(){
                   data: {"id":id,"csrfmiddlewaretoken":"{{ csrf_token }}"},
                   dataType: 'json',
                   success: function (data) {
-                    Materialize.toast(data.success, 3000, 'rounded');
-                    if(cantidad == 1){
-                        $('.notis').removeClass('blue');
-                        $('.notis').addClass('red');
-                    }
-                    cantidad =  cantidad-1;
-                    $('.notis').html(cantidad+" No Leidas");
-                    $(not).addClass('le');
-                    $(not).append("<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;leida</strong>");
+                    //Materialize.toast(data.success, 3000, 'rounded');
+                    window.location = url
+
                   }
                   });
 

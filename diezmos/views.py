@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404,redirect
-from core.mixins import LoginRequiredMixin,SuperUserMixinRequired
+from core.mixins import LoginRequiredMixin,SuperUserMixinRequired,AdministradorMixinRequired
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.core import serializers
@@ -17,11 +17,35 @@ from .forms import IngresoForm,EgresoForm,ConceptoForm
 from django.template.loader import render_to_string
 # Create your views here.
 
-class IndexPageView(LoginRequiredMixin,TemplateView):
+class IndexPageView(LoginRequiredMixin,AdministradorMixinRequired,TemplateView):
     def get(self,request,**kwargs):
         return render(request,'diezmos/ingreso/listado.html')
 
 
+def Transacciones(request):
+    if "year" in request.GET and "mes" in request.GET :
+        mes = request.GET['mes']
+        year = request.GET['year']
+    else:
+        mes = datetime.now().month
+        year = datetime.now().year
+    ingreso = Ingreso.objects.filter(fecha__month=mes,fecha__year=year).values_list("fecha_t","monto","disponible","tipo","id")
+    ingreso1 = Ingreso.objects.filter(fecha__month=mes,fecha__year=year).aggregate(Sum('monto'))
+    print(ingreso1)
+    egreso = Egreso.objects.filter(fecha__month=mes,fecha__year=year).values_list("fecha_t","monto","disponible","tipo","id")
+    total = ingreso1['monto__sum']
+    print(total)
+    transaccion = ingreso.union(egreso).order_by('-fecha_t','-id')
+    tran = []
+    count = 0
+    for i in transaccion:
+        count += 1
+        tran.append({
+            "count":count,
+            "fecha":i[0],
+            "monto":"{:,}".format(int(i[1])).replace(',','.'),
+            "tipo":i[3]})
+    return render(request,'diezmos/ingreso/transacciones.html',{"transacciones":tran,"total":total})
 
 #Retorno Json para Imprimir con DataTables
 def IngresoJson(request):
@@ -39,7 +63,7 @@ def consulta(request):
     return render(request,plantillaHtml,{'context':query})
 #Formulario del modelo Ingresos
 
-class IngresoCreate(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
+class IngresoCreate(LoginRequiredMixin,AdministradorMixinRequired,TemplateView):
     model = Ingreso
     template_name = 'diezmos/ingreso/create.html'
     def get(self,request,*args,**kwargs):
@@ -51,15 +75,19 @@ class IngresoCreate(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
         return JsonResponse({'html_form': html_form})
 
 #Class Post Ingresos
-class IngresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
+class IngresoCreateView(LoginRequiredMixin,AdministradorMixinRequired,TemplateView):
     def post(self,request,*args,**kwargs):
+        import datetime
         data = dict()
 
         if request.method == 'POST':
             form = IngresoForm(request.POST)
             if form.is_valid():
                 ingreso = form.save()
-                notificacions(user=request.user,contenido=request.user.first_name+" registro un ingreso de: <strong>"+str(request.POST['monto'])+" Bs.</strong>",url=ingreso.pk)
+                hora = datetime.datetime.now().time()
+                fec = request.POST['fecha']+' '+str(hora)
+                Ingreso.objects.filter(pk=ingreso.pk).update(disponible=capital_obtener(),fecha_t=fec)
+                #notificacions(user=request.user,contenido=request.user.first_name+" registro un ingreso de: <strong>"+str(request.POST['monto'])+" Bs.</strong>",url=ingreso.pk)
                 
                 data['form_is_valid'] = True
             else:
@@ -144,7 +172,8 @@ def ingreso_update(request, pk):
             data['form_is_valid'] = False
         else:
             if form.is_valid():
-                form.save()
+                ingreso = form.save()
+                #Ingreso.objects.filter(pk=ingreso.pk).update(disponible=capital_obtener())
                 data['form_is_valid'] = True
 
 
@@ -168,7 +197,7 @@ def ingreso_update(request, pk):
 
 
 # Index del Egreso
-class IndexEgresoPageView(LoginRequiredMixin,TemplateView):
+class IndexEgresoPageView(LoginRequiredMixin,AdministradorMixinRequired,TemplateView):
     def get(self,request,**kwargs):
         concepto = Concepto.objects.all()
         return render(request,'diezmos/egreso/listado.html',{'concepto':concepto})
@@ -187,7 +216,7 @@ def EgresoJson(request):
 
 
 #Class Formulario Egreso
-class EgresoCreate(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
+class EgresoCreate(LoginRequiredMixin,AdministradorMixinRequired,TemplateView):
     model = Egreso
     template_name = 'diezmos/egreso/create.html'
     def get(self,request,*args,**kwargs):
@@ -198,9 +227,10 @@ class EgresoCreate(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
         request=request)
         return JsonResponse({'html_form': html_form})
 
-class EgresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
+class EgresoCreateView(LoginRequiredMixin,AdministradorMixinRequired,TemplateView):
     def post(self,request,*args,**kwargs):
         data = dict()
+        import datetime
 
         if request.method == 'POST':
             form = EgresoForm(request.POST)
@@ -221,7 +251,10 @@ class EgresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
                     usuario = form.save(commit=False)
                     usuario.usuario = request.user
                     egreso = form.save()
-                    notificacions(user=request.user,contenido=request.user.first_name+" realizó un retiro de: <strong>"+str(request.POST['monto'])+" Bs.</strong>",url=egreso.pk)
+                    hora = datetime.datetime.now().time()
+                    fec = request.POST['fecha']+' '+str(hora)
+                    Egreso.objects.filter(pk=egreso.pk).update(disponible=capital_obtener(),fecha_t=fec)
+                    #notificacions(user=request.user,contenido=request.user.first_name+" realizó un retiro de: <strong>"+str(request.POST['monto'])+" Bs.</strong>",url=egreso.pk)
 
                     data['form_is_valid'] = True
 
@@ -245,7 +278,7 @@ class EgresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
         return redirect('diezmo:home')
 
 
-class ConceptoPageView(LoginRequiredMixin,TemplateView):
+class ConceptoPageView(LoginRequiredMixin,AdministradorMixinRequired,TemplateView):
     def get(self,request,**kwargs):
         return render(request,'diezmos/concepto/listado.html')
 
@@ -260,7 +293,7 @@ def ConceptoJson(request):
     return JsonResponse(dicts,safe=False)
 
 
-class ConceptoCreate(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
+class ConceptoCreate(LoginRequiredMixin,AdministradorMixinRequired,TemplateView):
     model = Concepto
     template_name = 'diezmos/concepto/create.html'
     def get(self,request,*args,**kwargs):
@@ -271,7 +304,7 @@ class ConceptoCreate(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
         request=request)
         return JsonResponse({'html_form': html_form})
 
-class ConceptoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
+class ConceptoCreateView(LoginRequiredMixin,AdministradorMixinRequired,TemplateView):
     def post(self,request,*args,**kwargs):
         data = dict()
         if request.method == 'POST':

@@ -1,7 +1,15 @@
 from django.contrib import admin
 from .models import *
 # Register your models here.
-admin.site.register(Actividades)
+class AdminAct(admin.ModelAdmin):
+	list_display = [
+		"id",
+		"status",
+		"persona",
+		"fecha",
+		"hora"
+	]
+admin.site.register(Actividades,AdminAct)
 admin.site.register(Album)
 admin.site.register(Photo)
 

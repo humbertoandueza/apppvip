@@ -17,6 +17,7 @@ class ActividadesForm(forms.ModelForm):
         super (ActividadesForm,self ).__init__(*args,**kwargs) # populates the post
         self.fields['fecha'].input_formats=(settings.DATE_INPUT_FORMATS)
         self.fields['persona'].queryset = Persona.objects.filter(roles="Lider")
+        self.fields['tipo'].queryset = Tipo_actividad.objects.exclude(tipo="Entrenamiento")
 
 
 

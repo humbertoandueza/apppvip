@@ -1,0 +1,213 @@
+{% extends "panel_admin/base.html" %}
+{% load static %}
+{% block content %}
+        <script src="{% static 'admin/js/vendor/jquery/jquery.min.js'%}"></script>
+        <script src="{% static 'datatables/jquery.dataTables.min.js'%}"></script>
+        <script src="{% static 'datatables/dataTables.buttons.min.js'%}"></script>
+        <script src="{% static 'datatables/buttons.flash.min.js'%}"></script>
+        <script src="{% static 'datatables/buttons.print.min.js'%}"></script>
+        <script src="{% static 'datatables/pdfmake.min.js'%}"></script>
+        <script src="{% static 'datatables/vfs_fonts.js'%}"></script>
+        <script src="{% static 'datatables/buttons.html5.min.js'%}"></script>
+        <script src="{% static 'datatables/dataTables.bootstrap4.min.js'%}"></script>
+
+        <script type="text/javascript" src="{% static 'select2/select2.min.js'%}"></script>
+
+<section id="content">
+<div class="container">
+  <div class="section">
+      <div class="row">
+        <h3 class="center">Listado de Transacciones</h3>
+          <div class="col s10 offset-s1">
+            <br>
+                <div class="divider"></div>
+                <table>
+                  <thead>
+                    <tr id="capital">
+                      <th style="color: green;">Ingreso del mes: {{total}} bs.</th>
+                    </tr>
+                  </thead>
+                </table>
+                <div class="divider"></div>
+              <br>
+
+          </div>
+          <form action="" method="get">
+          
+          <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
+             <div class="col s2 impr">
+                <a class="btn btn-primary " onclick="tipo()">Imprimir</a>
+            </div>
+            <div class="col s3 offset-s1">
+                    <select id="mes" name="mes" required>
+                        <option value="" disabled="" selected="">Mes</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+                <div class="col s3 ">
+                    <select id="year" name="year" required>
+                        <option value="" disabled="" selected="">Año</option>
+                    </select>
+                </div>
+                <div class="col s1 offset-s1">
+                    <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+          </div>
+        </form>
+
+      </div>
+      <div class="row mb-2">
+      <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
+
+        <table id="postsTable" class="table">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th class="right">Monto</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if transacciones %}
+                    {% for transaccion in transacciones %}
+                        <tr>
+                            <td>{{transaccion.count}}</td>
+                            <td>{{transaccion.fecha}}</td>
+                                {% if transaccion.tipo == True %}
+                                <td>Ingreso</td>
+                                {% else %}
+                                <td style="color:red;">Egreso</td>
+                                {% endif %}
+                                {% if transaccion.tipo == True %}
+                                <td class="right">{{transaccion.monto}} bs.</td>
+                                {% else %}
+                                <td style="color:red;" class="right">-{{transaccion.monto}} bs.</td>
+                                {% endif %}
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        
+                    
+                    {% endif %}
+
+                </tbody>
+           </table>
+        </div>
+
+    </div>
+</div>
+</div>
+    <!--MODAL SESION EXPIRED -->
+    <div id="modal1" class="modal-full">
+      <div class="modal-content center">
+        
+    </div>
+
+<script>
+    var tables= $('#postsTable').DataTable({
+    "language": {
+        "url": "/static/datatables/spanish.json"
+        },
+    responsive: true,
+    ordering: true,
+    responsive: true,
+    scrollY: 380,
+    scrollCollapse: true,
+
+    "iDisplayLength": 10,
+    dom: 'frti<"right"p>'
+    });
+function mes(){
+  var d = new Date();
+  var month = new Array();
+  month[0] = "Enero";
+  month[1] = "Febrero";
+  month[2] = "Marzo";
+  month[3] = "Abril";
+  month[4] = "Mayo";
+  month[5] = "Junio";
+  month[6] = "Julio";
+  month[7] = "Augosto";
+  month[8] = "Septimbre";
+  month[9] = "Octubre";
+  month[10] = "Noviembre";
+  month[11] = "Diciembre";
+  return month[d.getMonth()];
+}
+function capital(){
+    $.ajax({
+        url: "{% url 'diezmo:capital'%}",
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+        },
+        success: function (data) {
+            if (data['total']== 0){
+                var color = 'color:red';
+            }else{
+                var color = 'color:green';
+            }
+            if(data['ofrenda'] == 0){
+                var color1 = 'color:red';
+            }else{
+                var color1 = 'color:green';
+            }
+            if(data['diezmo'] == 0){
+                var color2 = 'color:red';
+            }else{
+                var color2 = 'color:green';
+            }
+            /*var capital = "<strong><p style='font-size:15px; color:green;'>Mes actual: "+mes()+"</strong></p><p style='font-size:15px;"+color1+"'>Ofrenda del mes de: <strong>"+data['ofrenda']+"</strong> Bs.</p><p style='font-size:15px;"+color2+"'>Diezmo del mes: <strong>"+data['diezmo']+"</strong> Bs.</p><p style='font-size:15px;"+color+"'>Disponible: <strong>"+data['total']+"</strong> Bs.</p>"
+            $('.capital').html(capital);*/
+            var th = "<th style='color:green;'>Mes actual: "+mes()+"</th>"
+            th += "<th style='"+color1+";'>Ofrenda del mes de: "+data['ofrenda']+" bs.</th>"
+            th += "<th style='"+color2+";'>Diezmo del mes: "+data['diezmo']+" Bs.</th>"
+            $('#capital').prepend(th);
+        }
+        });
+}
+capital();
+year = new Date().getFullYear()
+html = '<option value="" disabled="" selected="">Año</option>'
+for(var i =year;i>year-10;i--){
+    option = '<option value="'+i+'">'+i+'</option>'
+    html += option
+}
+document.getElementById('year').innerHTML =html;
+
+$("#id_persona").select2();
+</script>
+<script type="text/javascript">
+    function tipo(){
+        var mes = $('#mes').val();
+        if (mes == null){
+            $('#mes').focus();
+            return false;
+
+        }
+        var year = $('#year').val();
+        if (year == null){
+            $('#year').focus();
+            return false;
+
+        }
+        console.log(mes,year)
+        var url = "{% url 'reportes:transacciones'%}"
+        window.open(url+'?mes='+mes+"&year="+year, '_blank');
+    }
+</script>
+
+{% endblock %}

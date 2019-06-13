@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
-from .models import Actividades,Status,Iglesia,Entrenamiento,Grupo,Material,Photo,Album,Tipo_actividad
+from django.urls import reverse_lazy
+
+from .models import Actividades,Status,Iglesia,Entrenamiento,Grupo,Material,Photo,Album,Tipo_actividad,AsignarMaterial
 from persona.models import Persona
 from core.models import User
 from django.http import JsonResponse
@@ -16,12 +18,13 @@ import calendar
 import time
 import datetime
 from django.core.mail import send_mail
-from core.mixins import LoginRequiredMixin,SuperUserMixinRequired
+from core.mixins import LoginRequiredMixin,SuperUserMixinRequired,ProgramadorMixinRequired
 from core.views import notificacions
 from dateutil.relativedelta import relativedelta
 from django.db.models import Q
+import json
 # Create your views here.
-class ActividadesView(ListView):
+class ActividadesView(LoginRequiredMixin,ProgramadorMixinRequired,ListView):
     model = Actividades
     template_name = 'actividades/listado.html'
 
@@ -46,7 +49,18 @@ def ActividadesJson(request):
             color = "#00B0F0"
         if i.status.status == 'No Realizada':
             color = "red"
-        dicts.append({"color":color,"id":i.pk,"title":i.nombre,"start":str(i.fecha)+"T"+str(i.hora),"descripcion":i.descripcion,"lugar":i.lugar,"observacion":i.observacion,"estatus":i.status.status,"estatuss":i.statuss,"tipo":i.tipo.tipo,"allDay":False})
+        dicts.append(
+            {"color":color,
+            "id":i.pk,
+            "title":i.nombre,
+            "start":str(i.fecha)+"T"+str(i.hora),
+            "descripcion":i.descripcion,
+            "lugar":i.lugar,
+            "observacion":i.observacion,
+            "estatus":i.status.status,
+            "estatuss":i.statuss,
+            "tipo":i.tipo.tipo,
+            "allDay":False})
     #print ('dictionario: ',dicts)
 
     #json = serializers.serialize('json', dicts)
@@ -66,27 +80,108 @@ class ActividadCreate(TemplateView):
 
 class ActividadesCreateView1(TemplateView):
     def post(self,request,*args,**kwargs):
-        data = dict()
+        data = []
+
         estatus_id = get_object_or_404(Status,status="Por Realizar")
         if request.method == 'POST':
-            form = ActividadesForm(request.POST)
-            print(request.POST['fecha'])
-            if form.is_valid():
-                data['form_is_valid'] = True
-                data['lugar'] = request.POST['lugar']
-                data['start'] = str(request.POST['fecha_submit'])+"T"+str(request.POST['hora'])
-                data['descripcion'] = request.POST['descripcion']
-                data['tipo'] = request.POST['tipo']
-                data['title'] = request.POST['nombre']
-                data['color'] = "#00B0F0"
-                status_p = form.save(commit=False)
-                status_p.status = estatus_id
-                actividad = form.save()
-                notificacions(user=request.user,contenido="Se ha planificado una nueva actividad titulada: <strong>"+str(request.POST['nombre'])+"</strong>, fecha: <strong>"+str(request.POST['fecha_submit'])+"</strong>",url="")
+            data1 = json.loads(request.POST['data'])
+            for i in data1:
+                tipo = get_object_or_404(Tipo_actividad,pk=i['tipo'])
+                fecha = i['fecha']
+                from datetime import datetime
+                ht = i['hora'].split(':')
+                hora = datetime.strptime(str(ht[0])+str(ht[1]),"%H%M")
+                if tipo.tipo == 'Series':
+                    acti = Actividades.objects.filter(fecha=fecha,tipo=tipo).exists()
+                    
+                    if acti:
 
-                data['id'] = actividad.pk
-            else:
-                data['form_is_valid'] = False
+                        err = {
+                           'form_is_valid':False,
+                           'error':'Ya existe una serie planificada para esa fecha, por favor seleccione otra.' 
+                        }
+                        
+                        return JsonResponse(err,safe=False)
+                hora_pm = datetime.strptime('1400',"%H%M")
+                if(i['is_domingo']):
+                    if hora<hora_pm:
+                        err = {
+                           'form_is_valid':False,
+                           'error':'Día domingo, no puede seleccionar una hora menor a las 2:00 pm, por favor seleccione otra.' 
+                        }
+                        
+                        return JsonResponse(err,safe=False)
+                from datetime import datetime
+                lider = get_object_or_404(Persona,pk=i['persona'])
+                act = Actividades.objects.filter(fecha=fecha,persona=lider)
+                if act.exists():
+                    for i in act:
+                        hora_a =str(i.hora).split(':')
+                        hor = datetime.strptime(str(hora_a[0])+str(hora_a[1]),"%H%M")
+                        if hora>=hor:
+                            hora2 = str(i.hora).split(':')
+                            time2 = datetime.strptime(str(hora2[0])+str(hora2[1]),"%H%M")
+                            diff = hora-time2
+                            horas = int(diff.total_seconds()/3600)   # seconds to hour 
+                            if horas<=3:
+                                err = {
+                                'form_is_valid':False,
+                                'error':'Ya este lider tiene asignada una actividad muy cercana a la hora seleccionada.' 
+                                }
+                        
+                                return JsonResponse(err,safe=False)
+            count = 0
+            for i in data1:
+                count +=1
+                nombre = i['nombre']
+                descripcion = i['descripcion']
+                lugar = i['lugar']
+                lider = get_object_or_404(Persona,pk=i['persona'])
+                tipo = get_object_or_404(Tipo_actividad,pk=i['tipo'])
+                hora = i['hora']
+                fecha = i['fecha']
+
+                act = Actividades(
+                    nombre=nombre,
+                    descripcion=descripcion,
+                    lugar=lugar,
+                    persona=lider,
+                    tipo=tipo,
+                    hora=hora,
+                    fecha=fecha,
+                    status=estatus_id,
+                   )
+                act.save()
+                if i['entre']:
+                    entrenamiento = get_object_or_404(Entrenamiento,pk=int(i['entre']))
+                    Actividades.objects.filter(pk=act.pk).update(entrenamiento=entrenamiento)
+
+                    if tipo.tipo == 'Entrenamiento':
+                        link='/panel/actividades/detailentrenamiento/'+str(act.pk)
+                        notificacions(
+                            user=entrenamiento.iglesia.usuario,
+                            tipo="organizacion",
+                            contenido="Se ha planificado su entrenamiento solicitado dia "+str(count)+", fecha: "+str(fecha),
+                            url=link
+                        )
+                val = {
+                    'title':nombre,
+                    'descripcion':descripcion,
+                    'lugar':lugar,
+                    'lider':lider.nombre,
+                    'tipo':tipo.tipo,
+                    'hora':hora,
+                    'start':str(fecha)+"T"+str(hora),
+                    'id':act.pk
+                }
+                data.append(val)
+            datos = {
+                'data' : data,
+                'form_is_valid':True
+            }
+
+            return JsonResponse(datos,safe=False)
+            
         else:
             form = ActividadesForm()
 
@@ -115,8 +210,24 @@ class ActividadesEditView1(TemplateView):
         data['start'] = str(actividad.fecha)+"T"+str(request.POST['hora'])
 
         #actividad = form.save()
+        tipo = get_object_or_404(Tipo_actividad,pk=request.POST['tipo'])
+        if tipo.tipo == 'Entrenamiento':
+            link='/panel/actividades/detailentrenamiento/'+str(actividad.pk)
+            notificacions(
+                user=actividad.entrenamiento.iglesia.usuario,
+                tipo="organizacion",
+                contenido="Se ha modificado su entrenamiento solicitado, fecha: "+str(actividad.fecha),
+                url=link
+            )
 
-        Actividades.objects.filter(pk=actividad.pk).update(nombre=data['title'],descripcion=data['descripcion'],hora=data['hora'],lugar=data['lugar'],persona=data['persona'],tipo=data['tipo'])
+
+        Actividades.objects.filter(pk=actividad.pk).update(
+            nombre=data['title'],
+            descripcion=data['descripcion'],
+            hora=data['hora'],
+            lugar=data['lugar'],
+            persona=data['persona'],
+            tipo=data['tipo'])
 
         data['id'] = actividad.pk
 
@@ -162,7 +273,7 @@ def Status_update(request, pk):
             data['start'] = str(fecha)+"T"+str(hora)
             data['estatus'] = estatus_id.status
             data['form_is_valid'] = True
-            notificacions(user=request.user,contenido="Actividad titulada: <strong>"+estatus.nombre+"</strong> actualizada a una nueva fecha: <p style='color:green;display: contents;'><strong>"+str(estatus.fecha)+"</strong></p>",url="")
+            #notificacions(user=request.user,contenido="Actividad titulada: <strong>"+estatus.nombre+"</strong> actualizada a una nueva fecha: <p style='color:green;display: contents;'><strong>"+str(estatus.fecha)+"</strong></p>",url="")
 
 
         else:
@@ -182,7 +293,21 @@ def Status_update(request, pk):
 
                 data['form_is_valid'] = True
                 data['color'] = color
-                notificacions(user=request.user,contenido="Actividad titulada: <strong>"+estatus.nombre+"</strong> actualizada a: <p style='color:"+color+";display: contents;'><strong>"+estatus.status.status+"</strong></p>",url="")
+                tipo = get_object_or_404(Tipo_actividad,pk=save.tipo.pk)
+                if tipo.tipo == 'Entrenamiento':
+                    
+                    entr = Entrenamiento.objects.filter(pk=estatus.entrenamiento.pk)
+                    if estatus.status.status == 'Realizada':
+                        entr.update(estatus="aceptada")
+                    
+                    link='/panel/actividades/detailentrenamiento/'+str(save.pk)
+                    notificacions(
+                        user=estatus.entrenamiento.iglesia.usuario,
+                        tipo="organizacion",
+                        contenido="Se ha actualizado el estatus de su entrenamiento solicitado, fecha: "+str(save.fecha),
+                        url=link
+                    )
+                #notificacions(user=request.user,contenido="Actividad titulada: <strong>"+estatus.nombre+"</strong> actualizada a: <p style='color:"+color+";display: contents;'><strong>"+estatus.status.status+"</strong></p>",url="")
                 data['observacion'] = save.observacion
                 data['tipo'] = save.tipo.tipo
                 data['estatus'] = estatus.status.status
@@ -190,7 +315,10 @@ def Status_update(request, pk):
     else:
         form = StatusForm(instance=estatus)
         formm = FechaForm(instance=estatus)
-    tipo = Tipo_actividad.objects.all()
+    if estatus.tipo.tipo == 'Entrenamiento':
+        tipo = Tipo_actividad.objects.filter(tipo="Entrenamiento")
+    else:
+        tipo = Tipo_actividad.objects.exclude(tipo="Entrenamiento")
     lider = Persona.objects.all().filter(roles="Lider")
     context = {'form': form,'actividad':estatus,'lider':lider,'tipo':tipo,'formm':formm}
     data['html_form'] = render_to_string('actividades/update.html',
@@ -242,7 +370,7 @@ class IglesiaCreate(TemplateView):
         request=request)
         return JsonResponse({'html_form': html_form})
 
-class IndexIglesiasView(TemplateView):
+class IndexIglesiasView(LoginRequiredMixin,ProgramadorMixinRequired,TemplateView):
     def get(self,request,**kwargs):
         return render(request,'iglesia/listado.html')
 
@@ -255,6 +383,22 @@ def IglesiasJson(request):
 
     #json = serializers.serialize('json', dicts)
     return JsonResponse(dicts,safe=False)
+
+class SolicitarAlpha(TemplateView):
+    def post(self,request):
+        iglesia = Iglesia.objects.get(usuario=request.user)
+        grupo = Grupo.objects.get(id=int(request.POST['id']))
+        entrenamiento = Entrenamiento(iglesia=iglesia,grupo=grupo)
+        entrenamiento.save()
+        material = Material.objects.filter(grupo=grupo).first()
+        asign = AsignarMaterial(entrenamiento=entrenamiento,material=material).save()
+        link = "/panel/actividades?id="+str(entrenamiento.id)+"&titulo="+iglesia.nombre+"&entrenamiento="+str(entrenamiento.pk)
+        notificacions(
+            user=request.user,
+            tipo="programador",
+            contenido="Solicitud de Entrenamiento por la organización: "+iglesia.nombre+" Tipo: "+grupo.nombre,
+            url=link)
+        return JsonResponse([{"is_valid":True}],safe=False)
 
 class IglesiaCreateView(TemplateView):
     def post(self,request,*args,**kwargs):
@@ -279,14 +423,22 @@ class IglesiaCreateView(TemplateView):
                     )
                     user.set_password(password) # This line will hash the password
 
-                    user.save() #DO NOT FORGET THIS LINE
+                    usu = user.save() #DO NOT FORGET THIS LINE
+                    
                     iglesia = form.save()
+                    Iglesia.objects.filter(pk=iglesia.pk).update(usuario=user)
                     grupo = Grupo.objects.get(id=int(request.POST['grupo']))
                     entrenamiento = Entrenamiento(iglesia=iglesia,grupo=grupo)
                     entrenamiento.save()
+                    material = Material.objects.filter(grupo=grupo).first()
+                    asign = AsignarMaterial(entrenamiento=entrenamiento,material=material).save()
                     data['form_is_valid'] = True
-                    link = "/panel/actividades?id="+str(entrenamiento.id)+"&titulo="+request.POST['nombre']
-                    notificacions(user=user,contenido="Solicitud de Entrenamiento por la organización: <strong>"+request.POST['nombre']+"</strong> Tipo: <strong>"+grupo.nombre+"</strong> <br> <a href='"+link+"'>Ir</a>",url="")
+                    link = "/panel/actividades?id="+str(entrenamiento.id)+"&titulo="+request.POST['nombre']+"&entrenamiento="+str(entrenamiento.pk)
+                    notificacions(
+                        user=user,
+                        tipo="programador",
+                        contenido="Solicitud de Entrenamiento por la organización: "+request.POST['nombre']+" Tipo: "+grupo.nombre+"",
+                        url=link)
 
                 else:
                     data['form_is_valid'] = False
@@ -317,9 +469,46 @@ class EntrenamientoCreate(TemplateView):
         request=request)
         return JsonResponse({'html_form': html_form})
 
-class IndexEntrenamientoView(TemplateView):
+class IndexEntrenamientoView(LoginRequiredMixin,ProgramadorMixinRequired,TemplateView):
     def get(self,request,**kwargs):
-        return render(request,'entrenamiento/listado.html')
+        actividades = Actividades.objects.filter(tipo=2)
+        entrenamiento = Entrenamiento.objects.all()
+        material = AsignarMaterial.objects.all()
+        return render(request,'entrenamiento/listados.html',{"entrenamientos":material})
+
+class DetailActividad(TemplateView):
+    def get(self,request,pk,**kwargs):
+        entrenamiento = Actividades.objects.get(pk=pk)
+        return render(request,'entrenamiento/ver.html',{"entrenamiento":entrenamiento})
+
+    def dispatch(self,request,pk,*args,**kwargs):
+        if request.user.is_iglesia:
+            actividad = Actividades.objects.get(pk=pk)
+            if actividad.entrenamiento.iglesia.usuario.pk  != request.user.pk:
+                return redirect(reverse_lazy('login'))
+        return super(DetailActividad,self).dispatch(request,pk,*args,**kwargs)
+
+class MaterialA(TemplateView):
+    def post(self,request):
+        pk = request.POST['id']
+        activo = request.POST['activo']
+        asign = AsignarMaterial.objects.filter(pk=pk)
+        if activo == 'true':
+            activo = True
+            contenido = "Ya tienes acceso a un nuevo material."
+        else:
+            activo = False
+            contenido = "Se te ha bloqueado el acceso a un material."
+
+        asign.update(estatus=activo)
+        link='/panel/actividades/material'
+        notificacions(
+            user=asign.first().entrenamiento.iglesia.usuario,
+            tipo="organizacion",
+            contenido=contenido,
+            url=link
+        )
+        return JsonResponse([{"is_valid":True}],safe=False)
 
 def EntrenamientoJson(request):
     dicts = []
@@ -381,7 +570,7 @@ class GrupoCreate(TemplateView):
         return JsonResponse({'html_form': html_form})
 
 
-class GrupoCreateView(TemplateView):
+class GrupoCreateView(LoginRequiredMixin,ProgramadorMixinRequired,TemplateView):
     def post(self,request,*args,**kwargs):
         data = dict()
         
@@ -412,16 +601,17 @@ class GrupoCreateView(TemplateView):
 
 
 
-class IndexMaterialView(TemplateView):
+class IndexMaterialView(LoginRequiredMixin,ProgramadorMixinRequired,TemplateView):
     def get(self,request,**kwargs):
         return render(request,'material/listado.html')
 
 def MaterialJson(request):
     dicts = []
-    iglesia = Iglesia.objects.get(nombre=request.user.first_name)
-    entrenamiento = Entrenamiento.objects.get(iglesia=iglesia)
-    for i in entrenamiento.material.all():
-        dicts.append({"model":"model.material","pk":i.pk,"fields":{"nombre":i.nombre,"url":i.url,'grupo':i.grupo.nombre}})
+    iglesia = Iglesia.objects.get(usuario=request.user)
+    entrenamiento = Entrenamiento.objects.filter(iglesia=iglesia)
+    material = AsignarMaterial.objects.filter(entrenamiento__in=entrenamiento,estatus=True)
+    for i in material:
+        dicts.append({"model":"model.material","pk":i.pk,"fields":{"nombre":i.material.nombre,"url":i.material.url,'grupo':i.material.grupo.nombre}})
     return JsonResponse(dicts,safe=False)
 
 
@@ -471,11 +661,22 @@ class Photo_get(TemplateView):
         photo = Photo.objects.filter(album=album)
         for i in photo:
             print (i)
-            photos.append({"imagen":str(i.file)})
+            photos.append({"id":i.id,"imagen":str(i.file)})
             #photos["actividad"] = i.actividad.nombre
 
         #json = serializers.serialize('json', album)
         return JsonResponse(photos,safe=False)
+
+class Photo_del(TemplateView):
+    def get(self,request):
+        pk = request.GET['pk']
+        photo = Photo.objects.get(id=pk)
+        album = Photo.objects.filter(album=photo.album)
+        print(album.count())
+        if album.count() == 1:
+            Album.objects.filter(id=photo.album.id).delete()
+        photo.delete()
+        return JsonResponse([{"is_valid":True}],safe=False)
 
 class Photos_tem(TemplateView):
     def get(self,request,pk,**kwargs):
@@ -489,7 +690,7 @@ class Photos_tem(TemplateView):
 
 
 #Estadisticas
-class ActividadesEstadisticas(TemplateView):
+class ActividadesEstadisticas(LoginRequiredMixin,ProgramadorMixinRequired,TemplateView):
     def get(self,request):
         persona = Persona.objects.filter(roles="Lider").exclude(nombre="Ofrenda")
         tipo = Tipo_actividad.objects.all()

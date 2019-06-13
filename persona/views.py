@@ -58,7 +58,7 @@ class PersonasCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView)
                         form.save()
                         persona_saved = Persona.objects.latest('id')
                         print ("id:",persona_saved.pk)
-                        notificacions(user=request.user,contenido="Persona registrada: <strong>"+str(request.POST['nombre'].upper())+"</strong>",url=request.POST['url']+"?id="+str(persona_saved.pk))
+                        #notificacions(user=request.user,contenido="Persona registrada: <strong>"+str(request.POST['nombre'].upper())+"</strong>",url=request.POST['url']+"?id="+str(persona_saved.pk))
                         data['form_is_valid'] = True
                 else:
                     data['form_is_valid'] = False

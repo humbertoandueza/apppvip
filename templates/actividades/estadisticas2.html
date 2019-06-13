@@ -293,6 +293,11 @@ color = [
     am4core.color("#34495e"),
     am4core.color("#7f8c8d"),
 ]
+color2 = [
+  am4core.color("#03389c"),
+  am4core.color("#ff7800"),
+  am4core.color("#901313"),
+]
 color1 = [
   am4core.color("#039c25"),
   am4core.color("#ffbe00"),
@@ -316,7 +321,7 @@ if(result){
     document.getElementById('chart').classList.add('m6');
     document.getElementById('chart1').classList.add('col','m6');
 
-    chart(resultado,'chartdiv1',color1,true)
+    chart(resultado,'chartdiv1',color2,true)
 }
 if(obj[3].found == "False"){
     error = ` 
@@ -517,12 +522,12 @@ function ver(tipo){
         $('#titulo').html('Resultados de las actividades realizadas')
         $('.total').html('Total: '+total)
 
-        chart(resultado,'chart-full',color1,false)
+        chart(resultado,'chart-full',color2,false)
 
 
         $('#titulo1').html('Resultados de las actividades realizadas')
         $('.total1').html('Total: '+total)
-        chart(resultado,'chart-full1',color1,false)
+        chart(resultado,'chart-full1',color2,false)
     }
     else if(tipo == 'tri') {
         var html = ''

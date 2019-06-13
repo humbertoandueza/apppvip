@@ -77,6 +77,10 @@
                             <li><a href="/">Inicio</a></li>
                             
                         </ul>
+                        <ul class="menuzord-menu pull-right hide panel">
+                          <li><a href="/panel">Panel</a></li>
+                          
+                      </ul>
                         <!--mega menu end-->
 
                     </div>
@@ -167,6 +171,10 @@
         <script type="text/javascript" src="{% static 'vanillabox/jquery.vanillabox.js'%}"></script>
 
         <script type="text/javascript">
+        var user = '{{request.user.is_programador}}'
+        if(user){
+          $('.panel').removeClass('hide');
+        }
           $(function () {
             $.ajax({
               url: "{% url 'actividades:album' %}",

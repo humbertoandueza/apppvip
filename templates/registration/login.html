@@ -41,7 +41,16 @@
   <link href="{% static 'js/plugins/perfect-scrollbar/perfect-scrollbar.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
 
 </head>
-
+<style>
+.light-blue {
+    background-image: linear-gradient(to right, rgba(109, 179, 242, .6), rgba(109, 179, 242, .6)), url('/static/assets/img/banner/banner-1.jpg');
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-size: cover;
+    /* background-color: #03a9f4 !important; */
+}
+</style>
 <body class="light-blue">
   <!-- Start Page Loading -->
   <div id="loader-wrapper">
@@ -85,6 +94,7 @@
         </div>
         <div class="row">
           <div class="input-field col s12 m12 l12 center">
+              <p class="medium-small left"><a href="/">Inicio</a></p>
               <p class="margin right-align medium-small"><a href="{% url 'password_reset' %}">¿Olvido Su clave?</a></p>
           </div>
         </div>
