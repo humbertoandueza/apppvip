@@ -299,7 +299,11 @@ def Status_update(request, pk):
                     entr = Entrenamiento.objects.filter(pk=estatus.entrenamiento.pk)
                     if estatus.status.status == 'Realizada':
                         entr.update(estatus="aceptada")
-                    
+
+                    if estatus.status.status == 'No Realizada':
+                        act = Actividades.objects.filter(entrenamiento__pk=estatus.entrenamiento.pk).exclude(status__status="No Realizada")
+                        if len(act) == 0:
+                            entr.update(cancelado=True)
                     link='/panel/actividades/detailentrenamiento/'+str(save.pk)
                     notificacions(
                         user=estatus.entrenamiento.iglesia.usuario,
@@ -601,7 +605,7 @@ class GrupoCreateView(LoginRequiredMixin,ProgramadorMixinRequired,TemplateView):
 
 
 
-class IndexMaterialView(LoginRequiredMixin,ProgramadorMixinRequired,TemplateView):
+class IndexMaterialView(LoginRequiredMixin,TemplateView):
     def get(self,request,**kwargs):
         return render(request,'material/listado.html')
 

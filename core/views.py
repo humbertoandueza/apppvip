@@ -39,7 +39,7 @@ class IndexPagePanelView(LoginRequiredMixin,TemplateView):
 		matri = False
 		if request.user.is_iglesia:
 			iglesia = Iglesia.objects.get(usuario=request.user)
-			entrenamiento = Entrenamiento.objects.filter(iglesia=iglesia)
+			entrenamiento = Entrenamiento.objects.filter(iglesia=iglesia,cancelado=False)
 			for i in entrenamiento:
 				if i.grupo.nombre == 'ALPHA SERIES':
 					serie = True

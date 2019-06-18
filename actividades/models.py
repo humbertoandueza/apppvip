@@ -50,6 +50,7 @@ class Entrenamiento(models.Model):
         ('aceptada','aceptada'),
         ('rechazada','rechazada'),
         )
+    cancelado = models.BooleanField(default=False)
     estatus = models.CharField(verbose_name="Estatus",blank=True,null=True,choices=est,default="pendiente",max_length=200)
 
     def __str__(self):
